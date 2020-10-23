@@ -4,7 +4,7 @@ export default {
   off: "OFF",
   // Main
   denyDM: "❌ I can't execute that command inside DMs!",
-  cmdInvalid: "❌ Invalid Command!",
+  cmdInvalid: "Invalid Command!",
   // help
   help: "Help",
   helpDesc: "List of commands and descriptions you can use.",
@@ -25,8 +25,8 @@ export default {
   videoPrivate: "🔒 This video is private!",
   videoAgeRestricted: "🔞 This video is age restricted!",
   urlInvalid: "🚫 Your URL is invalid!",
-  enqueued: "✅ Enqueued",
-  nowPlaying: "💿 Now Playing",
+  enqueued: "Enqueued",
+  nowPlaying: "Now Playing",
   length: "Length",
   position: "Position in Playlist",
   // playlist

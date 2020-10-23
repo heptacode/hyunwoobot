@@ -4,7 +4,7 @@ export default {
   off: "꺼졌어요.",
   // Main
   denyDM: "❌ DM에서는 이 기능을 사용할 수 없어요.",
-  cmdInvalid: "❌ 올바르지 않은 명령어예요!",
+  cmdInvalid: "올바르지 않은 명령어예요!",
   // help
   help: "도움말",
   helpDesc: "사용 가능한 명령어와 도움말 목록이예요!",
@@ -25,8 +25,8 @@ export default {
   videoPrivate: "🔒 이 비디오는 비공개예요.",
   videoAgeRestricted: "🔞 이 비디오는 연령제한이 있어요.",
   urlInvalid: "🚫 URL이 올바르지 않아요.",
-  enqueued: "✅ 추가 완료",
-  nowPlaying: "💿 현재 재생중",
+  enqueued: "추가됨",
+  nowPlaying: "현재 재생중",
   length: "길이",
   position: "재생까지 남은 곡",
   // playlist

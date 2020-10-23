@@ -43,7 +43,7 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
         };
       } catch (err) {
         Log.e(`Enqueue > URLInvalid > ${err}`);
-        message.channel.send(`${locale.urlInvalid}`);
+        return message.channel.send(`${locale.urlInvalid}`);
       }
     }
 
@@ -55,7 +55,7 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
         playlist: [],
         isLooped: false,
         isRepeated: false,
-        volume: 5,
+        volume: 1,
       });
       docSnapshot = await docRef.get();
     }
