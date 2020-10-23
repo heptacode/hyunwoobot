@@ -13,7 +13,7 @@ export default {
   insufficientPerms: "🚫 Insufficient permissions! (Required permissions : [Connect], [Speak])",
   // voiceDisconnect
   notInVoiceChannel: "🚫 I'm currently not in a voice channel!",
-  leave: "⛔️ Unbound voice channels.",
+  leave: "⛔️ Unbound voice channels",
   // locale
   changeLocale: "✅ Locale changed to ",
   // loop
