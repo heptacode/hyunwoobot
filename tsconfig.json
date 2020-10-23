@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist.ts",
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "target": "es6"
+  },
+  "include": ["src/**/*"],
+  "exclude": [".vscode", "node_modules"]
+}
