@@ -22,11 +22,11 @@ module.exports = {
         message.channel.send(`${locale.changeLocale}${newValue}`);
       } else {
         Log.e(`ChangeLocale > 2 > ${result}`);
-        message.reply(`${locale.err_cmd}`);
+        message.channel.send(`${locale.err_cmd}`);
       }
     } catch (err) {
       Log.e(`ChangeLocale > 1 > ${err}`);
-      message.reply(`${locale.err_cmd}`);
+      message.channel.send(`${locale.err_cmd}`);
     }
   },
 };

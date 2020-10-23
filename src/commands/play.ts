@@ -18,21 +18,21 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
           if (!dbRef.isPlaying) {
             return play(locale, dbRef, docRef, message);
           } else {
-            return message.reply(`${locale.currentlyPlaying}`);
+            return message.channel.send(`${locale.currentlyPlaying}`);
           }
         } else {
           // docSnapshot Exists, but Playlist has no value
-          return message.reply(`${locale.playlistEmpty}`);
+          return message.channel.send(`${locale.playlistEmpty}`);
         }
       } else {
         // URL not provided
-        return message.reply(`${locale.provideURL}`);
+        return message.channel.send(`${locale.provideURL}`);
       }
     } else {
       try {
         videoDetails = await (await ytdl.getInfo(videoURL)).videoDetails;
-        if (videoDetails.isPrivate) return message.reply(`${locale.videoPrivate}`);
-        // if (videoDetails.age_restricted) return message.reply(`${locale.videoAgeRestricted}`);
+        if (videoDetails.isPrivate) return message.channel.send(`${locale.videoPrivate}`);
+        // if (videoDetails.age_restricted) return message.channel.send(`${locale.videoAgeRestricted}`);
         video = {
           title: videoDetails.title,
           channelName: videoDetails.ownerChannelName,
@@ -42,7 +42,7 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
         };
       } catch (err) {
         Log.e(`Enqueue > URLInvalid > ${err}`);
-        message.reply(`${locale.urlInvalid}`);
+        message.channel.send(`${locale.urlInvalid}`);
       }
     }
 
@@ -67,11 +67,11 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
           play(locale, dbRef, docRef, message);
         } else {
           Log.e(`Play Now > 2 > ${result}`);
-          return message.reply(`${locale.err_task}`);
+          return message.channel.send(`${locale.err_task}`);
         }
       } catch (err) {
         Log.e(`Play Now > 1 > ${err}`);
-        return message.reply(`${locale.err_cmd}`);
+        return message.channel.send(`${locale.err_cmd}`);
       }
     } else {
       // Enqueue
@@ -103,16 +103,16 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
           message.delete();
         } else {
           Log.e(`Enqueue > 3 > ${result}`);
-          return message.reply(`${locale.err_cmd}`);
+          return message.channel.send(`${locale.err_cmd}`);
         }
       } catch (err) {
         Log.e(`Enqueue > 2 > ${err}`);
-        message.reply(`${locale.err_cmd}`);
+        message.channel.send(`${locale.err_cmd}`);
       }
     }
   } catch (err) {
     Log.e(`Enqueue > 1 > ${err}`);
-    message.reply(`${locale.err_cmd}`);
+    message.channel.send(`${locale.err_cmd}`);
   }
 };
 

@@ -59,10 +59,10 @@ client.on("message", async message => {
       await serverDocRef.set(JSON.parse(JSON.stringify(server)));
       configDocSnapshot = await configDocRef.get();
 
-      message.reply(`Initialize Complete`);
+      message.channel.send(`Initialize Complete`);
     } catch (err) {
       Log.e(`Init > ${err}`);
-      return message.reply(`An error occured while initializing.`);
+      return message.channel.send(`An error occured while initializing.`);
     }
   }
 
@@ -89,7 +89,7 @@ client.on("message", async message => {
     else command.execute(locale, dbRef, docRef, message, args);
   } catch (err) {
     Log.e(`Main > ${JSON.stringify(message.content)} > ${err}`);
-    message.reply(`${locale.err_cmd}`);
+    message.channel.send(`${locale.err_cmd}`);
   }
 });
 

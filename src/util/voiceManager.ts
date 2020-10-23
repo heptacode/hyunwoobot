@@ -5,11 +5,11 @@ export const voiceConnect = async (locale, dbRef, docRef, message) => {
     let textChannel = message.channel;
     let voiceChannel = message.member.voice.channel;
     // Not in voice channel
-    if (!voiceChannel) return message.reply(`${locale.joinToConnect}`);
+    if (!voiceChannel) return `${locale.joinToConnect}`;
 
     let permissions = voiceChannel.permissionsFor(message.client.user);
     // Insufficient perms
-    if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) return message.reply(`${locale.insufficientPerms}`);
+    if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) return `${locale.insufficientPerms}`;
 
     let docSnapshot = await docRef.get();
     // Init if doc not exists
@@ -31,11 +31,11 @@ export const voiceConnect = async (locale, dbRef, docRef, message) => {
       Log.i("VoiceConnect");
     } catch (err) {
       Log.e(`VoiceConnect > 2 > ${err}`);
-      return message.reply(`${locale.err_task}`);
+      return `${locale.err_task}`;
     }
   } catch (err) {
     Log.e(`VoiceConnect > 1 > ${err}`);
-    return message.reply(`${locale.err_task}`);
+    return `${locale.err_task}`;
   }
 };
 
@@ -46,13 +46,13 @@ export const voiceDisconnect = async (locale, dbRef, docRef, message, timeout?) 
     try {
       dbRef.voiceChannel.leave();
       Log.i(`VoiceDisconnect${timeout ? " : Timeout" : ""}`);
-      message.reply(`${timeout ? locale.disconnectTimeout : locale.leave}`);
+      `${timeout ? locale.disconnectTimeout : locale.leave}`;
     } catch (err) {
       Log.w(`VoiceDisconnect > Not in Voice Channel`);
-      message.reply(`${locale.notInVoiceChannel}`);
+      `${locale.notInVoiceChannel}`;
     }
   } else {
     Log.e(`VoiceDisconnect > 1 > ${result}`);
-    message.reply(`${locale.err_cmd}`);
+    `${locale.err_cmd}`;
   }
 };

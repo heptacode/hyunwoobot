@@ -10,7 +10,7 @@ module.exports = {
       await voiceDisconnect(locale, dbRef, docRef, message);
     } catch (err) {
       Log.e(`Leave > 1 > ${err}`);
-      message.reply(`${locale.err_cmd}`);
+      message.channel.send(`${locale.err_cmd}`);
     }
   },
 };

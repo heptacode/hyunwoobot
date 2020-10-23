@@ -10,7 +10,7 @@ module.exports = {
       await voiceConnect(locale, dbRef, docRef, message);
     } catch (err) {
       Log.e(`Join > ${err}`);
-      message.reply(`${locale.err_cmd}`);
+      message.channel.send(`${locale.err_cmd}`);
     }
   },
 };

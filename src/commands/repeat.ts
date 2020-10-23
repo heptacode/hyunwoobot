@@ -6,7 +6,7 @@ module.exports = {
   description: "Toggle repeat",
   async execute(locale, dbRef, docRef, message, args) {
     try {
-      if (!message.member.voice.channel) return message.reply(`${locale.joinToToggleRepeat}`);
+      if (!message.member.voice.channel) return `${locale.joinToToggleRepeat}`;
 
       let docSnapshot = await docRef.get();
 
@@ -15,14 +15,14 @@ module.exports = {
       let result = await docRef.update({ isRepeated: newValue });
       if (result) {
         Log.s(`ToggleRepeat : ${newValue ? "ON" : "OFF"}`);
-        message.reply(`${locale.toggleRepeat}${newValue ? `${locale.on}` : `${locale.off}`}`);
+        `${locale.toggleRepeat}${newValue ? `${locale.on}` : `${locale.off}`}`;
       } else {
         Log.e(`ToggleRepeat > 2 > ${result}`);
-        message.reply(`${locale.err_cmd}`);
+        `${locale.err_cmd}`;
       }
     } catch (err) {
       Log.e(`ToggleRepeat > 1 > ${err}`);
-      message.reply(`${locale.err_cmd}`);
+      `${locale.err_cmd}`;
     }
   },
 };

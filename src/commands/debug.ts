@@ -18,7 +18,7 @@ module.exports = {
       Log.v("------------------------------------------------------------------------------------");
     } catch (err) {
       Log.e(`Debug > 1 > ${err}`);
-      message.reply(`${locale.err_cmd}`);
+      message.channel.send(`${locale.err_cmd}`);
     }
   },
 };

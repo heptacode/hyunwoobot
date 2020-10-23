@@ -30,6 +30,7 @@
   "scripts": {
     "serve": "nodemon nodemon.json",
     "build": "webpack --config webpack.config.ts",
+    "deploy-ts": "git pull && pm2 start pm2-ts.json && pm2 monit",
     "deploy": "git pull && webpack --config webpack.config.ts && pm2 start pm2.json && pm2 monit",
     "stop": "pm2 delete pm2.json"
   },
