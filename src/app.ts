@@ -57,17 +57,18 @@ client.on("message", async message => {
     try {
       await configDocRef.set({ locale: "en" });
       await serverDocRef.set(JSON.parse(JSON.stringify(server)));
+      configDocSnapshot = await configDocRef.get();
 
       message.reply(`Initialize Complete`);
     } catch (err) {
       Log.e(`Init > ${err}`);
       return message.reply(`An error occured while initializing.`);
     }
-  } else {
-    locale = await configDocSnapshot.data().locale;
-    if (locale == "en") locale = lang_en;
-    else if (locale == "ko") locale = lang_ko;
   }
+
+  locale = await configDocSnapshot.data().locale;
+  if (locale == "en") locale = lang_en;
+  else if (locale == "ko") locale = lang_ko;
 
   if (!dbRef) {
     // LocalDB Initialize
