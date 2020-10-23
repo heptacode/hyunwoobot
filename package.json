@@ -31,7 +31,7 @@
     "serve": "nodemon nodemon.json",
     "build": "webpack --config webpack.config.ts",
     "deploy": "git pull && webpack --config webpack.config.ts && pm2 start pm2.json && pm2 monit",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "stop": "pm2 delete pm2.json"
   },
   "repository": {
     "type": "git",

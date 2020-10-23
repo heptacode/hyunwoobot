@@ -40,7 +40,7 @@ client.on("message", async message => {
 
   let server = message.guild;
   let serverDocRef = FS.collection(server.id).doc("server");
-  // let serverDocSnapshot = await serverDocRef.get();
+  let serverDocSnapshot = await serverDocRef.get();
 
   let configDocRef = FS.collection(server.id).doc("config");
   let configDocSnapshot = await configDocRef.get();
@@ -52,7 +52,7 @@ client.on("message", async message => {
 
   let locale;
 
-  if (!configDocSnapshot.exists) {
+  if (!configDocSnapshot.exists || !serverDocSnapshot.exists) {
     Log.i("FS Initialize");
     try {
       await configDocRef.set({ locale: "en" });
