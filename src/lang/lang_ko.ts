@@ -42,6 +42,7 @@ export default {
   skipped: "⏩ 건너뛰었어요!",
   // stop
   joinToStop: "💡 재생을 중단하려면 음성 채널에 접속해주세요!",
+  stopNotNow: "💡 지금은 사용할 수 없어요!",
   // volume
   joinToChangeVolume: "💡 음량을 변경하려면 음성 채널에 접속해주세요!",
   invalidVolume: "❌ 0~10 사이의 올바른 값을 입력해주세요.",

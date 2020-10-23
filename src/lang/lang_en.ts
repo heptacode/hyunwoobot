@@ -42,6 +42,7 @@ export default {
   skipped: "⏩ Skipped",
   // stop
   joinToStop: "💡 To stop music, join a voice channel!",
+  stopNotNow: "💡 ou can't use it right now!",
   // volume
   joinToChangeVolume: "💡 To change the volume, join a voice channel!",
   invalidVolume: "❌ Please enter a valid value : 0~10",
