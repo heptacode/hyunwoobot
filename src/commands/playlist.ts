@@ -28,15 +28,15 @@ module.exports = {
           );
         } else {
           Log.w(`Playlist > Playlist Empty`);
-          `${locale.playlistEmpty}`;
+          message.channel.send(`${locale.playlistEmpty}`);
         }
       } else {
         Log.w(`Playlist > Playlist Not Exists`);
-        `${locale.playlistNotExists}`;
+        message.channel.send(`${locale.playlistNotExists}`);
       }
     } catch (err) {
       Log.e(`Playlist > 1 > ${err}`);
-      `${locale.err_cmd}`;
+      message.channel.send(`${locale.err_cmd}`);
     }
   },
 };

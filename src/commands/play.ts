@@ -10,7 +10,7 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
 
     // URL
     let videoURL = message.content.split(" ")[1];
-    let videoDetails, video;
+    let videoDetails, payload;
 
     if (!videoURL) {
       if (docSnapshot.exists) {
@@ -33,12 +33,13 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
         videoDetails = await (await ytdl.getInfo(videoURL)).videoDetails;
         if (videoDetails.isPrivate) return message.channel.send(`${locale.videoPrivate}`);
         // if (videoDetails.age_restricted) return message.channel.send(`${locale.videoAgeRestricted}`);
-        video = {
+        payload = {
           title: videoDetails.title,
           channelName: videoDetails.ownerChannelName,
           length: videoDetails.lengthSeconds,
           thumbnailURL: videoDetails.thumbnail.thumbnails[0].url,
           videoURL: videoDetails.video_url,
+          requesterAvatar: message.author.avatarURL(),
         };
       } catch (err) {
         Log.e(`Enqueue > URLInvalid > ${err}`);
@@ -62,7 +63,7 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
     if (docSnapshot.data().playlist.length == 0) {
       // Play Now
       try {
-        let result = await docRef.update({ playlist: [video] });
+        let result = await docRef.update({ playlist: [payload] });
         if (result) {
           play(locale, dbRef, docRef, message);
         } else {
@@ -77,10 +78,10 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
       // Enqueue
       try {
         let playlist = await docSnapshot.data().playlist;
-        playlist.push(video);
+        playlist.push(payload);
         let result = await docRef.update({ playlist: playlist });
         if (result) {
-          Log.i(`Enqueue : ${video.title}`);
+          Log.i(`Enqueue : ${payload.title}`);
           let field = [
             { name: `${locale.length}`, value: lengthCalculate(playlist[playlist.length - 1].length), inline: true },
             { name: `${locale.position}`, value: playlist.length - 1, inline: true },
@@ -93,7 +94,7 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
           message.channel.send(
             new Discord.MessageEmbed()
               .setColor("#7788D4")
-              .setAuthor(`${locale.enqueued}`, message.author.avatarURL(), "https://hyunwoo.kim")
+              .setAuthor(`${locale.enqueued}`, docSnapshot.data().playlist[playlist.length - 1].requesterAvatar, "https://hyunwoo.kim")
               .setTitle(playlist[playlist.length - 1].title)
               .setURL(playlist[playlist.length - 1].videoURL)
               .setDescription(playlist[playlist.length - 1].channelName)
@@ -142,7 +143,7 @@ const play = async (locale, dbRef, docRef, message) => {
           message.channel.send(
             new Discord.MessageEmbed()
               .setColor("#0099ff")
-              .setAuthor(`${locale.nowPlaying}`, message.author.avatarURL(), "https://hyunwoo.kim")
+              .setAuthor(`${locale.nowPlaying}`, docSnapshot.data().playlist[0].requesterAvatar, "https://hyunwoo.kim")
               .setTitle(docSnapshot.data().playlist[0].title)
               .setURL(docSnapshot.data().playlist[0].videoURL)
               .setDescription(docSnapshot.data().playlist[0].channelName)
@@ -157,7 +158,7 @@ const play = async (locale, dbRef, docRef, message) => {
             if (docSnapshot.data().isRepeated) {
             } else if (docSnapshot.data().isLooped) {
               let playlist = docSnapshot.data().playlist;
-              playlist.push(docSnapshot.data().playlist[0]).shift();
+              playlist.push(playlist[0]).shift();
               docRef.update({ playlist: [playlist] });
             } else {
               let playlist = docSnapshot.data().playlist;

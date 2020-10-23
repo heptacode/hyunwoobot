@@ -1,5 +1,4 @@
 import * as Discord from "discord.js";
-import Log from "../util/logger";
 
 module.exports = {
   name: "help",
