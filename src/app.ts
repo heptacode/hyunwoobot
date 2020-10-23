@@ -9,11 +9,12 @@ import lang_ko from "./lang/lang_ko";
 
 import sendError from "./util/errorSender";
 
-var DB = new Map();
 const prefix = ">";
 const token = process.env.TOKEN;
 const client: any = new Discord.Client();
+client.state = new Discord.Collection();
 client.commands = new Discord.Collection();
+
 const commandFiles = fs.readdirSync("./src/commands").filter(file => file.endsWith(".ts"));
 let commands = [];
 
@@ -46,24 +47,33 @@ client.on("message", async message => {
   let configDocSnapshot = await configDocRef.get();
 
   let docRef = FS.collection(server.id).doc("data");
-  // let docSnapshot = await docRef.get();
+  let docSnapshot = await docRef.get();
 
-  let dbRef = DB.get(server.id);
+  let dbRef = client.state.get(server.id);
 
   let locale;
 
   if (!configDocSnapshot.exists || !serverDocSnapshot.exists) {
-    Log.i("FS Initialize");
+    Log.i("FS Initialize 1");
     try {
       await configDocRef.set({ locale: "en" });
       await serverDocRef.set(JSON.parse(JSON.stringify(server)));
       configDocSnapshot = await configDocRef.get();
-
-      message.channel.send(`Initialize Complete`);
     } catch (err) {
       Log.e(`Init > ${err}`);
       return message.channel.send(`An error occured while initializing.`);
     }
+  }
+  if (!docSnapshot.exists) {
+    Log.i("FS Initialize 2");
+    await docRef.set({
+      textChannel: null,
+      voiceChannel: null,
+      playlist: [],
+      isLooped: false,
+      isRepeated: false,
+      volume: 2,
+    });
   }
 
   locale = await configDocSnapshot.data().locale;
@@ -73,11 +83,16 @@ client.on("message", async message => {
   if (!dbRef) {
     // LocalDB Initialize
     Log.i("LocalDB Initialize");
-    DB.set(server.id, {
+    client.state.set(server.id, {
       voiceChannel: message.member.voice.channel,
       connection: null,
       isPlaying: false,
     });
+    // DB.set(server.id, {
+    //   voiceChannel: message.member.voice.channel,
+    //   connection: null,
+    //   isPlaying: false,
+    // });
   }
 
   if (!command) return sendError(message, `${locale.cmdInvalid}`);

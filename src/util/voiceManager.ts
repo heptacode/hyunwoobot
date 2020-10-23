@@ -20,7 +20,7 @@ export const voiceConnect = async (locale, dbRef, docRef, message) => {
         playlist: [],
         isLooped: false,
         isRepeated: false,
-        volume: 5,
+        volume: 2,
       });
     }
 
@@ -28,6 +28,7 @@ export const voiceConnect = async (locale, dbRef, docRef, message) => {
       let connection = await voiceChannel.join();
       dbRef.connection = connection;
       dbRef.voiceChannel = voiceChannel;
+
       Log.i("VoiceConnect");
     } catch (err) {
       Log.e(`VoiceConnect > 2 > ${err}`);
@@ -40,9 +41,16 @@ export const voiceConnect = async (locale, dbRef, docRef, message) => {
 };
 
 export const voiceDisconnect = async (locale, dbRef, docRef, message, timeout?) => {
-  let result = await docRef.delete();
+  let result = await docRef.update({
+    textChannel: null,
+    voiceChannel: null,
+    isLooped: false,
+    isRepeated: false,
+  });
+
   if (result) {
     try {
+      dbRef.isPlaying = false;
       dbRef.voiceChannel.leave();
       Log.i(`VoiceDisconnect${timeout ? " : Timeout" : ""}`);
       message.channel.send(`${timeout ? locale.disconnectTimeout : locale.leave}`);

@@ -14,13 +14,13 @@ export default {
   // voiceDisconnect
   notInVoiceChannel: "🚫 저는 지금 음성 채널에 있지 않아요!",
   leave: "⛔️ 채널에서 나왔어요.",
+  disconnectTimeout: "⛔️ 장시간 대기열이 비어있어 채널에서 나왔어요.",
   // locale
   changeLocale: "✅ 언어가 변경됐어요 : ",
   // loop
   joinToToggleLoop: "💡 반복 재생을 켜거나 끄려면 음성 채널에 접속해주세요!",
   toggleLoop: "✅ 반복 재생이 ",
   // play
-  provideURL: "🎵 URL을 제공해주세요.",
   currentlyPlaying: "💿 현재 재생중인 곡이 있어요.",
   videoPrivate: "🔒 이 비디오는 비공개예요.",
   videoAgeRestricted: "🔞 이 비디오는 연령제한이 있어요.",
@@ -28,6 +28,7 @@ export default {
   enqueued: "추가됨",
   nowPlaying: "현재 재생중",
   length: "길이",
+  remaning: "남은 곡",
   position: "재생까지 남은 곡",
   // playlist
   playlist: "💿 플레이리스트",

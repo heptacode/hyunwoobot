@@ -14,13 +14,13 @@ export default {
   // voiceDisconnect
   notInVoiceChannel: "🚫 I'm currently not in a voice channel!",
   leave: "⛔️ Unbound voice channels",
+  disconnectTimeout: "⛔️ Left channel due to inactivity",
   // locale
   changeLocale: "✅ Locale changed to ",
   // loop
   joinToToggleLoop: "💡 To toggle loop, join a voice channel!",
   toggleLoop: "✅Loop Toggled ",
   // play
-  provideURL: "🎵 To add to playlist, please provide an URL.",
   currentlyPlaying: "💿 Currently playing a song.",
   videoPrivate: "🔒 This video is private!",
   videoAgeRestricted: "🔞 This video is age restricted!",
@@ -28,6 +28,7 @@ export default {
   enqueued: "Enqueued",
   nowPlaying: "Now Playing",
   length: "Length",
+  remaning: "Songs Remaning",
   position: "Position in Playlist",
   // playlist
   playlist: "💿 Playlist",

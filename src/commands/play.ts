@@ -13,20 +13,15 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
     let videoDetails, payload;
 
     if (!videoURL) {
-      if (docSnapshot.exists) {
-        if (docSnapshot.data().playlist.length != 0) {
-          if (!dbRef.isPlaying) {
-            return play(locale, dbRef, docRef, message);
-          } else {
-            return message.channel.send(`${locale.currentlyPlaying}`);
-          }
+      if (docSnapshot.data().playlist.length != 0) {
+        if (!dbRef.isPlaying) {
+          return play(locale, dbRef, docRef, message);
         } else {
-          // docSnapshot Exists, but Playlist has no value
-          return message.channel.send(`${locale.playlistEmpty}`);
+          return message.channel.send(`${locale.currentlyPlaying}`);
         }
       } else {
-        // URL not provided
-        return message.channel.send(`${locale.provideURL}`);
+        // docSnapshot Exists, but Playlist has no value
+        return message.channel.send(`${locale.playlistEmpty}`);
       }
     } else {
       try {
@@ -48,14 +43,10 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
     }
 
     // Init if doc not exists
-    if (!docSnapshot.exists) {
-      await docRef.set({
+    if (!docSnapshot.data().voiceChannel) {
+      await docRef.update({
         textChannel: message.channel.id,
         voiceChannel: message.member.voice.channel.id,
-        playlist: [],
-        isLooped: false,
-        isRepeated: false,
-        volume: 1,
       });
       docSnapshot = await docRef.get();
     }
@@ -94,14 +85,14 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
           message.channel.send(
             new Discord.MessageEmbed()
               .setColor("#7788D4")
-              .setAuthor(`${locale.enqueued}`, docSnapshot.data().playlist[playlist.length - 1].requesterAvatar, "https://hyunwoo.kim")
+              .setAuthor(`${locale.enqueued}`, playlist[playlist.length - 1].requesterAvatar, "https://hyunwoo.kim")
               .setTitle(playlist[playlist.length - 1].title)
               .setURL(playlist[playlist.length - 1].videoURL)
               .setDescription(playlist[playlist.length - 1].channelName)
               .setThumbnail(playlist[playlist.length - 1].thumbnailURL)
               .addFields(field)
           );
-          message.delete();
+          // message.delete();
         } else {
           Log.e(`Enqueue > 3 > ${result}`);
           return message.channel.send(`${locale.err_cmd}`);
@@ -120,56 +111,69 @@ const enqueue = async (locale, dbRef, docRef, message, args) => {
 const play = async (locale, dbRef, docRef, message) => {
   try {
     let docSnapshot = await docRef.get();
-    if (!docSnapshot.exists) {
+    if (!docSnapshot.data().voiceChannel) {
       await voiceDisconnect(locale, dbRef, docRef, message);
       return;
     }
 
     await voiceConnect(locale, dbRef, docRef, message);
 
+    let playlist = docSnapshot.data().playlist;
     let disconnectionTimeout;
 
     try {
+      let videoData = ytdl(playlist[0].videoURL);
+
       const dispatcher = dbRef.connection
-        .play(ytdl(docSnapshot.data().playlist[0].videoURL), {
+        .play(videoData, {
           quality: "highestaudio",
           highWaterMark: 1 << 25,
         })
         .on("start", () => {
-          if (disconnectionTimeout) disconnectionTimeout.clearTimeout();
+          if (disconnectionTimeout) clearTimeout(disconnectionTimeout);
+
+          playlist = docSnapshot.data().playlist;
 
           dbRef.isPlaying = true;
 
           message.channel.send(
             new Discord.MessageEmbed()
               .setColor("#0099ff")
-              .setAuthor(`${locale.nowPlaying}`, docSnapshot.data().playlist[0].requesterAvatar, "https://hyunwoo.kim")
-              .setTitle(docSnapshot.data().playlist[0].title)
-              .setURL(docSnapshot.data().playlist[0].videoURL)
-              .setDescription(docSnapshot.data().playlist[0].channelName)
-              .setThumbnail(docSnapshot.data().playlist[0].thumbnailURL)
-              .addFields({ name: `${locale.length}`, value: lengthCalculate(docSnapshot.data().playlist[0].length) })
+              .setAuthor(`${locale.nowPlaying}`, playlist[0].requesterAvatar, "https://hyunwoo.kim")
+              .setTitle(playlist[0].title)
+              .setURL(playlist[0].videoURL)
+              .setDescription(playlist[0].channelName)
+              .setThumbnail(playlist[0].thumbnailURL)
+              .addFields({ name: `${locale.length}`, value: lengthCalculate(playlist[0].length), inline: true })
+              .addFields({ name: `${locale.remaning}`, value: playlist.length - 1, inline: true })
           );
-          message.delete();
+          // message.delete();
         })
-        .on("finish", () => {
-          dbRef.isPlaying = false;
-          if (docSnapshot.data().playlist.length >= 1) {
-            if (docSnapshot.data().isRepeated) {
-            } else if (docSnapshot.data().isLooped) {
-              let playlist = docSnapshot.data().playlist;
-              playlist.push(playlist[0]).shift();
-              docRef.update({ playlist: [playlist] });
+        .on("finish", async () => {
+          try {
+            docSnapshot = await docRef.get();
+            playlist = docSnapshot.data().playlist;
+
+            dbRef.isPlaying = false;
+
+            if (playlist.length >= 1) {
+              if (docSnapshot.data().isRepeated) {
+              } else if (docSnapshot.data().isLooped) {
+                playlist.push(playlist[0]).shift();
+                docRef.update({ playlist: playlist });
+              } else {
+                playlist.shift();
+                docRef.update({ playlist: playlist });
+              }
+              if (playlist.length >= 1) {
+                play(locale, dbRef, docRef, message);
+              } else disconnectionTimeout = setTimeout(() => voiceDisconnect(locale, dbRef, docRef, message, true), 10000);
             } else {
-              let playlist = docSnapshot.data().playlist;
-              playlist.shift();
-              docRef.update({ playlist: [playlist] });
+              disconnectionTimeout = setTimeout(() => voiceDisconnect(locale, dbRef, docRef, message, true), 10000);
             }
-            play(locale, dbRef, docRef, message);
-          } else {
-            disconnectionTimeout = setTimeout(() => {
-              voiceDisconnect(locale, dbRef, docRef, message, true);
-            }, 10000);
+          } catch (err) {
+            Log.e(`Play > 4 > ${err}`);
+            return message.channel.send(`${locale.err_task}`);
           }
         })
         .on("error", err => {
