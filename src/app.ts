@@ -52,11 +52,7 @@ client.on("message", async message => {
 
   let locale;
 
-  if (configDocSnapshot.exists) {
-    locale = await configDocSnapshot.data().locale;
-    if (locale == "en") locale = lang_en;
-    else if (locale == "ko") locale = lang_ko;
-  } else {
+  if (!configDocSnapshot.exists) {
     Log.i("FS Initialize");
     try {
       await configDocRef.set({ locale: "en" });
@@ -67,6 +63,10 @@ client.on("message", async message => {
       Log.e(`Init > ${err}`);
       return message.reply(`An error occured while initializing.`);
     }
+  } else {
+    locale = await configDocSnapshot.data().locale;
+    if (locale == "en") locale = lang_en;
+    else if (locale == "ko") locale = lang_ko;
   }
 
   if (!dbRef) {
