@@ -39,7 +39,7 @@ client.on("message", async message => {
   const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
   let server = message.guild;
-  let serverDocRef = FS.collection(server.id).doc("config");
+  let serverDocRef = FS.collection(server.id).doc("server");
   // let serverDocSnapshot = await serverDocRef.get();
 
   let configDocRef = FS.collection(server.id).doc("config");
