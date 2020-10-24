@@ -44,6 +44,7 @@ export const voiceDisconnect = async (locale, dbRef, docRef, message, timeout?) 
   let result = await docRef.update({
     textChannel: null,
     voiceChannel: null,
+    playlist: [],
     isLooped: false,
     isRepeated: false,
   });
