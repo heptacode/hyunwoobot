@@ -116,7 +116,7 @@ const play = async (locale, dbRef, docRef, message) => {
       return;
     }
 
-    await voiceConnect(locale, dbRef, docRef, message);
+    if (!dbRef.connection) await voiceConnect(locale, dbRef, docRef, message);
 
     let playlist = docSnapshot.data().playlist;
     let disconnectionTimeout;
