@@ -3,8 +3,8 @@ import { voiceDisconnect } from "../util/voiceManager";
 
 module.exports = {
   name: "leave",
-  aliases: ["q", "quit", "l", "disconnect", "unbound"],
-  description: "Unbound from a voice channel you are in",
+  aliases: ["q", "quit", "l", "disconnect", "unbind"],
+  description: "Unbind from a voice channel you are in",
   async execute(locale, dbRef, docRef, message, args) {
     try {
       await voiceDisconnect(locale, dbRef, docRef, message);

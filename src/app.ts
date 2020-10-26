@@ -9,7 +9,7 @@ import lang_ko from "./lang/lang_ko";
 
 import sendError from "./util/errorSender";
 
-const prefix = process.env.PREFIX || ">";
+const prefix = process.env.PREFIX || "=";
 const token = process.env.TOKEN;
 const client: any = new Discord.Client();
 client.state = new Discord.Collection();
