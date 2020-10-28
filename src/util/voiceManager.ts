@@ -64,3 +64,35 @@ export const voiceDisconnect = async (locale, dbRef, docRef, message, timeout?) 
     message.channel.send(`${locale.err_cmd}`);
   }
 };
+
+let alarmDB = { alarmConnection: null, alarmVoiceChannel: null };
+export const toggleAlarm = async (locale, dbRef, docRef, message) => {
+  try {
+    alarmDB.alarmVoiceChannel = message.member.voice.channel;
+    // Not in voice channel
+    if (!alarmDB.alarmVoiceChannel) return message.channel.send(`${locale.joinToConnect}`);
+
+    let permissions = alarmDB.alarmVoiceChannel.permissionsFor(message.client.user);
+    // Insufficient perms
+    if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) return message.channel.send(`${locale.insufficientPerms}`);
+  } catch (err) {
+    Log.e(`ToggleAlarm > 1 > ${err}`);
+  }
+};
+
+export const sendAlarm = async () => {
+  try {
+    alarmDB.alarmConnection = await alarmDB.alarmVoiceChannel.join();
+
+    const dispatcher = alarmDB.alarmConnection.play("src/alarm.mp3");
+    // dispatcher.on("start", () => {});
+    dispatcher.on("finish", async () => {
+      // alarmDB.alarmConnection.dispatcher.end();
+      alarmDB.alarmVoiceChannel.leave();
+    });
+    Log.i("voiceAlarm");
+  } catch (err) {
+    Log.e(`voiceAlarm > 1 > ${err}`);
+    // return message.channel.send(`${locale.err_task}`);
+  }
+};
