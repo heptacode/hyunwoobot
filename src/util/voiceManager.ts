@@ -87,6 +87,7 @@ export const sendAlarm = async () => {
     alarmDB.alarmConnection = await alarmDB.alarmVoiceChannel.join();
 
     const dispatcher = alarmDB.alarmConnection.play("src/alarm.mp3");
+    dispatcher.setVolumeLogarithmic(0.25);
     // dispatcher.on("start", () => {});
     dispatcher.on("finish", async () => {
       // alarmDB.alarmConnection.dispatcher.end();
