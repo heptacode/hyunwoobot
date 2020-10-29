@@ -8,6 +8,7 @@ import lang_en from "./lang/lang_en";
 import lang_ko from "./lang/lang_ko";
 
 import sendError from "./util/errorSender";
+import { sendAlarm } from "./util/voiceManager";
 
 const prefix = process.env.PREFIX || "=";
 const token = process.env.TOKEN;
@@ -93,6 +94,11 @@ client.on("message", async message => {
     //   connection: null,
     //   isPlaying: false,
     // });
+  }
+
+  if (commandName === "🧪testalarm") {
+    message.delete();
+    return sendAlarm();
   }
 
   if (!command) return sendError(message, `${locale.cmdInvalid}`);

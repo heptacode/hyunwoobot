@@ -75,6 +75,8 @@ export const toggleAlarm = async (locale, dbRef, docRef, message) => {
     let permissions = alarmDB.alarmVoiceChannel.permissionsFor(message.client.user);
     // Insufficient perms
     if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) return message.channel.send(`${locale.insufficientPerms}`);
+
+    message.delete();
   } catch (err) {
     Log.e(`ToggleAlarm > 1 > ${err}`);
   }
