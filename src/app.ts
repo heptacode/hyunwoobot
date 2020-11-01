@@ -27,7 +27,7 @@ for (const file of commandFiles) {
 
 client.once("ready", async () => {
   await client.user.setActivity({
-    type: "PLAYING",
+    type: "WATCHING",
     name: `${prefix}help`,
   });
   Log.i(`Ready! ${client.user.tag}`);
