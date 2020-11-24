@@ -5,12 +5,16 @@ export default {
   // Main
   denyDM: "❌ I can't execute that command inside DMs!",
   cmdInvalid: "Invalid Command!",
+  // delete
+  delete: " Messages have been deleted.",
+  invalidAmount: "❌ Please enter a valid amount : 2 ~ 100",
+  insufficientPerms_delete: "🚫 Insufficient permissions! (Required permissions : [Connect], [Speak])",
   // help
   help: "Help",
   helpDesc: "List of commands and descriptions you can use.",
   // voiceConnect
   joinToConnect: "💡 To play music, join a voice channel!",
-  insufficientPerms: "🚫 Insufficient permissions! (Required permissions : [Connect], [Speak])",
+  insufficientPerms_voiceConnect: "🚫 Insufficient permissions! (Required permissions : [Connect], [Speak])",
   // voiceDisconnect
   notInVoiceChannel: "🚫 I'm currently not in a voice channel!",
   leave: "⛔️ Unbound voice channels",
@@ -46,7 +50,7 @@ export default {
   stopNotNow: "💡 ou can't use it right now!",
   // volume
   joinToChangeVolume: "💡 To change the volume, join a voice channel!",
-  invalidVolume: "❌ Please enter a valid value : 0~10",
+  invalidVolume: "❌ Please enter a valid value : 0 ~ 10",
   changeVolume: "🔈 Volume changed! Your new volume will be applied for future songs.",
   // Error
   err_cmd: "❌ An error occured while performing the command.",

@@ -8,7 +8,7 @@ module.exports = {
     try {
       if (!message.member.voice.channel) return `${locale.joinToChangeVolume}`;
 
-      let newVolume = Number(message.content.split(" ")[1]);
+      let newVolume = Number(args[0]);
       if (newVolume === NaN || !(newVolume >= 0 && newVolume <= 10)) {
         Log.w(`ChangeVolume : Invalid value : ${newVolume}`);
         return message.channel.send(`${locale.invalidVolume}`);

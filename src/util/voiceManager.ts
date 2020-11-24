@@ -9,7 +9,7 @@ export const voiceConnect = async (locale, dbRef, docRef, message) => {
 
     let permissions = voiceChannel.permissionsFor(message.client.user);
     // Insufficient perms
-    if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) return message.channel.send(`${locale.insufficientPerms}`);
+    if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) return message.channel.send(`${locale.insufficientPerms_voiceConnect}`);
 
     let docSnapshot = await docRef.get();
     // Init if doc not exists

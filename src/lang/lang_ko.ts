@@ -5,12 +5,16 @@ export default {
   // Main
   denyDM: "❌ DM에서는 이 기능을 사용할 수 없어요.",
   cmdInvalid: "올바르지 않은 명령어예요!",
+  // delete
+  delete: "개의 메시지를 삭제했어요!",
+  invalidAmount: "❌ 2 ~ 100 사이의 올바른 값을 입력해주세요",
+  insufficientPerms_delete: "🚫 다음 권한이 없습니다 : [메시지 관리]",
   // help
   help: "도움말",
   helpDesc: "사용 가능한 명령어와 도움말 목록이예요!",
   // voiceConnect
   joinToConnect: "💡 음악을 재생하려면 음성 채널에 접속해주세요!",
-  insufficientPerms: "🚫 다음 권한을 부여해주세요 : [연결], [말하기]",
+  insufficientPerms_voiceConnect: "🚫 다음 권한을 부여해주세요 : [연결], [말하기]",
   // voiceDisconnect
   notInVoiceChannel: "🚫 저는 지금 음성 채널에 있지 않아요!",
   leave: "⛔️ 채널에서 나왔어요.",
@@ -46,7 +50,7 @@ export default {
   stopNotNow: "💡 지금은 사용할 수 없어요!",
   // volume
   joinToChangeVolume: "💡 음량을 변경하려면 음성 채널에 접속해주세요!",
-  invalidVolume: "❌ 0~10 사이의 올바른 값을 입력해주세요.",
+  invalidVolume: "❌ 0 ~ 10 사이의 올바른 값을 입력해주세요.",
   changeVolume: "🔈 음량이 변경됐어요. 새로운 음량은 다음 곡부터 적용돼요.",
   // Error
   err_cmd: "❌ 오류가 발생했어요.",
