@@ -15,8 +15,13 @@ module.exports = {
         return message.channel.send(`${locale.invalidAmount}`);
       }
 
+      let author = {
+        avatar: message.author.avatarURL(),
+        tag: message.author.tag,
+      };
+
       let result = await message.channel.bulkDelete(amount);
-      if (result) return message.channel.send(new Discord.MessageEmbed().setColor("#7788D4").setAuthor(`${amount}${locale.delete}`));
+      if (result) return message.channel.send(new Discord.MessageEmbed().setColor("#7788D4").setAuthor(`${amount}${locale.delete}`, author.avatar).setFooter(author.tag).setTimestamp());
       else return message.channel.send(`${locale.err_cmd}`);
     } catch (err) {
       Log.e(`Delete > 1 > ${err}`);
