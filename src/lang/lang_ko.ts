@@ -8,13 +8,13 @@ export default {
   // delete
   delete: "개의 메시지를 삭제했어요!",
   invalidAmount: "❌ 2 ~ 100 사이의 올바른 값을 입력해주세요",
-  insufficientPerms_delete: "🚫 다음 권한이 없습니다 : [메시지 관리]",
+  insufficientPerms_delete: "🚫 메시지를 관리할 수 있는 권한이 없습니다.",
   // help
   help: "도움말",
   helpDesc: "사용 가능한 명령어와 도움말 목록이예요!",
   // voiceConnect
   joinToConnect: "💡 음악을 재생하려면 음성 채널에 접속해주세요!",
-  insufficientPerms_voiceConnect: "🚫 다음 권한을 부여해주세요 : [연결], [말하기]",
+  insufficientPerms_voiceConnect: "🚫 저에게 다음 권한을 부여해주세요 : [연결], [말하기]",
   // voiceDisconnect
   notInVoiceChannel: "🚫 저는 지금 음성 채널에 있지 않아요!",
   leave: "⛔️ 채널에서 나왔어요.",

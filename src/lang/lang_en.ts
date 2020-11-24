@@ -8,7 +8,7 @@ export default {
   // delete
   delete: " Messages have been deleted.",
   invalidAmount: "❌ Please enter a valid amount : 2 ~ 100",
-  insufficientPerms_delete: "🚫 Insufficient permissions! (Required permissions : [Connect], [Speak])",
+  insufficientPerms_delete: "🚫 You don't have permission to manage messages!",
   // help
   help: "Help",
   helpDesc: "List of commands and descriptions you can use.",
