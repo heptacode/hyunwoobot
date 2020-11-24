@@ -7,7 +7,7 @@ module.exports = {
   description: "Bulk delete",
   async execute(locale, dbRef, docRef, message, args) {
     try {
-      if (!message.member.guild.me.hasPermission("ADMINISTRATOR") && !message.member.guild.me.hasPermission("MANAGE_MESSAGES")) return message.channel.send(`${locale.insufficientPerms_delete}`);
+      if (!(message.member.guild.me.hasPermission("ADMINISTRATOR") || message.member.guild.me.hasPermission("MANAGE_MESSAGES"))) return message.channel.send(`${locale.insufficientPerms_delete}`);
 
       let amount = Number(args[0]);
       if (amount === NaN || !(amount >= 2 && amount <= 100)) {
