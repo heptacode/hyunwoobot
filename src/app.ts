@@ -7,6 +7,8 @@ import "dotenv/config";
 import locale_en from "./locales/en";
 import locale_ko from "./locales/ko";
 import { Command, CommandList, ReactionRole, ReactionRoleItem, State, VoiceRole } from "./";
+import { getRoleID, getRoleName } from "./modules/converter";
+import config from "./config";
 
 const prefix: string = process.env.PREFIX || "=";
 const token: string = process.env.TOKEN;
@@ -165,61 +167,105 @@ client.on("messageReactionRemove", async (reaction: MessageReaction, user: User)
   }
 });
 
-client.on("voiceStateUpdate", async (oldMember: VoiceState, newMember: VoiceState) => {
+client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState) => {
+  const check = (oldState: VoiceState, newState: VoiceState) => {
+    return (
+      oldState.mute === newState.mute &&
+      oldState.selfMute === newState.selfMute &&
+      oldState.serverMute === newState.serverMute &&
+      oldState.deaf === newState.deaf &&
+      oldState.selfDeaf === newState.selfDeaf &&
+      oldState.serverDeaf === newState.serverDeaf &&
+      oldState.selfVideo === newState.selfVideo
+    );
+  };
   try {
-    if (!oldMember.channelID && newMember.channelID) {
+    if (!oldState.channelID && newState.channelID && check(oldState, newState)) {
       // Join Channel
-      ((await firestore.collection(newMember.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
-        if (voiceRole.voiceChannel === newMember.channelID) {
-          if (newMember.member.roles.cache.has(voiceRole.role)) return;
+      ((await firestore.collection(newState.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
+        if (voiceRole.voiceChannel === newState.channelID) {
+          if (newState.member.roles.cache.has(voiceRole.role)) return;
 
           try {
-            await newMember.member.roles.add(voiceRole.role);
+            await newState.member.roles.add(voiceRole.role);
+
             Log.p({
-              guild: newMember.guild,
+              guild: newState.guild,
               embed: {
-                title: "Voice Role",
-                description: `${newMember.member.user.tag} got ${newMember.guild.roles.cache.find((role) => role.id === voiceRole.role).name}`,
-              } as MessageEmbed,
+                color: config.color.info,
+                author: { name: "Role Append [Voice]", iconURL: newState.member.user.avatarURL() },
+                description: `<@${newState.member.user.id}> += <@&${getRoleID(newState.guild, voiceRole.role)}>`,
+                timestamp: new Date(),
+              },
             });
           } catch (err) {
             Log.e(`VoiceStateUpdate > Join > ${err}`);
           }
         }
       });
-    } else if (oldMember.channelID && newMember.channelID) {
+    } else if (oldState.channelID && newState.channelID && check(oldState, newState)) {
       // Switch Channel
-      ((await firestore.collection(oldMember.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
-        if (voiceRole.voiceChannel === oldMember.channelID) {
-          if (!oldMember.member.roles.cache.has(voiceRole.role)) return;
+      ((await firestore.collection(oldState.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
+        if (voiceRole.voiceChannel === oldState.channelID) {
+          if (!oldState.member.roles.cache.has(voiceRole.role)) return;
 
           try {
-            await oldMember.member.roles.remove(voiceRole.role);
+            await oldState.member.roles.remove(voiceRole.role);
+
+            Log.p({
+              guild: newState.guild,
+              embed: {
+                color: config.color.info,
+                author: { name: "Role Remove [Voice]", iconURL: newState.member.user.avatarURL() },
+                description: `<@${newState.member.user.id}> -= <@&${getRoleID(newState.guild, voiceRole.role)}>`,
+                timestamp: new Date(),
+              },
+            });
           } catch (err) {
             Log.e(`VoiceStateUpdate > Switch > ${err}`);
           }
         }
       });
 
-      ((await firestore.collection(newMember.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
-        if (voiceRole.voiceChannel === newMember.channelID) {
-          if (newMember.member.roles.cache.has(voiceRole.role)) return;
+      ((await firestore.collection(newState.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
+        if (voiceRole.voiceChannel === newState.channelID) {
+          if (newState.member.roles.cache.has(voiceRole.role)) return;
 
           try {
-            await newMember.member.roles.add(voiceRole.role);
+            await newState.member.roles.add(voiceRole.role);
+
+            Log.p({
+              guild: newState.guild,
+              embed: {
+                color: config.color.info,
+                author: { name: "Role Append [Voice]", iconURL: newState.member.user.avatarURL() },
+                description: `<@${newState.member.user.id}> += <@&${getRoleID(newState.guild, voiceRole.role)}>`,
+                timestamp: new Date(),
+              },
+            });
           } catch (err) {
             Log.e(`VoiceStateUpdate > Switch > ${err}`);
           }
         }
       });
-    } else {
+    } else if (check(oldState, newState)) {
       // Leave Channel
-      ((await firestore.collection(oldMember.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
-        if (voiceRole.voiceChannel === oldMember.channelID) {
-          if (!oldMember.member.roles.cache.has(voiceRole.role)) return;
+      ((await firestore.collection(oldState.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
+        if (voiceRole.voiceChannel === oldState.channelID) {
+          if (!oldState.member.roles.cache.has(voiceRole.role)) return;
 
           try {
-            await oldMember.member.roles.remove(voiceRole.role);
+            await oldState.member.roles.remove(voiceRole.role);
+
+            Log.p({
+              guild: newState.guild,
+              embed: {
+                color: config.color.info,
+                author: { name: "Role Remove [Voice]", iconURL: newState.member.user.avatarURL() },
+                description: `<@${newState.member.user.id}> -= <@&${getRoleID(newState.guild, voiceRole.role)}>`,
+                timestamp: new Date(),
+              },
+            });
           } catch (err) {
             Log.e(`VoiceStateUpdate > Leave > ${err}`);
           }

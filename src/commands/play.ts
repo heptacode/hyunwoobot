@@ -2,7 +2,7 @@ import { EmbedFieldData, Message } from "discord.js";
 import { Args, Locale, State } from "../";
 import { stream } from "../modules/musicManager";
 import youtube from "scrape-youtube";
-import { lengthConvert } from "../modules/converter";
+import { getLength } from "../modules/converter";
 import config from "../config";
 import Log from "../modules/logger";
 
@@ -49,7 +49,7 @@ module.exports = {
           } else {
             Log.d(`Enqueue : ${payload.title}`);
             const fields: EmbedFieldData[] = [
-              { name: locale.length, value: lengthConvert(state.playlist[state.playlist.length - 1].length), inline: true },
+              { name: locale.length, value: getLength(state.playlist[state.playlist.length - 1].length), inline: true },
               { name: locale.position, value: state.playlist.length - 1, inline: true },
               // { name: "\u200B", value: "\u200B" },
             ];

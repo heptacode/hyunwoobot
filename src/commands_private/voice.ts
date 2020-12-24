@@ -2,7 +2,7 @@ import { EmbedFieldData, Message } from "discord.js";
 import firestore from "../firestore";
 import { Args, Locale, State, VoiceRole } from "../";
 import Log from "../modules/logger";
-import { channelConvert, roleConvert } from "../modules/converter";
+import { getChannelID, getChannelName, getRoleID } from "../modules/converter";
 
 module.exports = {
   name: "voice",
@@ -22,7 +22,7 @@ module.exports = {
         voiceConfig = configDocSnapshot.data().voice as VoiceRole[];
       } else if (args[0] === "add") {
         voiceConfig = configDocSnapshot.data().voice as VoiceRole[];
-        voiceConfig.push({ voiceChannel: channelConvert(message.guild, args[1]), role: roleConvert(message.guild, args[2]) });
+        voiceConfig.push({ voiceChannel: getChannelID(message.guild, args[1]), role: getRoleID(message.guild, args[2]) });
         await configDocRef.update({ voice: voiceConfig });
       } else if (args[0] === "remove") {
         voiceConfig = configDocSnapshot.data().voice as VoiceRole[];
@@ -35,7 +35,7 @@ module.exports = {
       const fields: EmbedFieldData[] = [];
       if (voiceConfig.length >= 1)
         voiceConfig.forEach((voiceConfig: VoiceRole) => {
-          fields.push({ name: voiceConfig.voiceChannel, value: voiceConfig.role });
+          fields.push({ name: `${getChannelName(message.guild, voiceConfig.voiceChannel)}`, value: `<@&${getRoleID(message.guild, voiceConfig.role)}>` });
         });
 
       message.channel.send({

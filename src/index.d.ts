@@ -125,5 +125,5 @@ export interface VoiceRole {
 
 export interface LogData {
   guild: Guild;
-  embed?: MessageEmbed;
+  embed?: MessageEmbed | any;
 }

@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import { Locale, State } from "../";
 import ytdl from "ytdl-core";
-import { lengthConvert } from "./converter";
+import { getLength } from "./converter";
 import { voiceConnect, voiceDisconnect } from "./voiceManager";
 import Log from "./logger";
 
@@ -32,7 +32,7 @@ export const stream = async (locale: Locale, state: State, message: Message) => 
             description: state.playlist[0].channelName,
             thumbnail: { url: state.playlist[0].thumbnailURL },
             fields: [
-              { name: locale.length, value: lengthConvert(state.playlist[0].length), inline: true },
+              { name: locale.length, value: getLength(state.playlist[0].length), inline: true },
               { name: locale.remaning, value: state.playlist.length - 1, inline: true },
             ],
             footer: { text: state.playlist[0].requestedBy.tag, iconURL: state.playlist[0].requestedBy.avatarURL },
