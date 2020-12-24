@@ -1,6 +1,7 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message } from "discord.js";
 import firestore from "../firestore";
 import { Args, Locale, State } from "../";
+import config from "../config";
 import Log from "../modules/logger";
 
 module.exports = {
@@ -15,7 +16,7 @@ module.exports = {
       (await firestore.collection(message.guild.id).doc("config").get()).data().log = args[0];
 
       message.channel.send({
-        embed: { title: "Log", description: `Log channel set to ${args[0]}` } as MessageEmbed,
+        embed: { title: locale.log, color: config.color.yellow, description: `${locale.log_set}${args[0]}` },
       });
     } catch (err) {
       Log.e(`Log > ${err}`);

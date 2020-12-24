@@ -38,7 +38,7 @@ module.exports = {
         });
 
       message.channel.send({
-        embed: { title: locale.voiceRole, color: "#36afff", fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: locale.voiceRole_empty }] },
+        embed: { title: locale.voiceRole, color: "#FBDF81", fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: locale.voiceRole_empty }] },
       });
     } catch (err) {
       Log.e(`Voice > ${err}`);

@@ -1,5 +1,6 @@
 import { EmbedFieldData, Message } from "discord.js";
 import { Command, Locale } from "../";
+import config from "../config";
 
 module.exports = {
   name: "help",
@@ -11,11 +12,11 @@ module.exports = {
 
     message.channel.send({
       embed: {
-        color: "#7788D4",
-        title: `HyunwooBot ${locale.help}`,
-        url: "https://hyunwoo.kim",
+        color: config.color.primary,
+        title: `${config.bot.name} ${locale.help}`,
+        url: config.bot.website,
         description: locale.helpDesc,
-        thumbnail: { url: "https://cdn.discordapp.com/avatars/303202584007671812/9fe36da1c721e959a991d38dcffdbe67.png?size=256" },
+        thumbnail: { url: config.bot.icon },
         fields: fields,
       },
     });

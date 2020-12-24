@@ -3,6 +3,7 @@ import { Args, Locale, State } from "../";
 import { stream } from "../modules/musicManager";
 import youtube from "scrape-youtube";
 import lengthConvert from "../modules/lengthConverter";
+import config from "../config";
 import Log from "../modules/logger";
 
 module.exports = {
@@ -59,8 +60,8 @@ module.exports = {
             fields.push({ name: "\u200B", value: `${state.isPlaying ? "▶️" : "⏹"}${state.isLooped ? " 🔁" : ""}${state.isRepeated ? " 🔂" : ""}` });
             message.channel.send({
               embed: {
-                color: "#7788D4",
-                author: { name: locale.enqueued, iconURL: state.playlist[state.playlist.length - 1].requestedBy.avatarURL, url: "https://hyunwoo.kim" },
+                color: config.color.primary,
+                author: { name: locale.enqueued, iconURL: state.playlist[state.playlist.length - 1].requestedBy.avatarURL, url: config.bot.website },
                 title: state.playlist[state.playlist.length - 1].title,
                 url: state.playlist[state.playlist.length - 1].videoURL,
                 description: state.playlist[state.playlist.length - 1].channelName,

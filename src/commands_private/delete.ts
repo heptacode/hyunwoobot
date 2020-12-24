@@ -1,5 +1,6 @@
 import { Message, TextChannel } from "discord.js";
 import { Args, Locale, State } from "../";
+import config from "../config";
 import Log from "../modules/logger";
 
 module.exports = {
@@ -21,7 +22,7 @@ module.exports = {
 
       const result = await (message.channel as TextChannel).bulkDelete(amount);
 
-      if (result) return message.channel.send({ embed: { color: "#7788D4", author: { name: `🗑 ${amount}${locale.delete}` }, footer: { text: message.author.tag }, timestamp: new Date() } });
+      if (result) return message.channel.send({ embed: { color: config.color.primary, author: { name: `🗑 ${amount}${locale.delete}` }, footer: { text: message.author.tag }, timestamp: new Date() } });
       else return message.channel.send(locale.err_cmd);
     } catch (err) {
       Log.e(`Delete > 1 > ${err}`);

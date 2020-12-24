@@ -1,5 +1,6 @@
 import { EmbedFieldData, Message } from "discord.js";
 import { Args, Locale, State } from "../";
+import config from "../config";
 import Log from "../modules/logger";
 
 module.exports = {
@@ -17,10 +18,10 @@ module.exports = {
         fields.push({ name: "\u200B", value: `${state.isPlaying ? "▶️" : "⏹"}${state.isLooped ? " 🔁" : ""}${state.isRepeated ? " 🔂" : ""}` });
         message.channel.send({
           embed: {
-            color: "#7788D4",
+            color: config.color.primary,
             author: {
               name: String(state.volume),
-              iconURL: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/volume.png?alt=media&token=887c1886-e440-48a4-b52e-15b064f5bc2f",
+              iconURL: config.icon.volume,
             },
             title: state.playlist[0].title,
             url: state.playlist[0].videoURL,
