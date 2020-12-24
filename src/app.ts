@@ -1,5 +1,6 @@
+import path from "path";
 import fs from "fs";
-import { Client, Collection, Guild, Message, MessageEmbed, MessageReaction, Role, TextChannel, User, VoiceState } from "discord.js";
+import { Client, Collection, Guild, GuildMember, Message, MessageReaction, TextChannel, User, VoiceState } from "discord.js";
 import firestore from "./firestore";
 import Log from "./modules/logger";
 import "dotenv/config";
@@ -7,7 +8,7 @@ import "dotenv/config";
 import locale_en from "./locales/en";
 import locale_ko from "./locales/ko";
 import { Command, CommandList, ReactionRole, ReactionRoleItem, State, VoiceRole } from "./";
-import { getRoleID, getRoleName } from "./modules/converter";
+import { getRoleID } from "./modules/converter";
 import config from "./config";
 
 const prefix: string = process.env.PREFIX || "=";
@@ -18,18 +19,20 @@ const commands: Collection<string, Command> = new Collection();
 const privateCommands: Collection<string, Command> = new Collection();
 
 const commandList: CommandList[] = [];
-for (const file of fs.readdirSync("./src/commands").filter((file) => file.endsWith(".ts"))) {
+for (const file of fs.readdirSync(path.resolve(__dirname, "../src/commands")).filter((file) => file.match(/(.js|.ts)$/))) {
   const command: Command = require(`./commands/${file}`);
   commands.set(command.name, command);
   commandList.push({ name: command.name, aliases: command.aliases, description: command.description });
 }
 
-for (const file of fs.readdirSync("./src/commands_private").filter((file) => file.endsWith(".ts"))) {
+for (const file of fs.readdirSync(path.resolve(__dirname, "../src/commands_private")).filter((file) => file.match(/(.js|.ts)$/))) {
   const command: Command = require(`./commands_private/${file}`);
   privateCommands.set(command.name, command);
 }
 
 client.once("ready", async () => {
+  await client.user.setStatus("online");
+
   await client.user.setActivity({
     type: "WATCHING",
     name: `${prefix}help`,
@@ -275,6 +278,30 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
   } catch (err) {
     Log.e(`VoiceStateUpdate > ${err}`);
   }
+});
+
+client.on("guildMemberAdd", (member: GuildMember) => {
+  Log.p({
+    guild: member.guild,
+    embed: {
+      color: config.color.info,
+      author: { name: "User Join", iconURL: config.icon.in },
+      description: `<@${member.user.id}> joined the server.`,
+      timestamp: new Date(),
+    },
+  });
+});
+
+client.on("guildMemberRemove", (member: GuildMember) => {
+  Log.p({
+    guild: member.guild,
+    embed: {
+      color: config.color.info,
+      author: { name: "User Leave", iconURL: config.icon.out },
+      description: `<@${member.user.id}> left the server.`,
+      timestamp: new Date(),
+    },
+  });
 });
 
 client.login(token);

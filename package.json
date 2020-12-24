@@ -6,22 +6,22 @@
   "scripts": {
     "serve": "nodemon nodemon.json",
     "tsc": "tsc",
-    "deploy": "git pull && tsc && pm2 start pm2.json && pm2 monit"
+    "deploy": "git pull && webpack --config webpack.config.js && pm2 start pm2.json && pm2 monit"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/heptacode/DiscordBot.git"
+    "url": "git+https://github.com/heptacode/discordbot.git"
   },
-  "author": "",
+  "author": "heptacode <admin@hyunwoo.kim> (https://hyunwoo.kim)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/heptacode/DiscordBot/issues"
+    "url": "https://github.com/heptacode/discordbot/issues"
   },
-  "homepage": "https://github.com/heptacode/DiscordBot#readme",
+  "homepage": "https://github.com/heptacode/discordbot#readme",
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
     "chalk": "^4.1.0",
-    "discord.js": "^12.4.0",
+    "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "ffmpeg-static": "^4.2.7",
     "firebase-admin": "^9.2.0",
@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@types/mongoose": "^5.10.3",
-    "@types/node": "^14.14.2",
+    "@types/node": "^14.14.16",
     "nodemon": "^2.0.6",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.3"

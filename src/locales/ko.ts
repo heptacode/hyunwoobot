@@ -1,4 +1,4 @@
-import { Locale } from "..";
+import { Locale } from "../";
 
 const locale_ko: Locale = {
   // Default

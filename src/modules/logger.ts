@@ -35,9 +35,13 @@ class log {
   }
   // Publish
   public async p(payload: LogData): Promise<void> {
-    const logChannel = (await firestore.collection(payload.guild.id).doc("config").get()).data().log;
-    const channel: TextChannel = (await payload.guild.channels.cache.find((channel) => channel.id === logChannel)) as TextChannel;
-    channel.send({ embed: payload.embed });
+    try {
+      const logChannel = (await firestore.collection(payload.guild.id).doc("config").get()).data().log;
+      const channel: TextChannel = (await payload.guild.channels.cache.find((channel) => channel.id === logChannel)) as TextChannel;
+      channel.send({ embed: payload.embed });
+    } catch (err) {
+      this.e(`Log Publish > ${err}`);
+    }
   }
 }
 
