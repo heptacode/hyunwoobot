@@ -2,7 +2,7 @@ import { EmbedFieldData, Message } from "discord.js";
 import { Args, Locale, State } from "../";
 import { stream } from "../modules/musicManager";
 import youtube from "scrape-youtube";
-import lengthConvert from "../modules/lengthConverter";
+import { lengthConvert } from "../modules/converter";
 import config from "../config";
 import Log from "../modules/logger";
 

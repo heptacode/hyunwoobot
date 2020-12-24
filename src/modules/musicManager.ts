@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import { Locale, State } from "../";
 import ytdl from "ytdl-core";
-import lengthConvert from "./lengthConverter";
+import { lengthConvert } from "./converter";
 import { voiceConnect, voiceDisconnect } from "./voiceManager";
 import Log from "./logger";
 

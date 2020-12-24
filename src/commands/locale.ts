@@ -24,7 +24,7 @@ module.exports = {
 
       const result = await configDocRef.update({ locale: newValue });
       if (result) {
-        Log.s(`ChangeLocale : ${newValue}`);
+        Log.d(`ChangeLocale : ${newValue}`);
         message.channel.send(`${locale.changeLocale}${newValue}`);
       } else {
         Log.e(`ChangeLocale > 2 > ${result}`);

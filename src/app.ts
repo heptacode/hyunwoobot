@@ -1,5 +1,5 @@
 import fs from "fs";
-import { Client, Collection, Guild, Message, MessageReaction, Role, TextChannel, User, VoiceState } from "discord.js";
+import { Client, Collection, Guild, Message, MessageEmbed, MessageReaction, Role, TextChannel, User, VoiceState } from "discord.js";
 import firestore from "./firestore";
 import Log from "./modules/logger";
 import "dotenv/config";
@@ -175,6 +175,13 @@ client.on("voiceStateUpdate", async (oldMember: VoiceState, newMember: VoiceStat
 
           try {
             await newMember.member.roles.add(voiceRole.role);
+            Log.p({
+              guild: newMember.guild,
+              embed: {
+                title: "Voice Role",
+                description: `${newMember.member.user.tag} got ${newMember.guild.roles.cache.find((role) => role.id === voiceRole.role).name}`,
+              } as MessageEmbed,
+            });
           } catch (err) {
             Log.e(`VoiceStateUpdate > Join > ${err}`);
           }

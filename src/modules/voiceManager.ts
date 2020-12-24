@@ -70,8 +70,8 @@ export const sendAlarm = async (alarmDB: AlarmDB): Promise<void> => {
       alarmDB.connection = null;
       alarmDB.voiceChannel.leave();
     });
-    Log.i("SendAlarm");
+    Log.d("SendAlarm");
   } catch (err) {
-    Log.e(`SendAlarm > 1 > ${err}`);
+    Log.d(`SendAlarm > 1 > ${err}`);
   }
 };

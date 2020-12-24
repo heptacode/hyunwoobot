@@ -2,6 +2,7 @@ import { EmbedFieldData, Message } from "discord.js";
 import firestore from "../firestore";
 import { Args, Locale, State, VoiceRole } from "../";
 import Log from "../modules/logger";
+import { channelConvert, roleConvert } from "../modules/converter";
 
 module.exports = {
   name: "voice",
@@ -21,7 +22,7 @@ module.exports = {
         voiceConfig = configDocSnapshot.data().voice as VoiceRole[];
       } else if (args[0] === "add") {
         voiceConfig = configDocSnapshot.data().voice as VoiceRole[];
-        voiceConfig.push({ voiceChannel: args[1], role: args[2] });
+        voiceConfig.push({ voiceChannel: channelConvert(message.guild, args[1]), role: roleConvert(message.guild, args[2]) });
         await configDocRef.update({ voice: voiceConfig });
       } else if (args[0] === "remove") {
         voiceConfig = configDocSnapshot.data().voice as VoiceRole[];

@@ -1,4 +1,7 @@
 import chalk from "chalk";
+import { TextChannel } from "discord.js";
+import { LogData } from "../";
+import firestore from "../firestore";
 
 class log {
   private getTsp(): string {
@@ -30,18 +33,11 @@ class log {
   public d(str: any): void {
     console.log(`[${this.getTsp()}] ${chalk.blue(str)}`);
   }
-  // Custom
-  public c(obj: object): void {
-    let str = "";
-    Object.keys(obj).forEach((key) => {
-      if (key == "e") str += `${chalk.red(obj[key])} `;
-      else if (key == "w") str += `${chalk.yellow(obj[key])} `;
-      else if (key == "i") str += `${chalk.cyan(obj[key])} `;
-      else if (key == "s") str += `${chalk.green(obj[key])} `;
-      else if (key == "v") str += `${chalk.white(obj[key])} `;
-      else if (key == "d") str += `${chalk.blue(obj[key])} `;
-    });
-    console.log(`[${this.getTsp()}] ${str}`);
+  // Publish
+  public async p(payload: LogData): Promise<void> {
+    const logChannel = (await firestore.collection(payload.guild.id).doc("config").get()).data().log;
+    const channel: TextChannel = (await payload.guild.channels.cache.find((channel) => channel.id === logChannel)) as TextChannel;
+    channel.send({ embed: payload.embed });
   }
 }
 

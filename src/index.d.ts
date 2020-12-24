@@ -1,4 +1,4 @@
-import { StreamDispatcher, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
+import { Guild, MessageEmbed, StreamDispatcher, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
 
 export interface Locale {
   // Default
@@ -121,4 +121,9 @@ export interface ReactionRoleItem {
 export interface VoiceRole {
   voiceChannel: string;
   role: string;
+}
+
+export interface LogData {
+  guild: Guild;
+  embed?: MessageEmbed;
 }
