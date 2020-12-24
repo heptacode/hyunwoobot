@@ -2,8 +2,7 @@
   "name": "discordbot",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/app.js",
-  "type": "module",
+  "main": "src/app.ts",
   "scripts": {
     "serve": "nodemon nodemon.json",
     "tsc": "tsc",

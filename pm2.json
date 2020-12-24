@@ -2,7 +2,7 @@
   "apps": [
     {
       "name": "discordbot",
-      "script": "./dist/app.js",
+      "script": "./src/app.ts",
       "watch": false,
       "max_memory_restart": "1G",
       "env": {
