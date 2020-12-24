@@ -12,7 +12,7 @@ export default {
         });
 
       message.channel.send({
-        embed: JSON.parse(args.join(" ")) as MessageEmbed,
+        embed: JSON.parse(args.join(" ").replace(/\n/g, "\\n")) as MessageEmbed,
       });
     } catch (err) {
       Log.e(`Embed > ${err}`);

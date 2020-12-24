@@ -14,7 +14,7 @@ export default {
       const msg = await message.channel.messages.fetch(args[0]);
 
       args.shift();
-      msg.edit({ embed: JSON.parse(args.join(" ")) as MessageEmbed });
+      msg.edit({ embed: JSON.parse(args.join(" ").replace(/\n/g, "\\n")) as MessageEmbed });
     } catch (err) {
       Log.e(`Embed > ${err}`);
     }
