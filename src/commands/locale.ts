@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { Message } from "discord.js";
 import { Args, Locale, State } from "../";
-import firestore from "../firestore";
+import firestore from "../modules/firestore";
 import Log from "../modules/logger";
 
 const locales: string[] = [];
@@ -10,7 +10,7 @@ for (const locale of fs.readdirSync("./src/locales").filter((file) => file.endsW
   locales.push(path.parse(locale).name);
 }
 
-module.exports = {
+export default {
   name: "locale",
   aliases: ["lang"],
   description: "Change the default locale",

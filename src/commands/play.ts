@@ -6,7 +6,7 @@ import { getLength } from "../modules/converter";
 import config from "../config";
 import Log from "../modules/logger";
 
-module.exports = {
+export default {
   name: "play",
   aliases: ["p", "eq", "enqueue"],
   description: "Play/Enqueue a music",

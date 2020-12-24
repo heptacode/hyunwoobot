@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { Args, Locale, State } from "../";
 import Log from "../modules/logger";
 
-module.exports = {
+export default {
   name: "debug",
   execute(locale: Locale, state: State, message: Message, args: Args) {
     try {

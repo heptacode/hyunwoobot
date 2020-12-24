@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { Locale, State, Args } from "../";
 import Log from "../modules/logger";
 
-module.exports = {
+export default {
   name: "volume",
   aliases: ["v", "vol"],
   description: "Change the volume",

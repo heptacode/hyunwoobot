@@ -2,7 +2,7 @@ import { EmbedFieldData, Message } from "discord.js";
 import { Command, Locale } from "../";
 import config from "../config";
 
-module.exports = {
+export default {
   name: "help",
   execute(locale: Locale, message: Message, commands: Command) {
     const fields: EmbedFieldData[] = [];

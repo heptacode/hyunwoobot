@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { Args, Locale, State } from "../";
 import { skip } from "../modules/musicManager";
 
-module.exports = {
+export default {
   name: "skip",
   aliases: ["fs"],
   description: "Skip current music",

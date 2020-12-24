@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { Args, Locale, State } from "../";
 import { stop } from "../modules/musicManager";
 
-module.exports = {
+export default {
   name: "stop",
   aliases: [],
   description: "Stop the music",

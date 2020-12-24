@@ -14,7 +14,7 @@ schedule.scheduleJob(
   }
 );
 
-module.exports = {
+export default {
   name: "alarm",
   execute(locale: Locale, state: State, message: Message, args: Args) {
     activateAlarm(message, alarmDB);

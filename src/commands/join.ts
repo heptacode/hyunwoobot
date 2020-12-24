@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { Args, Locale, State } from "../";
 import { voiceConnect } from "../modules/voiceManager";
 
-module.exports = {
+export default {
   name: "join",
   aliases: ["j"],
   description: "Join a voice channel you are in",

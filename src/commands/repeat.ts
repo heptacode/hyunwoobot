@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { Args, Locale, State } from "../";
 import Log from "../modules/logger";
 
-module.exports = {
+export default {
   name: "repeat",
   aliases: ["rp"],
   description: "Toggle repeat",

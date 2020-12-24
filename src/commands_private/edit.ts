@@ -2,7 +2,7 @@ import { Message, MessageEmbed } from "discord.js";
 import { Args, Locale, State } from "../";
 import Log from "../modules/logger";
 
-module.exports = {
+export default {
   name: "edit",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {

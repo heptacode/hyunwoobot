@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { Locale, State, Args } from "../";
 import { toggleLoop } from "../modules/musicManager";
 
-module.exports = {
+export default {
   name: "loop",
   aliases: ["rpall"],
   description: "Toggle loop for the playlist",

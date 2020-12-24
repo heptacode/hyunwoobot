@@ -1,9 +1,9 @@
 import { Message } from "discord.js";
 import { Args, Locale, ReactionRole, ReactionRoleItem, State } from "../";
-import firestore from "../firestore";
+import firestore from "../modules/firestore";
 import Log from "../modules/logger";
 
-module.exports = {
+export default {
   name: "add",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {

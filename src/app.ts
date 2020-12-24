@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { Client, Collection, Guild, GuildMember, Message, MessageReaction, TextChannel, User, VoiceState } from "discord.js";
-import firestore from "./firestore";
+import firestore from "./modules/firestore";
 import Log from "./modules/logger";
 import "dotenv/config";
 
@@ -20,13 +20,13 @@ const privateCommands: Collection<string, Command> = new Collection();
 
 const commandList: CommandList[] = [];
 for (const file of fs.readdirSync(path.resolve(__dirname, "../src/commands")).filter((file) => file.match(/(.js|.ts)$/))) {
-  const command: Command = require(`./commands/${file}`);
+  const command: Command = require(path.resolve(__dirname, `../src/commands/${file}`)).default;
   commands.set(command.name, command);
   commandList.push({ name: command.name, aliases: command.aliases, description: command.description });
 }
 
 for (const file of fs.readdirSync(path.resolve(__dirname, "../src/commands_private")).filter((file) => file.match(/(.js|.ts)$/))) {
-  const command: Command = require(`./commands_private/${file}`);
+  const command: Command = require(path.resolve(__dirname, `../src/commands_private/${file}`)).default;
   privateCommands.set(command.name, command);
 }
 
@@ -61,7 +61,11 @@ client.on("message", async (message: Message) => {
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
-  const command = commands.get(commandName) || commands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName)) || privateCommands.get(commandName);
+  const command =
+    commands.get(commandName) ||
+    commands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName)) ||
+    privateCommands.get(commandName) ||
+    privateCommands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
   if (!command) return;
 
   if (!state.get(message.guild.id)) {

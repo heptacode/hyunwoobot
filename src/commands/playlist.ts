@@ -3,7 +3,7 @@ import { Args, Locale, State } from "../";
 import config from "../config";
 import Log from "../modules/logger";
 
-module.exports = {
+export default {
   name: "playlist",
   aliases: ["ls", "list", "queue"],
   description: "Show playlist",

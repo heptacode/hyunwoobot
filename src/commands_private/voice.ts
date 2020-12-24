@@ -1,10 +1,10 @@
 import { EmbedFieldData, Message } from "discord.js";
-import firestore from "../firestore";
+import firestore from "../modules/firestore";
 import { Args, Locale, State, VoiceRole } from "../";
 import Log from "../modules/logger";
 import { getChannelID, getChannelName, getRoleID } from "../modules/converter";
 
-module.exports = {
+export default {
   name: "voice",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {

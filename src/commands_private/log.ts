@@ -1,11 +1,11 @@
 import { Message } from "discord.js";
-import firestore from "../firestore";
+import firestore from "../modules/firestore";
 import { Args, Locale, State } from "../";
 import config from "../config";
 import Log from "../modules/logger";
 import { getChannelID } from "../modules/converter";
 
-module.exports = {
+export default {
   name: "log",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
