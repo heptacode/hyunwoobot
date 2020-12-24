@@ -1,42 +1,41 @@
-import * as Discord from "discord.js";
-import Log from "../util/logger";
+import { EmbedFieldData, Message } from "discord.js";
+import { Args, Locale, State } from "../";
+import Log from "../modules/logger";
 
 module.exports = {
   name: "playlist",
-  aliases: ["queue", "list", "리스트", "플레이리스트", "목록", "재생목록", "대기열"],
+  aliases: ["ls", "list", "queue"],
   description: "Show playlist",
-  async execute(locale, dbRef, docRef, message, args) {
+  execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
-      let docSnapshot = await docRef.get();
-
-      if (docSnapshot.exists) {
-        if (docSnapshot.data().playlist.length != 0) {
-          let field = [];
-          for (let i in docSnapshot.data().playlist) {
-            if (Number(i) === 0) field.push({ name: `${locale.nowPlaying}`, value: `${docSnapshot.data().playlist[i].title}` });
-            else field.push({ name: `#${i}`, value: `${docSnapshot.data().playlist[i].title}` });
-          }
-          message.channel.send(
-            new Discord.MessageEmbed()
-              .setColor("#7788D4")
-              .setAuthor(`${locale.playlist}`, message.author.avatarURL(), "https://hyunwoo.kim")
-              .setTitle(docSnapshot.data().playlist[0].title)
-              .setURL(docSnapshot.data().playlist[0].videoURL)
-              .setDescription(docSnapshot.data().playlist[0].channelName)
-              .setThumbnail(docSnapshot.data().playlist[0].thumbnailURL)
-              .addFields(field)
-          );
-        } else {
-          Log.w(`Playlist > Playlist Empty`);
-          message.channel.send(`${locale.playlistEmpty}`);
+      if (state.playlist.length != 0) {
+        const fields: EmbedFieldData[] = [];
+        for (const i in state.playlist) {
+          if (Number(i) === 0) fields.push({ name: locale.nowPlaying, value: state.playlist[i].title });
+          else fields.push({ name: `#${i}`, value: state.playlist[i].title });
         }
+        fields.push({ name: "\u200B", value: `${state.isPlaying ? "▶️" : "⏹"}${state.isLooped ? " 🔁" : ""}${state.isRepeated ? " 🔂" : ""}` });
+        message.channel.send({
+          embed: {
+            color: "#7788D4",
+            author: {
+              name: String(state.volume),
+              iconURL: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/volume.png?alt=media&token=887c1886-e440-48a4-b52e-15b064f5bc2f",
+            },
+            title: state.playlist[0].title,
+            url: state.playlist[0].videoURL,
+            description: state.playlist[0].channelName,
+            thumbnail: { url: state.playlist[0].thumbnailURL },
+            fields: fields,
+          },
+        });
       } else {
-        Log.w(`Playlist > Playlist Not Exists`);
-        message.channel.send(`${locale.playlistNotExists}`);
+        Log.w(`Playlist > Playlist Empty`);
+        message.channel.send(locale.playlistEmpty);
       }
     } catch (err) {
       Log.e(`Playlist > 1 > ${err}`);
-      message.channel.send(`${locale.err_cmd}`);
+      message.channel.send(locale.err_cmd);
     }
   },
 };

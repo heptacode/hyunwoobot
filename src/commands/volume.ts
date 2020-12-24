@@ -1,30 +1,32 @@
-import Log from "../util/logger";
+import { Message } from "discord.js";
+import { Locale, State, Args } from "../";
+import Log from "../modules/logger";
 
 module.exports = {
   name: "volume",
-  aliases: ["v", "vol", "음량", "볼륨"],
+  aliases: ["v", "vol"],
   description: "Change the volume",
-  async execute(locale, dbRef, docRef, message, args) {
+  execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
-      if (!message.member.voice.channel) return `${locale.joinToChangeVolume}`;
+      if (!message.member.voice.channel) return message.channel.send(locale.joinToChangeVolume);
 
-      let newVolume = Number(args[0]);
-      if (newVolume === NaN || !(newVolume >= 0 && newVolume <= 10)) {
-        Log.w(`ChangeVolume : Invalid value : ${newVolume}`);
-        return message.channel.send(`${locale.invalidVolume}`);
+      const newVolume = Number(args[0]);
+      if (!newVolume) {
+        return message.channel.send(`${locale.currentVolume}${state.volume}`);
+      } else if (!(newVolume >= 0 && newVolume <= 10)) {
+        Log.w(`ChangeVolume > Invalid value: ${newVolume}`);
+        return message.channel.send(locale.invalidVolume);
       }
 
-      let result = await docRef.update({ volume: newVolume });
-      if (result) {
-        Log.s(`ChangeVolume : ${newVolume}`);
-        message.channel.send(`${locale.changeVolume}`);
-      } else {
-        Log.e(`ChangeVolume > 2 > ${result}`);
-        message.channel.send(`${locale.err_cmd}`);
-      }
+      state.dispatcher.setVolume(newVolume / 5);
+
+      state.volume = newVolume;
+
+      Log.s(`ChangeVolume: ${newVolume}`);
+      message.channel.send(locale.changeVolume);
     } catch (err) {
       Log.e(`ChangeVolume > 1 > ${err}`);
-      message.channel.send(`${locale.err_cmd}`);
+      message.channel.send(locale.err_cmd);
     }
   },
 };

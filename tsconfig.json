@@ -2,11 +2,12 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
-    "outDir": "dist.ts",
-    "preserveConstEnums": true,
+    "outDir": "dist",
     "removeComments": true,
     "sourceMap": true,
-    "target": "es6"
+    "target": "es6",
+
+    "esModuleInterop": true
   },
   "include": ["src/**/*"],
   "exclude": [".vscode", "node_modules"]

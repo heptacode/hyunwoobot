@@ -1,201 +1,85 @@
-import * as Discord from "discord.js";
-import * as ytdl from "ytdl-core";
-import Log from "../util/logger";
-import { voiceConnect, voiceDisconnect } from "../util/voiceManager";
-import lengthCalculate from "../util/lengthCalculator";
-
-const enqueue = async (locale, dbRef, docRef, message, args) => {
-  try {
-    let docSnapshot = await docRef.get();
-
-    // URL
-    let videoURL = message.content.split(" ")[1];
-    let videoDetails, payload;
-
-    if (!videoURL) {
-      if (docSnapshot.data().playlist.length != 0) {
-        if (!dbRef.isPlaying) {
-          return play(locale, dbRef, docRef, message);
-        } else {
-          return message.channel.send(`${locale.currentlyPlaying}`);
-        }
-      } else {
-        // docSnapshot Exists, but Playlist has no value
-        return message.channel.send(`${locale.playlistEmpty}`);
-      }
-    } else {
-      try {
-        videoDetails = await (await ytdl.getInfo(videoURL)).videoDetails;
-        if (videoDetails.isPrivate) return message.channel.send(`${locale.videoPrivate}`);
-        // if (videoDetails.age_restricted) return message.channel.send(`${locale.videoAgeRestricted}`);
-        payload = {
-          title: videoDetails.title,
-          channelName: videoDetails.ownerChannelName,
-          length: videoDetails.lengthSeconds,
-          thumbnailURL: videoDetails.thumbnail.thumbnails[0].url,
-          videoURL: videoDetails.video_url,
-          requesterAvatar: message.author.avatarURL(),
-        };
-      } catch (err) {
-        Log.e(`Enqueue > URLInvalid > ${err}`);
-        return message.channel.send(`${locale.urlInvalid}`);
-      }
-    }
-
-    // Init if doc not exists
-    if (!docSnapshot.data().voiceChannel) {
-      await docRef.update({
-        textChannel: message.channel.id,
-        voiceChannel: message.member.voice.channel.id,
-      });
-      docSnapshot = await docRef.get();
-    }
-
-    if (docSnapshot.data().playlist.length == 0) {
-      // Play Now
-      try {
-        let result = await docRef.update({ playlist: [payload] });
-        if (result) {
-          play(locale, dbRef, docRef, message);
-        } else {
-          Log.e(`Play Now > 2 > ${result}`);
-          return message.channel.send(`${locale.err_task}`);
-        }
-      } catch (err) {
-        Log.e(`Play Now > 1 > ${err}`);
-        return message.channel.send(`${locale.err_cmd}`);
-      }
-    } else {
-      // Enqueue
-      try {
-        let playlist = await docSnapshot.data().playlist;
-        playlist.push(payload);
-        let result = await docRef.update({ playlist: playlist });
-        if (result) {
-          Log.i(`Enqueue : ${payload.title}`);
-          let field = [
-            { name: `${locale.length}`, value: lengthCalculate(playlist[playlist.length - 1].length), inline: true },
-            { name: `${locale.position}`, value: playlist.length - 1, inline: true },
-            { name: "\u200B", value: "\u200B" },
-          ];
-          for (let i in playlist) {
-            if (Number(i) === 0) field.push({ name: `${locale.nowPlaying}`, value: `${playlist[i].title}` });
-            else field.push({ name: `#${i}`, value: `${playlist[i].title}` });
-          }
-          message.channel.send(
-            new Discord.MessageEmbed()
-              .setColor("#7788D4")
-              .setAuthor(`${locale.enqueued}`, playlist[playlist.length - 1].requesterAvatar, "https://hyunwoo.kim")
-              .setTitle(playlist[playlist.length - 1].title)
-              .setURL(playlist[playlist.length - 1].videoURL)
-              .setDescription(playlist[playlist.length - 1].channelName)
-              .setThumbnail(playlist[playlist.length - 1].thumbnailURL)
-              .addFields(field)
-          );
-          // message.delete();
-        } else {
-          Log.e(`Enqueue > 3 > ${result}`);
-          return message.channel.send(`${locale.err_cmd}`);
-        }
-      } catch (err) {
-        Log.e(`Enqueue > 2 > ${err}`);
-        message.channel.send(`${locale.err_cmd}`);
-      }
-    }
-  } catch (err) {
-    Log.e(`Enqueue > 1 > ${err}`);
-    message.channel.send(`${locale.err_cmd}`);
-  }
-};
-
-const play = async (locale, dbRef, docRef, message) => {
-  try {
-    let docSnapshot = await docRef.get();
-    if (!docSnapshot.data().voiceChannel) {
-      await voiceDisconnect(locale, dbRef, docRef, message);
-      return;
-    }
-
-    if (!dbRef.connection) await voiceConnect(locale, dbRef, docRef, message);
-
-    let playlist = docSnapshot.data().playlist;
-    let disconnectionTimeout;
-
-    try {
-      let videoData = ytdl(playlist[0].videoURL);
-
-      const dispatcher = dbRef.connection
-        .play(videoData, {
-          quality: "highestaudio",
-          highWaterMark: 1 << 25,
-        })
-        .on("start", () => {
-          if (disconnectionTimeout) clearTimeout(disconnectionTimeout);
-
-          playlist = docSnapshot.data().playlist;
-
-          dbRef.isPlaying = true;
-
-          message.channel.send(
-            new Discord.MessageEmbed()
-              .setColor("#0099ff")
-              .setAuthor(`${locale.nowPlaying}`, playlist[0].requesterAvatar, "https://hyunwoo.kim")
-              .setTitle(playlist[0].title)
-              .setURL(playlist[0].videoURL)
-              .setDescription(playlist[0].channelName)
-              .setThumbnail(playlist[0].thumbnailURL)
-              .addFields({ name: `${locale.length}`, value: lengthCalculate(playlist[0].length), inline: true })
-              .addFields({ name: `${locale.remaning}`, value: playlist.length - 1, inline: true })
-          );
-          // message.delete();
-        })
-        .on("finish", async () => {
-          try {
-            docSnapshot = await docRef.get();
-            playlist = docSnapshot.data().playlist;
-
-            dbRef.isPlaying = false;
-
-            if (playlist.length >= 1) {
-              if (docSnapshot.data().isRepeated) {
-              } else if (docSnapshot.data().isLooped) {
-                playlist.push(playlist[0]).shift();
-                docRef.update({ playlist: playlist });
-              } else {
-                playlist.shift();
-                docRef.update({ playlist: playlist });
-              }
-              if (playlist.length >= 1) {
-                play(locale, dbRef, docRef, message);
-              } else disconnectionTimeout = setTimeout(() => voiceDisconnect(locale, dbRef, docRef, message, true), 10000);
-            } else {
-              disconnectionTimeout = setTimeout(() => voiceDisconnect(locale, dbRef, docRef, message, true), 10000);
-            }
-          } catch (err) {
-            Log.e(`Play > 4 > ${err}`);
-            return message.channel.send(`${locale.err_task}`);
-          }
-        })
-        .on("error", err => {
-          Log.e(`Play > 3 > ${err}`);
-          return message.channel.send(`${locale.err_task}`);
-        });
-      dispatcher.setVolumeLogarithmic(docSnapshot.data().volume / 5);
-    } catch (err) {
-      Log.e(`Play > 2 > ${err}`);
-      message.channel.send(`${locale.err_task}`);
-    }
-  } catch (err) {
-    Log.e(`Play > 1 > ${err}`);
-    message.channel.send(`${locale.err_task}`);
-  }
-};
+import { EmbedFieldData, Message } from "discord.js";
+import { Args, Locale, State } from "../";
+import { stream } from "../modules/musicManager";
+import youtube from "scrape-youtube";
+import lengthConvert from "../modules/lengthConverter";
+import Log from "../modules/logger";
 
 module.exports = {
   name: "play",
-  aliases: ["p", "재생"],
-  description: "Play a music",
-  async execute(locale, dbRef, docRef, message, args) {
-    enqueue(locale, dbRef, docRef, message, args);
+  aliases: ["p", "eq", "enqueue"],
+  description: "Play/Enqueue a music",
+  async execute(locale: Locale, state: State, message: Message, args: Args) {
+    try {
+      const query = args[0];
+      let payload;
+      if (!query && state.playlist.length !== 0) {
+        if (!state.isPlaying) return stream(locale, state, message);
+        else return message.channel.send(locale.currentlyPlaying);
+      } else if (!query && state.playlist.length === 0) return message.channel.send(locale.playlistEmpty);
+
+      const result = (await youtube.search(query, { type: "video" })).videos;
+      if (result.length >= 1) {
+        if (result.length === 1) {
+          payload = {
+            title: result[0].title,
+            channelName: result[0].channel.name,
+            length: result[0].duration,
+            thumbnailURL: result[0].thumbnail,
+            videoURL: result[0].link,
+            requestedBy: { tag: message.author.tag, avatarURL: message.author.avatarURL() },
+          };
+        } else {
+          // Query Search
+          payload = {
+            title: result[0].title,
+            channelName: result[0].channel.name,
+            length: result[0].duration,
+            thumbnailURL: result[0].thumbnail,
+            videoURL: result[0].link,
+            requestedBy: { tag: message.author.tag, avatarURL: message.author.avatarURL() },
+          };
+          // return message.channel.send(locale.urlInvalid);
+        }
+        try {
+          state.playlist.push(payload);
+          if (state.playlist.length === 1) {
+            return stream(locale, state, message);
+          } else {
+            Log.d(`Enqueue : ${payload.title}`);
+            const fields: EmbedFieldData[] = [
+              { name: locale.length, value: lengthConvert(state.playlist[state.playlist.length - 1].length), inline: true },
+              { name: locale.position, value: state.playlist.length - 1, inline: true },
+              // { name: "\u200B", value: "\u200B" },
+            ];
+            for (const i in state.playlist) {
+              if (Number(i) == 0) fields.push({ name: locale.nowPlaying, value: state.playlist[i].title });
+              else fields.push({ name: `#${i}`, value: state.playlist[i].title });
+            }
+            fields.push({ name: "\u200B", value: `${state.isPlaying ? "▶️" : "⏹"}${state.isLooped ? " 🔁" : ""}${state.isRepeated ? " 🔂" : ""}` });
+            message.channel.send({
+              embed: {
+                color: "#7788D4",
+                author: { name: locale.enqueued, iconURL: state.playlist[state.playlist.length - 1].requestedBy.avatarURL, url: "https://hyunwoo.kim" },
+                title: state.playlist[state.playlist.length - 1].title,
+                url: state.playlist[state.playlist.length - 1].videoURL,
+                description: state.playlist[state.playlist.length - 1].channelName,
+                thumbnail: { url: state.playlist[state.playlist.length - 1].thumbnailURL },
+                fields: fields,
+              },
+            });
+          }
+        } catch (err) {
+          Log.e(`Enqueue > 2 > ${err}`);
+          message.channel.send(locale.err_cmd);
+        }
+      } else {
+        Log.e(`Enqueue > No Result`);
+        return message.channel.send(locale.urlInvalid);
+      }
+    } catch (err) {
+      Log.e(`Enqueue > 1 > ${err}`);
+      message.channel.send(locale.err_cmd);
+    }
   },
 };

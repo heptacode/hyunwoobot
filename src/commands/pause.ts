@@ -1,12 +1,12 @@
 import { Message } from "discord.js";
 import { Args, Locale, State } from "../";
-import { stop } from "../modules/musicManager";
+import { pause } from "../modules/musicManager";
 
 module.exports = {
-  name: "stop",
-  aliases: [],
-  description: "Stop the music",
+  name: "pause",
+  aliases: ["ps"],
+  description: "Pause the song",
   execute(locale: Locale, state: State, message: Message, args: Args) {
-    stop(locale, state, message);
+    pause(locale, state, message);
   },
 };

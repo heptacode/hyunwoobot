@@ -1,29 +1,28 @@
-export default {
+import { Locale } from "..";
+
+const locale_en: Locale = {
   // Default
   on: "ON",
   off: "OFF",
   // Main
   denyDM: "❌ I can't execute that command inside DMs!",
-  cmdInvalid: "Invalid Command!",
   // delete
   delete: " Messages have been deleted.",
-  invalidAmount: "❌ Please enter a valid amount : 2 ~ 100",
-  insufficientPerms_delete: "🚫 You don't have permission to manage messages!",
+  invalidAmount: "❌ Please enter a valid amount: 2 ~ 100",
   // help
   help: "Help",
   helpDesc: "List of commands and descriptions you can use.",
   // voiceConnect
   joinToConnect: "💡 To play music, join a voice channel!",
-  insufficientPerms_voiceConnect: "🚫 Insufficient permissions! (Required permissions : [Connect], [Speak])",
   // voiceDisconnect
   notInVoiceChannel: "🚫 I'm currently not in a voice channel!",
-  leave: "⛔️ Unbound voice channels",
-  disconnectTimeout: "⛔️ Left channel due to inactivity",
+  leave: "🚪 Disconnected from voice channel.",
+  disconnectTimeout: "🚪 Disconnected from voice channel due to inactivity.",
   // locale
   changeLocale: "✅ Locale changed to ",
   // loop
   joinToToggleLoop: "💡 To toggle loop, join a voice channel!",
-  toggleLoop: "✅Loop Toggled ",
+  toggleLoop: "✅ Loop Toggled ",
   // play
   currentlyPlaying: "💿 Currently playing a song.",
   videoPrivate: "🔒 This video is private!",
@@ -47,12 +46,27 @@ export default {
   skipped: "⏩ Skipped",
   // stop
   joinToStop: "💡 To stop music, join a voice channel!",
-  stopNotNow: "💡 ou can't use it right now!",
+  stopNotNow: "💡 You can't use it right now!",
   // volume
   joinToChangeVolume: "💡 To change the volume, join a voice channel!",
-  invalidVolume: "❌ Please enter a valid value : 0 ~ 10",
+  currentVolume: "🔈 Current Volume is: ",
+  invalidVolume: "❌ Please enter a valid value: 0 ~ 10",
   changeVolume: "🔈 Volume changed! Your new volume will be applied for future songs.",
+  // log
+  log: "📦 Logging",
+  log_set: "Log channel set to: ",
+  // voice
+  voiceRole: "⚙️ Voice Channel Roles",
+  voiceRole_empty: "No roles have been set.",
+
+  // Permissions
+  insufficientPerms_manage_channels: "🚫 You don't have permission to manage channels!",
+  insufficientPerms_manage_messages: "🚫 You don't have permission to manage messages!",
+  insufficientPerms_connect: "🚫 Insufficient permissions! (Required permissions : [Connect], [Speak])",
+
   // Error
   err_cmd: "❌ An error occured while performing the command.",
   err_task: "❌ An error occured while performing the task.",
 };
+
+export default locale_en;

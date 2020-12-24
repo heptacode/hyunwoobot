@@ -1,16 +1,12 @@
-import Log from "../util/logger";
-import { voiceDisconnect } from "../util/voiceManager";
+import { Message } from "discord.js";
+import { Args, Locale, State } from "../";
+import { voiceDisconnect } from "../modules/voiceManager";
 
 module.exports = {
   name: "leave",
-  aliases: ["q", "quit", "l", "disconnect", "unbind"],
+  aliases: ["l", "dc", "q", "quit", "unbind"],
   description: "Unbind from a voice channel you are in",
-  async execute(locale, dbRef, docRef, message, args) {
-    try {
-      await voiceDisconnect(locale, dbRef, docRef, message);
-    } catch (err) {
-      Log.e(`Leave > 1 > ${err}`);
-      message.channel.send(`${locale.err_cmd}`);
-    }
+  execute(locale: Locale, state: State, message: Message, args: Args) {
+    voiceDisconnect(locale, state, message);
   },
 };

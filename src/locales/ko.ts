@@ -1,26 +1,25 @@
-export default {
+import { Locale } from "..";
+
+const locale_ko: Locale = {
   // Default
   on: "켜졌어요.",
   off: "꺼졌어요.",
   // Main
   denyDM: "❌ DM에서는 이 기능을 사용할 수 없어요.",
-  cmdInvalid: "올바르지 않은 명령어예요!",
-  // delete
+  // delete, edit, embed
   delete: "개의 메시지를 삭제했어요!",
   invalidAmount: "❌ 2 ~ 100 사이의 올바른 값을 입력해주세요",
-  insufficientPerms_delete: "🚫 메시지를 관리할 수 있는 권한이 없습니다.",
   // help
   help: "도움말",
   helpDesc: "사용 가능한 명령어와 도움말 목록이예요!",
   // voiceConnect
   joinToConnect: "💡 음악을 재생하려면 음성 채널에 접속해주세요!",
-  insufficientPerms_voiceConnect: "🚫 저에게 다음 권한을 부여해주세요 : [연결], [말하기]",
   // voiceDisconnect
   notInVoiceChannel: "🚫 저는 지금 음성 채널에 있지 않아요!",
-  leave: "⛔️ 채널에서 나왔어요.",
-  disconnectTimeout: "⛔️ 장시간 대기열이 비어있어 채널에서 나왔어요.",
+  leave: "🚪 채널에서 나왔어요.",
+  disconnectTimeout: "🚪 장시간 대기열이 비어있어 채널에서 나왔어요.",
   // locale
-  changeLocale: "✅ 언어가 변경됐어요 : ",
+  changeLocale: "✅ 언어가 변경됐어요: ",
   // loop
   joinToToggleLoop: "💡 반복 재생을 켜거나 끄려면 음성 채널에 접속해주세요!",
   toggleLoop: "✅ 반복 재생이 ",
@@ -50,9 +49,24 @@ export default {
   stopNotNow: "💡 지금은 사용할 수 없어요!",
   // volume
   joinToChangeVolume: "💡 음량을 변경하려면 음성 채널에 접속해주세요!",
+  currentVolume: "🔈 현재 음량 : ",
   invalidVolume: "❌ 0 ~ 10 사이의 올바른 값을 입력해주세요.",
   changeVolume: "🔈 음량이 변경됐어요. 새로운 음량은 다음 곡부터 적용돼요.",
+  // log
+  log: "📦 로그",
+  log_set: "로그 채널이 변경됐어요: ",
+  // voice
+  voiceRole: "⚙️ 음성 채널 역할",
+  voiceRole_empty: "설정된 역할이 없습니다.",
+
+  // Permissions
+  insufficientPerms_manage_channels: "🚫 채널을 관리할 수 있는 권한이 없습니다.",
+  insufficientPerms_manage_messages: "🚫 메시지를 관리할 수 있는 권한이 없습니다.",
+  insufficientPerms_connect: "🚫 저에게 다음 권한을 부여해주세요: [연결], [말하기]",
+
   // Error
   err_cmd: "❌ 오류가 발생했어요.",
   err_task: "❌ 오류가 발생했어요.",
 };
+
+export default locale_ko;

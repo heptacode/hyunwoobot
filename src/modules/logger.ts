@@ -1,40 +1,39 @@
-import * as chalk from "chalk";
-import * as moment from "moment";
-import "moment-timezone";
-moment.tz.setDefault("Asia/Seoul");
+import chalk from "chalk";
 
-class logger {
-  public getTsp(): string {
-    return moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+class log {
+  private getTsp(): string {
+    return new Date().toLocaleString("ko-KR", {
+      timeZone: "Asia/Seoul",
+    });
   }
   // Error
-  public e(str: any) {
-    console.log(`[${this.getTsp()}] ${chalk.red(str)}`);
+  public e(str: any): void {
+    console.error(`[${this.getTsp()}] ${chalk.red(str)}`);
   }
   // Warning
-  public w(str: any) {
+  public w(str: any): void {
     console.log(`[${this.getTsp()}] ${chalk.yellow(str)}`);
   }
   // Info
-  public i(str: any) {
+  public i(str: any): void {
     console.log(`[${this.getTsp()}] ${chalk.cyan(str)}`);
   }
   // Success
-  public s(str: any) {
+  public s(str: any): void {
     console.log(`[${this.getTsp()}] ${chalk.green(str)}`);
   }
   // Verbose
-  public v(str: any) {
+  public v(str: any): void {
     console.log(`[${this.getTsp()}] ${chalk.white(str)}`);
   }
   // Debug
-  public d(str: any) {
+  public d(str: any): void {
     console.log(`[${this.getTsp()}] ${chalk.blue(str)}`);
   }
   // Custom
-  public c(obj: object) {
-    let str = ``;
-    Object.keys(obj).forEach(key => {
+  public c(obj: object): void {
+    let str = "";
+    Object.keys(obj).forEach((key) => {
       if (key == "e") str += `${chalk.red(obj[key])} `;
       else if (key == "w") str += `${chalk.yellow(obj[key])} `;
       else if (key == "i") str += `${chalk.cyan(obj[key])} `;
@@ -45,4 +44,5 @@ class logger {
     console.log(`[${this.getTsp()}] ${str}`);
   }
 }
-export default new logger();
+
+export default new log();

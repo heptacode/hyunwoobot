@@ -1,4 +1,4 @@
-import * as admin from "firebase-admin";
+import admin from "firebase-admin";
 
 const serviceAccount = require("../firebase/hyunwoo-bot-5b9111af24ff.json");
 
