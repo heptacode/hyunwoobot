@@ -7,11 +7,10 @@ import "dotenv/config";
 
 import locale_en from "./locales/en";
 import locale_ko from "./locales/ko";
-import { Command, CommandList, ReactionRole, ReactionRoleItem, State, VoiceRole } from "./";
-import { getRoleID } from "./modules/converter";
+import { AutoRole, Command, CommandList, ReactionRole, ReactionRoleItem, State, VoiceRole } from "./";
 import config from "./config";
 
-const prefix: string = process.env.PREFIX || "=";
+const prefix: string = process.env.PREFIX || config.bot.prefix;
 const token: string = process.env.TOKEN;
 const client: Client = new Client();
 const state: Collection<string, State> = new Collection();
@@ -92,7 +91,7 @@ client.on("message", async (message: Message) => {
   if (!configDocSnapshot.exists || !serverDocSnapshot.exists) {
     Log.d("Firestore Initialize");
     try {
-      await configDocRef.set({ locale: "ko", log: "", voice: [] });
+      await configDocRef.set({ autorole: [], locale: "ko", log: "", voice: [] });
       await serverDocRef.set(JSON.parse(JSON.stringify(message.guild)));
       configDocSnapshot = await configDocRef.get();
     } catch (err) {
@@ -175,7 +174,7 @@ client.on("messageReactionRemove", async (reaction: MessageReaction, user: User)
 });
 
 client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState) => {
-  const check = (oldState: VoiceState, newState: VoiceState) => {
+  const isChannelChange = (oldState: VoiceState, newState: VoiceState) => {
     return (
       oldState.mute === newState.mute &&
       oldState.selfMute === newState.selfMute &&
@@ -187,7 +186,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
     );
   };
   try {
-    if (!oldState.channelID && newState.channelID && check(oldState, newState)) {
+    if (!oldState.channelID && newState.channelID && isChannelChange(oldState, newState)) {
       // Join Channel
       ((await firestore.collection(newState.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
         if (voiceRole.voiceChannel === newState.channelID) {
@@ -201,7 +200,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
               embed: {
                 color: config.color.info,
                 author: { name: "Role Append [Voice]", iconURL: newState.member.user.avatarURL() },
-                description: `<@${newState.member.user.id}> += <@&${getRoleID(newState.guild, voiceRole.role)}>`,
+                description: `<@${newState.member.user.id}> += <@&${voiceRole.role}>`,
                 timestamp: new Date(),
               },
             });
@@ -210,7 +209,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           }
         }
       });
-    } else if (oldState.channelID && newState.channelID && check(oldState, newState)) {
+    } else if (oldState.channelID && newState.channelID && isChannelChange(oldState, newState)) {
       // Switch Channel
       ((await firestore.collection(oldState.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
         if (voiceRole.voiceChannel === oldState.channelID) {
@@ -224,7 +223,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
               embed: {
                 color: config.color.info,
                 author: { name: "Role Remove [Voice]", iconURL: newState.member.user.avatarURL() },
-                description: `<@${newState.member.user.id}> -= <@&${getRoleID(newState.guild, voiceRole.role)}>`,
+                description: `<@${newState.member.user.id}> -= <@&${voiceRole.role}>`,
                 timestamp: new Date(),
               },
             });
@@ -246,7 +245,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
               embed: {
                 color: config.color.info,
                 author: { name: "Role Append [Voice]", iconURL: newState.member.user.avatarURL() },
-                description: `<@${newState.member.user.id}> += <@&${getRoleID(newState.guild, voiceRole.role)}>`,
+                description: `<@${newState.member.user.id}> += <@&${voiceRole.role}>`,
                 timestamp: new Date(),
               },
             });
@@ -255,7 +254,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           }
         }
       });
-    } else if (check(oldState, newState)) {
+    } else if (isChannelChange(oldState, newState)) {
       // Leave Channel
       ((await firestore.collection(oldState.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
         if (voiceRole.voiceChannel === oldState.channelID) {
@@ -269,7 +268,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
               embed: {
                 color: config.color.info,
                 author: { name: "Role Remove [Voice]", iconURL: newState.member.user.avatarURL() },
-                description: `<@${newState.member.user.id}> -= <@&${getRoleID(newState.guild, voiceRole.role)}>`,
+                description: `<@${newState.member.user.id}> -= <@&${voiceRole.role}>`,
                 timestamp: new Date(),
               },
             });
@@ -284,16 +283,39 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
   }
 });
 
-client.on("guildMemberAdd", (member: GuildMember) => {
-  Log.p({
-    guild: member.guild,
-    embed: {
-      color: config.color.info,
-      author: { name: "User Join", iconURL: config.icon.in },
-      description: `<@${member.user.id}> joined the server.`,
-      timestamp: new Date(),
-    },
-  });
+client.on("guildMemberAdd", async (member: GuildMember) => {
+  try {
+    await Log.p({
+      guild: member.guild,
+      embed: {
+        color: config.color.info,
+        author: { name: "User Join", iconURL: config.icon.in },
+        description: `<@${member.user.id}> joined the server.`,
+        timestamp: new Date(),
+      },
+    });
+    ((await firestore.collection(member.guild.id).doc("config").get()).data().autoRole as AutoRole[]).forEach(async (autoRoleconfig: AutoRole) => {
+      if ((autoRoleconfig.type === "user" && !member.user.bot) || (autoRoleconfig.type === "bot" && member.user.bot)) {
+        try {
+          await member.roles.add(autoRoleconfig.role);
+
+          await Log.p({
+            guild: member.guild,
+            embed: {
+              color: config.color.info,
+              author: { name: "Role Append [AutoRole]", iconURL: config.icon.autorole },
+              description: `<@${member.user.id}> += <@&${autoRoleconfig.role}>`,
+              timestamp: new Date(),
+            },
+          });
+        } catch (err) {
+          Log.e(`GuildMemberAdd > AutoRole > ${err}`);
+        }
+      }
+    });
+  } catch (err) {
+    Log.e(`GuildMemberAdd > ${err}`);
+  }
 });
 
 client.on("guildMemberRemove", (member: GuildMember) => {

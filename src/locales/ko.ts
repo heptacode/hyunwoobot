@@ -6,6 +6,10 @@ const locale_ko: Locale = {
   off: "꺼졌어요.",
   // Main
   denyDM: "❌ DM에서는 이 기능을 사용할 수 없어요.",
+  // autorole
+  autoRole: "⚙️ 자동 역할",
+  autoRole_empty: "설정된 역할이 없어요.",
+  autoRole_usage: "💡 올바른 인자값: <add|reset> [user|bot] [역할]",
   // delete, edit, embed
   delete: "개의 메시지를 삭제했어요!",
   invalidAmount: "❌ 2 ~ 100 사이의 올바른 값을 입력해주세요",
@@ -57,10 +61,11 @@ const locale_ko: Locale = {
   log_set: "로그 채널이 변경됐어요: ",
   // voice
   voiceRole: "⚙️ 음성 채널 역할",
-  voiceRole_empty: "설정된 역할이 없습니다.",
+  voiceRole_empty: "설정된 역할이 없어요.",
 
   // Permissions
   insufficientPerms_manage_channels: "🚫 채널을 관리할 수 있는 권한이 없습니다.",
+  insufficientPerms_manage_roles: "🚫 역할을 관리할 수 있는 권한이 없습니다.",
   insufficientPerms_manage_messages: "🚫 메시지를 관리할 수 있는 권한이 없습니다.",
   insufficientPerms_connect: "🚫 저에게 다음 권한을 부여해주세요: [연결], [말하기]",
 

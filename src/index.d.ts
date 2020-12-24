@@ -6,6 +6,10 @@ export interface Locale {
   off: string;
   // Main
   denyDM: string;
+  // autorole
+  autoRole: string;
+  autoRole_empty: string;
+  autoRole_usage: string;
   // delete, edit, embed,
   delete: string;
   invalidAmount: string;
@@ -61,6 +65,7 @@ export interface Locale {
 
   // Permissions
   insufficientPerms_manage_channels: string;
+  insufficientPerms_manage_roles: string;
   insufficientPerms_manage_messages: string;
   insufficientPerms_connect: string;
 
@@ -107,6 +112,11 @@ export type Args = Array<string>;
 export interface AlarmDB {
   voiceChannel?: VoiceChannel;
   connection?: VoiceConnection;
+}
+
+export interface AutoRole {
+  type: string;
+  role: string;
 }
 
 export interface ReactionRole {

@@ -1,8 +1,9 @@
 import { EmbedFieldData, Message } from "discord.js";
 import firestore from "../modules/firestore";
 import { Args, Locale, State, VoiceRole } from "../";
-import Log from "../modules/logger";
 import { getChannelID, getChannelName, getRoleID } from "../modules/converter";
+import config from "../config";
+import Log from "../modules/logger";
 
 export default {
   name: "voice",
@@ -35,11 +36,11 @@ export default {
       const fields: EmbedFieldData[] = [];
       if (voiceConfig.length >= 1)
         voiceConfig.forEach((voiceConfig: VoiceRole) => {
-          fields.push({ name: `${getChannelName(message.guild, voiceConfig.voiceChannel)}`, value: `<@&${getRoleID(message.guild, voiceConfig.role)}>` });
+          fields.push({ name: `${getChannelName(message.guild, voiceConfig.voiceChannel)}`, value: `<@&${voiceConfig.role}>` });
         });
 
       message.channel.send({
-        embed: { title: locale.voiceRole, color: "#FBDF81", fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: locale.voiceRole_empty }] },
+        embed: { title: locale.voiceRole, color: config.color.yellow, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: locale.voiceRole_empty }] },
       });
     } catch (err) {
       Log.e(`Voice > ${err}`);

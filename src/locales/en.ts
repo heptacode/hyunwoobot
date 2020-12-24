@@ -6,6 +6,10 @@ const locale_en: Locale = {
   off: "OFF",
   // Main
   denyDM: "❌ I can't execute that command inside DMs!",
+  // autorole
+  autoRole: "⚙️ Auto Roles",
+  autoRole_empty: "No roles have been set.",
+  autoRole_usage: "💡 Correct arguments: <add|reset> [user|bot] [role]",
   // delete
   delete: " Messages have been deleted.",
   invalidAmount: "❌ Please enter a valid amount: 2 ~ 100",
@@ -61,6 +65,7 @@ const locale_en: Locale = {
 
   // Permissions
   insufficientPerms_manage_channels: "🚫 You don't have permission to manage channels!",
+  insufficientPerms_manage_roles: "🚫 You don't have permission to manage roles!",
   insufficientPerms_manage_messages: "🚫 You don't have permission to manage messages!",
   insufficientPerms_connect: "🚫 Insufficient permissions! (Required permissions : [Connect], [Speak])",
 
