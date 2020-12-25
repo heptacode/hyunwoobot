@@ -13,7 +13,6 @@ for (const locale of fs.readdirSync("./src/locales").filter((file) => file.endsW
 export default {
   name: "locale",
   aliases: ["lang"],
-  description: "Change the default locale",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
       const configDocRef = firestore.collection(message.guild.id).doc("config");

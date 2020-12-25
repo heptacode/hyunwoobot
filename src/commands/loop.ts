@@ -5,7 +5,6 @@ import { toggleLoop } from "../modules/musicManager";
 export default {
   name: "loop",
   aliases: ["rpall"],
-  description: "Toggle loop for the playlist",
   execute(locale: Locale, state: State, message: Message, args: Args) {
     toggleLoop(locale, state, message);
   },

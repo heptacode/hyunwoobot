@@ -4,6 +4,29 @@ const locale_ko: Locale = {
   // Default
   on: "켜졌어요.",
   off: "꺼졌어요.",
+  // help
+  help: "도움말",
+  help_manager: "도움말 [관리자]",
+  helpDesc: "사용 가능한 명령어와 도움말 목록이예요!\n(관리자 명령어를 보려면 [manager]를 인자로 붙여주세요)",
+  helpDesc_manager: "관리자가 사용 가능한 명령어와 도움말 목록이예요!",
+  help_join: "음성 채널에 접속시키기",
+  help_leave: "음성 채널에서 내보내기",
+  help_locale: "서버의 기본 언어 설정",
+  help_loop: "플레이리스트 반복 재생 활성화/비활성화",
+  help_pause: "재생 중인 노래 일시중지",
+  help_play: "노래 재생/대기열에 추가",
+  help_playlist: "플레이리스트 보여주기",
+  help_repeat: "한 곡 반복 활성화/비활성화",
+  help_skip: "재생 중인 곡 건너뛰기",
+  help_stop: "재생 중인 곡 중지하기",
+  help_volume: "음량 변경하기",
+  // help_manager
+  help_autorole: "서버에 접속하는 멤버/봇에게 자동 역할 부여",
+  help_delete: "메시지 일괄 삭제",
+  help_edit: "메시지 수정",
+  help_embed: "임베드 만들기",
+  help_log: "로그 채널 설정하기",
+  help_voice: "음성 채널 접속자에게 역할 부여",
   // Main
   denyDM: "❌ DM에서는 이 기능을 사용할 수 없어요.",
   // autorole
@@ -13,9 +36,6 @@ const locale_ko: Locale = {
   // delete, edit, embed
   delete: "개의 메시지를 삭제했어요!",
   invalidAmount: "❌ 2 ~ 100 사이의 올바른 값을 입력해주세요",
-  // help
-  help: "도움말",
-  helpDesc: "사용 가능한 명령어와 도움말 목록이예요!",
   // voiceConnect
   joinToConnect: "💡 음악을 재생하려면 음성 채널에 접속해주세요!",
   // voiceDisconnect

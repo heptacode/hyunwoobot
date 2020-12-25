@@ -9,7 +9,6 @@ import Log from "../modules/logger";
 export default {
   name: "play",
   aliases: ["p", "eq", "enqueue"],
-  description: "Play/Enqueue a music",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
       const query = args[0];

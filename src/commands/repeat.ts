@@ -5,7 +5,6 @@ import Log from "../modules/logger";
 export default {
   name: "repeat",
   aliases: ["rp"],
-  description: "Toggle repeat",
   execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
       if (!message.member.voice.channel) return message.channel.send(locale.joinToToggleRepeat);

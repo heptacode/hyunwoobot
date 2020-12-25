@@ -4,6 +4,29 @@ export interface Locale {
   // Default
   on: string;
   off: string;
+  // help
+  help: string;
+  help_manager: string;
+  helpDesc: string;
+  helpDesc_manager: string;
+  help_join: string;
+  help_leave: string;
+  help_locale: string;
+  help_loop: string;
+  help_pause: string;
+  help_play: string;
+  help_playlist: string;
+  help_repeat: string;
+  help_skip: string;
+  help_stop: string;
+  help_volume: string;
+  // help_manager
+  help_autorole: string;
+  help_delete: string;
+  help_edit: string;
+  help_embed: string;
+  help_log: string;
+  help_voice: string;
   // Main
   denyDM: string;
   // autorole
@@ -13,9 +36,6 @@ export interface Locale {
   // delete, edit, embed,
   delete: string;
   invalidAmount: string;
-  // help
-  help: string;
-  helpDesc: string;
   // voiceConnect
   joinToConnect: string;
   // voiceDisconnect
@@ -77,14 +97,7 @@ export interface Locale {
 export interface Command {
   name: string;
   aliases?: string[];
-  description?: string;
   execute: Function;
-}
-
-export interface CommandList {
-  name?: string;
-  aliases?: string[];
-  description?: string;
 }
 
 export interface State {

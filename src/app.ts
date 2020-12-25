@@ -7,7 +7,7 @@ import "dotenv/config";
 
 import locale_en from "./locales/en";
 import locale_ko from "./locales/ko";
-import { AutoRole, Command, CommandList, ReactionRole, ReactionRoleItem, State, VoiceRole } from "./";
+import { AutoRole, Command, ReactionRole, ReactionRoleItem, State, VoiceRole } from "./";
 import config from "./config";
 
 const prefix: string = process.env.PREFIX || config.bot.prefix;
@@ -15,18 +15,22 @@ const token: string = process.env.TOKEN;
 const client: Client = new Client();
 const state: Collection<string, State> = new Collection();
 const commands: Collection<string, Command> = new Collection();
-const privateCommands: Collection<string, Command> = new Collection();
+const commands_manager: Collection<string, Command> = new Collection();
+const commands_hidden: Collection<string, Command> = new Collection();
 
-const commandList: CommandList[] = [];
 for (const file of fs.readdirSync(path.resolve(__dirname, "../src/commands")).filter((file) => file.match(/(.js|.ts)$/))) {
   const command: Command = require(path.resolve(__dirname, `../src/commands/${file}`)).default;
   commands.set(command.name, command);
-  commandList.push({ name: command.name, aliases: command.aliases, description: command.description });
 }
 
-for (const file of fs.readdirSync(path.resolve(__dirname, "../src/commands_private")).filter((file) => file.match(/(.js|.ts)$/))) {
-  const command: Command = require(path.resolve(__dirname, `../src/commands_private/${file}`)).default;
-  privateCommands.set(command.name, command);
+for (const file of fs.readdirSync(path.resolve(__dirname, "../src/commands_manager")).filter((file) => file.match(/(.js|.ts)$/))) {
+  const command: Command = require(path.resolve(__dirname, `../src/commands_manager/${file}`)).default;
+  commands_manager.set(command.name, command);
+}
+
+for (const file of fs.readdirSync(path.resolve(__dirname, "../src/commands_hidden")).filter((file) => file.match(/(.js|.ts)$/))) {
+  const command: Command = require(path.resolve(__dirname, `../src/commands_hidden/${file}`)).default;
+  commands_hidden.set(command.name, command);
 }
 
 client.once("ready", async () => {
@@ -58,17 +62,19 @@ client.once("ready", async () => {
 client.on("message", async (message: Message) => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
-  const commandName = args.shift().toLowerCase();
-  const command =
+  const args: string[] = message.content.slice(prefix.length).trim().split(/ +/);
+  const commandName: string = args.shift().toLowerCase();
+  const command: Command =
     commands.get(commandName) ||
     commands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName)) ||
-    privateCommands.get(commandName) ||
-    privateCommands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
+    commands_manager.get(commandName) ||
+    commands_manager.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName)) ||
+    commands_hidden.get(commandName) ||
+    commands_hidden.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
   if (!command) return;
 
   if (!state.get(message.guild.id)) {
-    Log.d("LocalDB Initialize");
+    Log.d(`LocalDB Initialize for guild [ ${message.guild.name} | ${message.guild.id} ]`);
     state.set(message.guild.id, {
       textChannel: null,
       voiceChannel: null,
@@ -89,7 +95,7 @@ client.on("message", async (message: Message) => {
   let configDocSnapshot = await configDocRef.get();
 
   if (!configDocSnapshot.exists || !serverDocSnapshot.exists) {
-    Log.d("Firestore Initialize");
+    Log.d(`Firestore Initialize for guild [ ${message.guild.name} | ${message.guild.id} ]`);
     try {
       await configDocRef.set({ autorole: [], locale: "ko", log: "", voice: [] });
       await serverDocRef.set(JSON.parse(JSON.stringify(message.guild)));
@@ -107,7 +113,7 @@ client.on("message", async (message: Message) => {
   // if (command.onlyAtServers && message.channel.type === "dm") return message.reply(locale.denyDM);
 
   try {
-    if (commandName === "help") command.execute(locale, message, commandList);
+    if (commandName === "help") command.execute(locale, message, args, commands, commands_manager);
     else command.execute(locale, state.get(message.guild.id), message, args);
   } catch (err) {
     Log.e(`Main > ${JSON.stringify(message.content)} > ${err}`);

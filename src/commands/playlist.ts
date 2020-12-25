@@ -6,7 +6,6 @@ import Log from "../modules/logger";
 export default {
   name: "playlist",
   aliases: ["ls", "list", "queue"],
-  description: "Show playlist",
   execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
       if (state.playlist.length != 0) {

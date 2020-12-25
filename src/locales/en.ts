@@ -4,6 +4,29 @@ const locale_en: Locale = {
   // Default
   on: "ON",
   off: "OFF",
+  // help
+  help: "Help",
+  help_manager: "Help [Manager]",
+  helpDesc: "List of commands and descriptions you can use.\n(For manager commands, add [manager] for an argument)",
+  helpDesc_manager: "List of commands and descriptions which managers can use.",
+  help_join: "Join a voice channel you are in",
+  help_leave: "Unbind from a voice channel you are in",
+  help_locale: "Change the default locale for the server",
+  help_loop: "Toggle loop for the playlist",
+  help_pause: "Pause the song",
+  help_play: "Play/Enqueue a music",
+  help_playlist: "Show playlist",
+  help_repeat: "Toggle repeat",
+  help_skip: "Skip current music",
+  help_stop: "Stop the music",
+  help_volume: "Change the volume",
+  // help_manager
+  help_autorole: "Give roles when a member/bot joins the server",
+  help_delete: "Bulk Delete Messages",
+  help_edit: "Edit a previous message that I sent",
+  help_embed: "Create an embed",
+  help_log: "Set a text channel for logging",
+  help_voice: "Give a role when someone joins a voice channel",
   // Main
   denyDM: "❌ I can't execute that command inside DMs!",
   // autorole
@@ -13,9 +36,6 @@ const locale_en: Locale = {
   // delete
   delete: " Messages have been deleted.",
   invalidAmount: "❌ Please enter a valid amount: 2 ~ 100",
-  // help
-  help: "Help",
-  helpDesc: "List of commands and descriptions you can use.",
   // voiceConnect
   joinToConnect: "💡 To play music, join a voice channel!",
   // voiceDisconnect

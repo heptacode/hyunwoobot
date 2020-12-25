@@ -6,7 +6,6 @@ import Log from "../modules/logger";
 export default {
   name: "delete",
   aliases: ["del", "rm", "remove", "purge"],
-  description: "Bulk delete",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
       if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_MESSAGES")))
