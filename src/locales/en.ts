@@ -26,6 +26,7 @@ const locale_en: Locale = {
   help_edit: "Edit a previous message that I sent",
   help_embed: "Create an embed",
   help_log: "Set a text channel for logging",
+  help_reactionrole: "Add/Remove a reaction role",
   help_voice: "Give a role when someone joins a voice channel",
   // Main
   denyDM: "❌ I can't execute that command inside DMs!",
@@ -79,6 +80,8 @@ const locale_en: Locale = {
   // log
   log: "📦 Logging",
   log_set: "Log channel set to: ",
+  // reactionRole
+  reactionrole_usage: "💡 Correct Arguments: <add|remove|purge> <messageID> [emoji] [role]",
   // voice
   voiceRole: "⚙️ Voice Channel Roles",
   voiceRole_empty: "No roles have been set.",

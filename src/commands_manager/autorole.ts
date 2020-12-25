@@ -10,8 +10,8 @@ export default {
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
       if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_ROLES")))
-        return message.channel.send(locale.insufficientPerms_manage_roles).then((msg: Message) => {
-          msg.delete({ timeout: 5000 });
+        return message.channel.send(locale.insufficientPerms_manage_roles).then((_message: Message) => {
+          _message.delete({ timeout: 5000 });
         });
 
       const configDocRef = firestore.collection(message.guild.id).doc("config");

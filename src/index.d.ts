@@ -26,6 +26,7 @@ export interface Locale {
   help_edit: string;
   help_embed: string;
   help_log: string;
+  help_reactionrole: string;
   help_voice: string;
   // Main
   denyDM: string;
@@ -33,7 +34,7 @@ export interface Locale {
   autoRole: string;
   autoRole_empty: string;
   autoRole_usage: string;
-  // delete, edit, embed,
+  // delete
   delete: string;
   invalidAmount: string;
   // voiceConnect
@@ -79,6 +80,8 @@ export interface Locale {
   // log
   log: string;
   log_set: string;
+  // reactionRole
+  reactionrole_usage: string;
   // voice
   voiceRole: string;
   voiceRole_empty: string;

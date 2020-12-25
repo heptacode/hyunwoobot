@@ -10,8 +10,8 @@ export default {
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
       if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_CHANNELS")))
-        return message.channel.send(locale.insufficientPerms_manage_channels).then((msg: Message) => {
-          msg.delete({ timeout: 5000 });
+        return message.channel.send(locale.insufficientPerms_manage_channels).then((_message: Message) => {
+          _message.delete({ timeout: 5000 });
         });
 
       const configDocRef = firestore.collection(message.guild.id).doc("config");
@@ -27,7 +27,7 @@ export default {
         await configDocRef.update({ voice: voiceConfig });
       } else if (args[0] === "remove") {
         voiceConfig = configDocSnapshot.data().voice as VoiceRole[];
-        for (const i in configDocSnapshot.data().voice) {
+        for (const i in configDocSnapshot.data().voice as VoiceRole[]) {
           if (configDocSnapshot.data().voice[i].voiceChannel === args[1]) voiceConfig.splice(Number(i), 1);
         }
         await configDocRef.update({ voice: voiceConfig });

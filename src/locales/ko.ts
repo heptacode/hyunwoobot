@@ -26,6 +26,7 @@ const locale_ko: Locale = {
   help_edit: "메시지 수정",
   help_embed: "임베드 만들기",
   help_log: "로그 채널 설정하기",
+  help_reactionrole: "이모지 반응에 따른 역할 부여",
   help_voice: "음성 채널 접속자에게 역할 부여",
   // Main
   denyDM: "❌ DM에서는 이 기능을 사용할 수 없어요.",
@@ -79,6 +80,8 @@ const locale_ko: Locale = {
   // log
   log: "📦 로그",
   log_set: "로그 채널이 변경됐어요: ",
+  // reactionRole
+  reactionrole_usage: "💡 올바른 인자값: <add|remove|purge> <메시지ID> [이모지] [역할]",
   // voice
   voiceRole: "⚙️ 음성 채널 역할",
   voiceRole_empty: "설정된 역할이 없어요.",
