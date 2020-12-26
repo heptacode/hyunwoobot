@@ -1,6 +1,7 @@
 import { Locale } from "../";
 
-const locale_en: Locale = {
+export default {
+  locale: "en",
   // Default
   on: "ON",
   off: "OFF",
@@ -95,6 +96,4 @@ const locale_en: Locale = {
   // Error
   err_cmd: "❌ An error occured while performing the command.",
   err_task: "❌ An error occured while performing the task.",
-};
-
-export default locale_en;
+} as Locale;

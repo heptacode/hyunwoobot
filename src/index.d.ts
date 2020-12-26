@@ -1,6 +1,7 @@
 import { Guild, MessageEmbed, StreamDispatcher, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
 
 export interface Locale {
+  locale: string;
   // Default
   on: string;
   off: string;

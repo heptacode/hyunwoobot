@@ -1,6 +1,7 @@
 import { Locale } from "../";
 
-const locale_ko: Locale = {
+export default {
+  locale: "ko",
   // Default
   on: "켜졌어요.",
   off: "꺼졌어요.",
@@ -95,6 +96,4 @@ const locale_ko: Locale = {
   // Error
   err_cmd: "❌ 오류가 발생했어요.",
   err_task: "❌ 오류가 발생했어요.",
-};
-
-export default locale_ko;
+} as Locale;

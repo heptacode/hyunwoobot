@@ -5,18 +5,22 @@ import firestore from "./modules/firestore";
 import Log from "./modules/logger";
 import "dotenv/config";
 
-import locale_en from "./locales/en";
-import locale_ko from "./locales/ko";
-import { AutoRole, Command, ReactionRole, ReactionRoleItem, State, VoiceRole } from "./";
+import { AutoRole, Command, Locale, ReactionRole, ReactionRoleItem, State, VoiceRole } from "./";
 import config from "./config";
 
 const prefix: string = process.env.PREFIX || config.bot.prefix;
 const token: string = process.env.TOKEN;
 const client: Client = new Client();
+const locales: Collection<string, Locale> = new Collection();
 const state: Collection<string, State> = new Collection();
 const commands: Collection<string, Command> = new Collection();
 const commands_manager: Collection<string, Command> = new Collection();
 const commands_hidden: Collection<string, Command> = new Collection();
+
+for (const file of fs.readdirSync(path.resolve(__dirname, "../src/locales")).filter((file) => file.match(/(.js|.ts)$/))) {
+  const locale: Locale = require(path.resolve(__dirname, `../src/locales/${file}`)).default;
+  locales.set(locale.locale, locale);
+}
 
 for (const file of fs.readdirSync(path.resolve(__dirname, "../src/commands")).filter((file) => file.match(/(.js|.ts)$/))) {
   const command: Command = require(path.resolve(__dirname, `../src/commands/${file}`)).default;
@@ -106,9 +110,7 @@ client.on("message", async (message: Message) => {
     }
   }
 
-  let locale = await configDocSnapshot.data().locale;
-  if (locale == "en") locale = locale_en;
-  else if (locale == "ko") locale = locale_ko;
+  const locale = locales.get(await configDocSnapshot.data().locale);
 
   // if (command.onlyAtServers && message.channel.type === "dm") return message.reply(locale.denyDM);
 
@@ -138,7 +140,8 @@ client.on("messageReactionAdd", async (reaction: MessageReaction, user: User) =>
     guildRolesRef[reaction.message.id].forEach(async (reactionRoleItem: ReactionRoleItem) => {
       if (reactionRoleItem.emoji === reaction.emoji.name) {
         // Check If Role Exists
-        if (!(await reaction.message.guild.roles.fetch()).cache.has(reactionRoleItem.role)) return;
+        console.log(reaction.message.guild.roles.cache.has(reactionRoleItem.role));
+        if (!reaction.message.guild.roles.cache.has(reactionRoleItem.role)) return;
         // Check If User Has Role
         if (reaction.message.guild.member(user).roles.cache.has(reactionRoleItem.role)) return;
 
@@ -188,7 +191,8 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
       oldState.deaf === newState.deaf &&
       oldState.selfDeaf === newState.selfDeaf &&
       oldState.serverDeaf === newState.serverDeaf &&
-      oldState.selfVideo === newState.selfVideo
+      oldState.selfVideo === newState.selfVideo &&
+      oldState.streaming === newState.streaming
     );
   };
   try {
