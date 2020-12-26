@@ -2,11 +2,11 @@ import path from "path";
 import fs from "fs";
 import { Client, Collection, Guild, GuildMember, Message, MessageReaction, TextChannel, User, VoiceState } from "discord.js";
 import firestore from "./modules/firestore";
+import { AutoRole, Command, Locale, ReactionRole, ReactionRoleItem, State, VoiceRole } from "./";
+import { getHexfromEmoji } from "./modules/converter";
+import config from "./config";
 import Log from "./modules/logger";
 import "dotenv/config";
-
-import { AutoRole, Command, Locale, ReactionRole, ReactionRoleItem, State, VoiceRole } from "./";
-import config from "./config";
 
 const prefix: string = process.env.PREFIX || config.bot.prefix;
 const token: string = process.env.TOKEN;
@@ -138,14 +138,13 @@ client.on("messageReactionAdd", async (reaction: MessageReaction, user: User) =>
     const guildRolesRef: ReactionRole[] = (await firestore.collection(reaction.message.guild.id).doc(reaction.message.channel.id).get()).data() as ReactionRole[];
     if (!guildRolesRef[reaction.message.id]) return;
     guildRolesRef[reaction.message.id].forEach(async (reactionRoleItem: ReactionRoleItem) => {
-      if (reactionRoleItem.emoji === reaction.emoji.name) {
+      if (reactionRoleItem.emoji === getHexfromEmoji(reaction.emoji.name)) {
         // Check If Role Exists
-        console.log(reaction.message.guild.roles.cache.has(reactionRoleItem.role));
         if (!reaction.message.guild.roles.cache.has(reactionRoleItem.role)) return;
         // Check If User Has Role
         if (reaction.message.guild.member(user).roles.cache.has(reactionRoleItem.role)) return;
 
-        reaction.message.guild.member(user).roles.add(reactionRoleItem.role);
+        return reaction.message.guild.member(user).roles.add(reactionRoleItem.role);
       }
     });
   } catch (err) {
@@ -168,13 +167,13 @@ client.on("messageReactionRemove", async (reaction: MessageReaction, user: User)
     const guildRolesRef: ReactionRole[] = (await firestore.collection(reaction.message.guild.id).doc(reaction.message.channel.id).get()).data() as ReactionRole[];
     if (!guildRolesRef[reaction.message.id]) return;
     guildRolesRef[reaction.message.id].forEach(async (reactionRoleItem: ReactionRoleItem) => {
-      if (reactionRoleItem.emoji === reaction.emoji.name) {
+      if (reactionRoleItem.emoji === getHexfromEmoji(reaction.emoji.name)) {
         // Check If Role Exists
         if (!(await reaction.message.guild.roles.fetch()).cache.has(reactionRoleItem.role)) return;
         // Check If User Has Role
         if (!reaction.message.guild.member(user).roles.cache.has(reactionRoleItem.role)) return;
 
-        reaction.message.guild.member(user).roles.remove(reactionRoleItem.role);
+        return reaction.message.guild.member(user).roles.remove(reactionRoleItem.role);
       }
     });
   } catch (err) {
