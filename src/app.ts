@@ -144,7 +144,17 @@ client.on("messageReactionAdd", async (reaction: MessageReaction, user: User) =>
         // Check If User Has Role
         if (reaction.message.guild.member(user).roles.cache.has(reactionRoleItem.role)) return;
 
-        return reaction.message.guild.member(user).roles.add(reactionRoleItem.role);
+        reaction.message.guild.member(user).roles.add(reactionRoleItem.role);
+
+        return await Log.p({
+          guild: reaction.message.guild,
+          embed: {
+            color: config.color.info,
+            author: { name: "Role Append [ReactionRole]", iconURL: user.avatarURL() },
+            description: `<@${user.id}> += <@&${reactionRoleItem.role}>`,
+            timestamp: new Date(),
+          },
+        });
       }
     });
   } catch (err) {
@@ -173,7 +183,17 @@ client.on("messageReactionRemove", async (reaction: MessageReaction, user: User)
         // Check If User Has Role
         if (!reaction.message.guild.member(user).roles.cache.has(reactionRoleItem.role)) return;
 
-        return reaction.message.guild.member(user).roles.remove(reactionRoleItem.role);
+        reaction.message.guild.member(user).roles.remove(reactionRoleItem.role);
+
+        return await Log.p({
+          guild: reaction.message.guild,
+          embed: {
+            color: config.color.info,
+            author: { name: "Role Remove [ReactionRole]", iconURL: user.avatarURL() },
+            description: `<@${user.id}> -= <@&${reactionRoleItem.role}>`,
+            timestamp: new Date(),
+          },
+        });
       }
     });
   } catch (err) {
@@ -312,7 +332,7 @@ client.on("guildMemberAdd", async (member: GuildMember) => {
             guild: member.guild,
             embed: {
               color: config.color.info,
-              author: { name: "Role Append [AutoRole]", iconURL: config.icon.autorole },
+              author: { name: "Role Append [AutoRole]", iconURL: config.icon.role_append },
               description: `<@${member.user.id}> += <@&${autoRoleconfig.role}>`,
               timestamp: new Date(),
             },
