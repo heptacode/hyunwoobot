@@ -8,10 +8,12 @@ export default {
   name: "reactionrole",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
-      if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_MESSAGES")))
+      if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_MESSAGES"))) {
+        await message.react("❌");
         return message.channel.send(locale.insufficientPerms_manage_messages).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
+      }
 
       const method = args[0];
       const messageID = args[1];

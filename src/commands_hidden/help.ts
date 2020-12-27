@@ -19,7 +19,7 @@ export default {
       });
     }
 
-    message.channel.send({
+    return message.channel.send({
       embed: {
         color: config.color.primary,
         title: `${config.bot.name} ${isUser ? locale.help : locale.help_manager}`,

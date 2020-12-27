@@ -56,8 +56,11 @@ export default {
               if (Number(i) == 0) fields.push({ name: locale.nowPlaying, value: state.playlist[i].title });
               else fields.push({ name: `#${i}`, value: state.playlist[i].title });
             }
+
             fields.push({ name: "\u200B", value: `${state.isPlaying ? "▶️" : "⏹"}${state.isLooped ? " 🔁" : ""}${state.isRepeated ? " 🔂" : ""}` });
-            message.channel.send({
+
+            message.react("✅");
+            return message.channel.send({
               embed: {
                 color: config.color.primary,
                 author: { name: locale.enqueued, iconURL: state.playlist[state.playlist.length - 1].requestedBy.avatarURL, url: config.bot.website },
@@ -70,16 +73,17 @@ export default {
             });
           }
         } catch (err) {
+          message.react("❌");
           Log.e(`Enqueue > 2 > ${err}`);
-          message.channel.send(locale.err_cmd);
         }
       } else {
+        message.react("❌");
+        message.channel.send(locale.urlInvalid);
         Log.e(`Enqueue > No Result`);
-        return message.channel.send(locale.urlInvalid);
       }
     } catch (err) {
+      message.react("❌");
       Log.e(`Enqueue > 1 > ${err}`);
-      message.channel.send(locale.err_cmd);
     }
   },
 };

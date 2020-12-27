@@ -8,14 +8,17 @@ export default {
   aliases: ["del", "rm", "remove", "purge"],
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
-      if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_MESSAGES")))
+      if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_MESSAGES"))) {
+        message.react("❌");
         return message.reply(locale.insufficientPerms_manage_messages).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
+      }
 
       const amount = Number(args[0]);
       if (amount === NaN || !(amount >= 2 && amount <= 100)) {
         Log.w(`Delete : Invalid value : ${amount}`);
+        message.react("❌");
         return message.channel.send(locale.invalidAmount);
       }
 

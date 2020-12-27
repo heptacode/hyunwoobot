@@ -24,14 +24,15 @@ export default {
       const result = await configDocRef.update({ locale: newValue });
       if (result) {
         Log.d(`ChangeLocale : ${newValue}`);
-        message.channel.send(`${locale.changeLocale}${newValue}`);
+        message.react("✅");
+        return message.channel.send(`${locale.changeLocale}${newValue}`);
       } else {
+        message.react("❌");
         Log.e(`ChangeLocale > 2 > ${result}`);
-        message.channel.send(locale.err_cmd);
       }
     } catch (err) {
+      message.react("❌");
       Log.e(`ChangeLocale > 1 > ${err}`);
-      message.channel.send(locale.err_cmd);
     }
   },
 };

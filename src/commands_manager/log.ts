@@ -9,10 +9,12 @@ export default {
   name: "log",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
-      if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_MESSAGES")))
+      if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_MESSAGES"))) {
+        message.react("❌");
         return message.channel.send(locale.insufficientPerms_manage_messages).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
+      }
 
       (await firestore.collection(message.guild.id).doc("config").get()).data().log = getChannelID(message.guild, args[0]);
 
@@ -21,14 +23,17 @@ export default {
         .doc("config")
         .update({ log: getChannelID(message.guild, args[0]) });
 
-      message.channel.send({
+      await message.channel.send({
         embed: {
           title: locale.log,
           color: config.color.yellow,
           description: `${locale.log_set}<#${getChannelID(message.guild, args[0])}>`,
         },
       });
+
+      return message.react("✅");
     } catch (err) {
+      message.react("❌");
       Log.e(`Log > ${err}`);
     }
   },

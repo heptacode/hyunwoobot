@@ -7,9 +7,15 @@ export const voiceConnect = async (locale: Locale, state: State, message: Messag
   const permissions = voiceChannel.permissionsFor(message.client.user);
   try {
     // Not in voice channel
-    if (!voiceChannel) return message.channel.send(locale.joinToConnect);
+    if (!voiceChannel) {
+      message.react("❌");
+      return message.channel.send(locale.joinToConnect);
+    }
     // Insufficient perms
-    if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) return message.channel.send(locale.insufficientPerms_connect);
+    if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
+      message.react("❌");
+      return message.channel.send(locale.insufficientPerms_connect);
+    }
 
     try {
       const connection = await voiceChannel.join();
@@ -18,11 +24,12 @@ export const voiceConnect = async (locale: Locale, state: State, message: Messag
 
       Log.d("VoiceConnect");
     } catch (err) {
+      message.react("❌");
       Log.e(`VoiceConnect > 2 > ${err}`);
     }
   } catch (err) {
+    message.react("❌");
     Log.e(`VoiceConnect > 1 > ${err}`);
-    return message.channel.send(locale.err_task);
   }
 };
 
@@ -36,6 +43,7 @@ export const voiceDisconnect = (locale: Locale, state: State, message: Message, 
     Log.d(`VoiceDisconnect${timeout ? " : Timeout" : ""}`);
     message.channel.send(`${timeout ? locale.disconnectTimeout : locale.leave}`);
   } catch (err) {
+    message.react("❌");
     message.channel.send(locale.notInVoiceChannel);
   }
 };

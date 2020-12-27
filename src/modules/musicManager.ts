@@ -71,74 +71,97 @@ export const stream = async (locale: Locale, state: State, message: Message) => 
   }
 };
 
-export const skip = (locale: Locale, state: State, message: Message) => {
+export const skip = async (locale: Locale, state: State, message: Message) => {
   try {
-    if (!message.member.voice.channel) return message.channel.send(locale.joinToSkip);
+    if (!message.member.voice.channel) {
+      message.react("❌");
+      return message.channel.send(locale.joinToSkip).then((_message: Message) => {
+        _message.delete({ timeout: 5000 });
+      });
+    }
 
-    if (state.playlist.length == 0) return message.channel.send(locale.noSongToSkip);
+    if (state.playlist.length === 0) return message.channel.send(locale.noSongToSkip);
 
     state.playlist.shift();
 
     state.dispatcher.end();
 
-    Log.d("Skip");
-    message.channel.send(locale.skipped);
+    message.react("⏩");
+    return message.channel.send(locale.skipped);
   } catch (err) {
+    message.react("❌");
     Log.e(`Skip > 1 > ${err}`);
-    message.channel.send(locale.err_cmd);
   }
 };
 
-export const resume = (locale: Locale, state: State, message: Message) => {
+export const resume = async (locale: Locale, state: State, message: Message) => {
   try {
-    if (!message.member.voice.channel) return message.channel.send(locale.joinToStop);
+    if (!message.member.voice.channel) {
+      message.react("❌");
+      return message.channel.send(locale.joinToConnect).then((_message: Message) => {
+        _message.delete({ timeout: 5000 });
+      });
+    }
 
     state.dispatcher.resume();
     state.isPlaying = true;
-    Log.d("Resume");
   } catch (err) {
+    message.react("❌");
     Log.e(`Resume > 1 > ${err}`);
-    return message.channel.send(locale.stopNotNow);
   }
 };
 
-export const pause = (locale: Locale, state: State, message: Message) => {
+export const pause = async (locale: Locale, state: State, message: Message) => {
   try {
-    if (!message.member.voice.channel) return message.channel.send(locale.joinToStop);
+    if (!message.member.voice.channel) {
+      message.react("❌");
+      return message.channel.send(locale.joinToStop).then((_message: Message) => {
+        _message.delete({ timeout: 5000 });
+      });
+    }
 
     state.dispatcher.pause(true);
     state.isPlaying = false;
-    Log.d("Pause");
   } catch (err) {
+    message.react("❌");
+    message.channel.send(locale.stopNotNow);
     Log.e(`Pause > 1 > ${err}`);
-    return message.channel.send(locale.stopNotNow);
   }
 };
 
 export const stop = (locale: Locale, state: State, message: Message) => {
   try {
-    if (!message.member.voice.channel) return message.channel.send(`${locale.joinToStop}`);
+    if (!message.member.voice.channel) {
+      message.react("❌");
+      return message.channel.send(locale.joinToStop).then((_message: Message) => {
+        _message.delete({ timeout: 5000 });
+      });
+    }
 
     state.dispatcher.pause(true);
     state.isPlaying = false;
-
-    Log.d("Stop");
   } catch (err) {
+    message.react("❌");
+    message.channel.send(`${locale.stopNotNow}`);
     Log.e(`Stop > 1 > ${err}`);
-    return message.channel.send(`${locale.stopNotNow}`);
   }
 };
 
 export const toggleLoop = (locale: Locale, state: State, message: Message) => {
   try {
-    if (!message.member.voice.channel) return message.channel.send(locale.joinToToggleLoop);
+    if (!message.member.voice.channel) {
+      message.react("❌");
+      return message.channel.send(locale.joinToToggleLoop).then((_message: Message) => {
+        _message.delete({ timeout: 5000 });
+      });
+    }
 
     state.isLooped = !state.isLooped;
 
-    Log.d(`ToggleLoop : ${state.isLooped ? "ON" : "OFF"}`);
-    message.channel.send(`${locale.toggleLoop}${state.isLooped ? `${locale.on}` : `${locale.off}`}`);
+    message.react("✅");
+    return message.channel.send(`${locale.toggleLoop}${state.isLooped ? `${locale.on}` : `${locale.off}`}`);
   } catch (err) {
+    message.react("❌");
     Log.e(`ToggleLoop > 1 > ${err}`);
-    message.channel.send(locale.err_cmd);
   }
 };

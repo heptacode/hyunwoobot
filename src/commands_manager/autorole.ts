@@ -14,6 +14,10 @@ export default {
           _message.delete({ timeout: 5000 });
         });
 
+      const method = args[0];
+      const type = args[1];
+      const role = args[2];
+
       const configDocRef = firestore.collection(message.guild.id).doc("config");
       const configDocSnapshot = await configDocRef.get();
 
@@ -21,16 +25,19 @@ export default {
 
       if (args.length === 0) {
         autoRoleConfig = configDocSnapshot.data().autoRole as AutoRole[];
-      } else if (args[0] === "add") {
-        if (!["user", "bot"].includes(args[1])) return message.channel.send(locale.autoRole_usage);
+      } else if (method === "add") {
+        if (!["user", "bot"].includes(type)) return message.channel.send(locale.autoRole_usage);
 
         autoRoleConfig = configDocSnapshot.data().autoRole as AutoRole[];
-        autoRoleConfig.push({ type: args[1], role: getRoleID(message.guild, args[2]) });
+        autoRoleConfig.push({ type: type, role: getRoleID(message.guild, role) });
         await configDocRef.update({ autoRole: autoRoleConfig });
-      } else if (args[0] === "reset") {
+        message.react("✅");
+      } else if (method === "reset") {
         await configDocRef.update({ autoRole: [] });
+        message.react("✅");
       } else {
-        return message.channel.send(locale.autoRole_usage);
+        message.channel.send(locale.autoRole_usage);
+        return await message.react("❌");
       }
 
       const fields: EmbedFieldData[] = [];
@@ -39,10 +46,11 @@ export default {
           fields.push({ name: autoRoleConfig.type, value: `<@&${autoRoleConfig.role}>` });
         });
 
-      message.channel.send({
+      return message.channel.send({
         embed: { title: locale.autoRole, color: config.color.yellow, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: locale.autoRole_empty }] },
       });
     } catch (err) {
+      message.react("❌");
       Log.e(`AutoRole > ${err}`);
     }
   },

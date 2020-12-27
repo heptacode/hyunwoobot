@@ -9,10 +9,12 @@ export default {
   name: "voice",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
-      if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_CHANNELS")))
+      if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_CHANNELS"))) {
+        message.react("❌");
         return message.channel.send(locale.insufficientPerms_manage_channels).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
+      }
 
       const configDocRef = firestore.collection(message.guild.id).doc("config");
       const configDocSnapshot = await configDocRef.get();
@@ -39,10 +41,12 @@ export default {
           fields.push({ name: `${getChannelName(message.guild, voiceConfig.voiceChannel)}`, value: `<@&${voiceConfig.role}>` });
         });
 
-      message.channel.send({
+      message.react("✅");
+      return message.channel.send({
         embed: { title: locale.voiceRole, color: config.color.yellow, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: locale.voiceRole_empty }] },
       });
     } catch (err) {
+      message.react("❌");
       Log.e(`Voice > ${err}`);
     }
   },

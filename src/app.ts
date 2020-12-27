@@ -106,7 +106,7 @@ client.on("message", async (message: Message) => {
       configDocSnapshot = await configDocRef.get();
     } catch (err) {
       Log.e(`Firestore Initialize > ${err}`);
-      return message.channel.send(`An error occured while initializing.`);
+      return message.channel.send("An error occured while initializing.");
     }
   }
 
@@ -118,8 +118,8 @@ client.on("message", async (message: Message) => {
     if (commandName === "help") command.execute(locale, message, args, commands, commands_manager);
     else command.execute(locale, state.get(message.guild.id), message, args);
   } catch (err) {
+    await message.react("❌");
     Log.e(`Main > ${JSON.stringify(message.content)} > ${err}`);
-    message.channel.send(locale.err_cmd);
   }
 });
 

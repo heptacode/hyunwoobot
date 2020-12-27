@@ -2,22 +2,22 @@ import { Guild } from "discord.js";
 
 export const getChannelID = (guild: Guild, arg: string): string => {
   if (arg.startsWith("<#")) arg = arg.slice(2, -1);
-  return guild.channels.cache.find((channel) => channel.id === arg || channel.name === arg).id;
+  return guild.channels.cache.find((channel) => channel.id === arg || channel.name.toLowerCase() === arg.toLowerCase()).id;
 };
 
 export const getChannelName = (guild: Guild, arg: string): string => {
   if (arg.startsWith("<#")) arg = arg.slice(2, -1);
-  return guild.channels.cache.find((channel) => channel.id === arg || channel.name === arg).name;
+  return guild.channels.cache.find((channel) => channel.id === arg || channel.name.toLowerCase() === arg.toLowerCase()).name;
 };
 
 export const getRoleID = (guild: Guild, arg: string): string => {
   if (arg.startsWith("<@&")) arg = arg.slice(3, -1);
-  return guild.roles.cache.find((role) => role.id === arg || role.name === arg).id;
+  return guild.roles.cache.find((role) => role.id === arg || role.name.toLowerCase() === arg.toLowerCase()).id;
 };
 
 export const getRoleName = (guild: Guild, arg: string): string => {
   if (arg.startsWith("<@&")) arg = arg.slice(3, -1);
-  return guild.roles.cache.find((role) => role.id === arg || role.name === arg).name;
+  return guild.roles.cache.find((role) => role.id === arg || role.name.toLowerCase() === arg.toLowerCase()).name;
 };
 
 export const getHexfromEmoji = (emoji: string): string => {
