@@ -3,7 +3,7 @@ import fs from "fs";
 import { Client, Collection, Guild, GuildMember, Message, MessageReaction, TextChannel, User, VoiceState } from "discord.js";
 import firestore from "./modules/firestore";
 import { AutoRole, Command, Locale, ReactionRole, ReactionRoleItem, State, VoiceRole } from "./";
-import { getHexfromEmoji } from "./modules/converter";
+import { getHexfromEmoji, getRoleName } from "./modules/converter";
 import config from "./config";
 import Log from "./modules/logger";
 import "dotenv/config";
@@ -37,8 +37,46 @@ for (const file of fs.readdirSync(path.resolve(__dirname, "../src/commands_hidde
   commands_hidden.set(command.name, command);
 }
 
+const init = async (guild: Guild) => {
+  if (!state.get(guild.id)) {
+    Log.d(`LocalDB Initialize for guild [ ${guild.name} | ${guild.id} ]`);
+    state.set(guild.id, {
+      locale: null,
+      textChannel: null,
+      voiceChannel: null,
+      connection: null,
+      playlist: [],
+      isLooped: false,
+      isRepeated: false,
+      isPlaying: false,
+      volume: 2,
+      timeout: null,
+    } as State);
+  }
+
+  const serverDocRef = firestore.collection(guild.id).doc("server");
+  const serverDocSnapshot = await serverDocRef.get();
+
+  const configDocRef = firestore.collection(guild.id).doc("config");
+  let configDocSnapshot = await configDocRef.get();
+
+  if (!configDocSnapshot.exists || !serverDocSnapshot.exists) {
+    Log.d(`Firestore Initialize for guild [ ${guild.name} | ${guild.id} ]`);
+    try {
+      await configDocRef.set({ autorole: [], locale: "ko", log: "", voice: [] });
+      await serverDocRef.set(JSON.parse(JSON.stringify(guild)));
+      configDocSnapshot = await configDocRef.get();
+    } catch (err) {
+      Log.e(`Firestore Initialize > ${err}`);
+    }
+  }
+
+  state.get(guild.id).locale = locales.get(await configDocSnapshot.data().locale);
+};
+
 client.once("ready", async () => {
   await client.user.setStatus("online");
+  // await client.user.setStatus("dnd");
 
   await client.user.setActivity({
     type: "WATCHING",
@@ -77,46 +115,13 @@ client.on("message", async (message: Message) => {
     commands_hidden.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
   if (!command) return;
 
-  if (!state.get(message.guild.id)) {
-    Log.d(`LocalDB Initialize for guild [ ${message.guild.name} | ${message.guild.id} ]`);
-    state.set(message.guild.id, {
-      textChannel: null,
-      voiceChannel: null,
-      connection: null,
-      playlist: [],
-      isLooped: false,
-      isRepeated: false,
-      isPlaying: false,
-      volume: 2,
-      timeout: null,
-    } as State);
-  }
-
-  const serverDocRef = firestore.collection(message.guild.id).doc("server");
-  const serverDocSnapshot = await serverDocRef.get();
-
-  const configDocRef = firestore.collection(message.guild.id).doc("config");
-  let configDocSnapshot = await configDocRef.get();
-
-  if (!configDocSnapshot.exists || !serverDocSnapshot.exists) {
-    Log.d(`Firestore Initialize for guild [ ${message.guild.name} | ${message.guild.id} ]`);
-    try {
-      await configDocRef.set({ autorole: [], locale: "ko", log: "", voice: [] });
-      await serverDocRef.set(JSON.parse(JSON.stringify(message.guild)));
-      configDocSnapshot = await configDocRef.get();
-    } catch (err) {
-      Log.e(`Firestore Initialize > ${err}`);
-      return message.channel.send("An error occured while initializing.");
-    }
-  }
-
-  const locale = locales.get(await configDocSnapshot.data().locale);
+  await init(message.guild);
 
   // if (command.onlyAtServers && message.channel.type === "dm") return message.reply(locale.denyDM);
 
   try {
-    if (commandName === "help") command.execute(locale, message, args, commands, commands_manager);
-    else command.execute(locale, state.get(message.guild.id), message, args);
+    if (commandName === "help") command.execute(state.get(message.guild.id).locale, message, args, commands, commands_manager);
+    else command.execute(state.get(message.guild.id).locale, state.get(message.guild.id), message, args);
   } catch (err) {
     await message.react("❌");
     Log.e(`Main > ${JSON.stringify(message.content)} > ${err}`);
@@ -202,6 +207,8 @@ client.on("messageReactionRemove", async (reaction: MessageReaction, user: User)
 });
 
 client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState) => {
+  await init(newState ? newState.guild : oldState.guild);
+
   const isChannelChange = (oldState: VoiceState, newState: VoiceState) => {
     return (
       oldState.mute === newState.mute &&
@@ -214,6 +221,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
       oldState.streaming === newState.streaming
     );
   };
+
   try {
     if (!oldState.channelID && newState.channelID && isChannelChange(oldState, newState)) {
       // Join Channel
@@ -223,6 +231,16 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
 
           try {
             await newState.member.roles.add(voiceRole.role);
+
+            if (voiceRole.textChannel) {
+              (newState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
+                embed: {
+                  color: config.color.info,
+                  description: `+ <@${newState.member.user.id}>`,
+                  footer: { text: `${getRoleName(newState.guild, voiceRole.role)}${state.get(newState.guild.id).locale.voiceRole_append}`, iconURL: newState.member.user.avatarURL() },
+                },
+              });
+            }
 
             Log.p({
               guild: newState.guild,
@@ -247,12 +265,22 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           try {
             await oldState.member.roles.remove(voiceRole.role);
 
+            if (voiceRole.textChannel) {
+              (oldState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
+                embed: {
+                  color: config.color.info,
+                  description: `- <@${oldState.member.user.id}>`,
+                  footer: { text: `${getRoleName(oldState.guild, voiceRole.role)}${state.get(oldState.guild.id).locale.voiceRole_remove}`, iconURL: oldState.member.user.avatarURL() },
+                },
+              });
+            }
+
             Log.p({
-              guild: newState.guild,
+              guild: oldState.guild,
               embed: {
                 color: config.color.info,
-                author: { name: "Role Remove [Voice]", iconURL: newState.member.user.avatarURL() },
-                description: `<@${newState.member.user.id}> -= <@&${voiceRole.role}>`,
+                author: { name: "Role Remove [Voice]", iconURL: oldState.member.user.avatarURL() },
+                description: `<@${oldState.member.user.id}> -= <@&${voiceRole.role}>`,
                 timestamp: new Date(),
               },
             });
@@ -268,6 +296,16 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
 
           try {
             await newState.member.roles.add(voiceRole.role);
+
+            if (voiceRole.textChannel) {
+              (newState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
+                embed: {
+                  color: config.color.info,
+                  description: `+ <@${newState.member.user.id}>`,
+                  footer: { text: `${getRoleName(newState.guild, voiceRole.role)}${state.get(newState.guild.id).locale.voiceRole_append}`, iconURL: newState.member.user.avatarURL() },
+                },
+              });
+            }
 
             Log.p({
               guild: newState.guild,
@@ -292,12 +330,22 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           try {
             await oldState.member.roles.remove(voiceRole.role);
 
+            if (voiceRole.textChannel) {
+              (oldState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
+                embed: {
+                  color: config.color.info,
+                  description: `- <@${oldState.member.user.id}>`,
+                  footer: { text: `${getRoleName(oldState.guild, voiceRole.role)}${state.get(oldState.guild.id).locale.voiceRole_remove}`, iconURL: oldState.member.user.avatarURL() },
+                },
+              });
+            }
+
             Log.p({
-              guild: newState.guild,
+              guild: oldState.guild,
               embed: {
                 color: config.color.info,
-                author: { name: "Role Remove [Voice]", iconURL: newState.member.user.avatarURL() },
-                description: `<@${newState.member.user.id}> -= <@&${voiceRole.role}>`,
+                author: { name: "Role Remove [Voice]", iconURL: oldState.member.user.avatarURL() },
+                description: `<@${oldState.member.user.id}> -= <@&${voiceRole.role}>`,
                 timestamp: new Date(),
               },
             });

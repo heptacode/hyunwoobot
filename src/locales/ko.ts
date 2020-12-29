@@ -8,8 +8,8 @@ export default {
   // help
   help: "도움말",
   help_manager: "도움말 [관리자]",
-  helpDesc: "사용 가능한 명령어와 도움말 목록이예요!\n(관리자 명령어를 보려면 [manager]를 인자로 붙여주세요)",
-  helpDesc_manager: "관리자가 사용 가능한 명령어와 도움말 목록이예요!",
+  helpDesc: "사용 가능한 명령어와 도움말 목록이예요!\n(관리자 명령어를 보려면 [manager]를 인자로 붙여주세요)\n<필수 인자> [선택적 인자]",
+  helpDesc_manager: "관리자가 사용 가능한 명령어와 도움말 목록이예요!\n<필수 인자> [선택적 인자]",
   help_join: "음성 채널에 접속시키기",
   help_leave: "음성 채널에서 내보내기",
   help_locale: "서버의 기본 언어 설정",
@@ -86,6 +86,9 @@ export default {
   // voice
   voiceRole: "⚙️ 음성 채널 역할",
   voiceRole_empty: "설정된 역할이 없어요.",
+  voiceRole_usage: "💡 올바른 인자값: <add|remove> <음성채널ID> <역할> [채팅채널ID]",
+  voiceRole_append: "에 추가됨",
+  voiceRole_remove: "에서 제거됨",
 
   // Permissions
   insufficientPerms_manage_channels: "🚫 채널을 관리할 수 있는 권한이 없습니다.",

@@ -1,4 +1,4 @@
-import { Guild, MessageEmbed, StreamDispatcher, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
+import { Guild, MessageEmbedOptions, StreamDispatcher, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
 
 export interface Locale {
   locale: string;
@@ -86,6 +86,9 @@ export interface Locale {
   // voice
   voiceRole: string;
   voiceRole_empty: string;
+  voiceRole_usage: string;
+  voiceRole_append: string;
+  voiceRole_remove: string;
 
   // Permissions
   insufficientPerms_manage_channels: string;
@@ -105,6 +108,7 @@ export interface Command {
 }
 
 export interface State {
+  locale: Locale;
   textChannel: TextChannel;
   voiceChannel: VoiceChannel;
   connection: VoiceConnection;
@@ -148,9 +152,10 @@ export interface ReactionRoleItem {
 export interface VoiceRole {
   voiceChannel: string;
   role: string;
+  textChannel?: string;
 }
 
 export interface LogData {
   guild: Guild;
-  embed?: MessageEmbed | any;
+  embed?: MessageEmbedOptions;
 }

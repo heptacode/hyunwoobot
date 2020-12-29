@@ -8,8 +8,8 @@ export default {
   // help
   help: "Help",
   help_manager: "Help [Manager]",
-  helpDesc: "List of commands and descriptions you can use.\n(For manager commands, add [manager] for an argument)",
-  helpDesc_manager: "List of commands and descriptions which managers can use.",
+  helpDesc: "List of commands and descriptions you can use.\n(For manager commands, add [manager] for an argument)\n<Required> [Optional]",
+  helpDesc_manager: "List of commands and descriptions which managers can use.\n<Required> [Optional]",
   help_join: "Join a voice channel you are in",
   help_leave: "Unbind from a voice channel you are in",
   help_locale: "Change the default locale for the server",
@@ -86,6 +86,9 @@ export default {
   // voice
   voiceRole: "⚙️ Voice Channel Roles",
   voiceRole_empty: "No roles have been set.",
+  voiceRole_usage: "💡 Correct Arguments: <add|remove> <voiceChannelID> <role> [textChannelID]",
+  voiceRole_append: " was appended",
+  voiceRole_remove: " was removed",
 
   // Permissions
   insufficientPerms_manage_channels: "🚫 You don't have permission to manage channels!",
