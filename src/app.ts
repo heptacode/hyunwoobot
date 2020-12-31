@@ -227,7 +227,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
       // Join Channel
       ((await firestore.collection(newState.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
         if (voiceRole.voiceChannel === newState.channelID) {
-          if (newState.member.roles.cache.has(voiceRole.role)) return;
+          // if (newState.member.roles.cache.has(voiceRole.role)) return;
 
           try {
             await newState.member.roles.add(voiceRole.role);
@@ -260,7 +260,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
       // Switch Channel
       ((await firestore.collection(oldState.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
         if (voiceRole.voiceChannel === oldState.channelID) {
-          if (!oldState.member.roles.cache.has(voiceRole.role)) return;
+          // if (!oldState.member.roles.cache.has(voiceRole.role)) return;
 
           try {
             await oldState.member.roles.remove(voiceRole.role);
@@ -292,7 +292,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
 
       ((await firestore.collection(newState.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
         if (voiceRole.voiceChannel === newState.channelID) {
-          if (newState.member.roles.cache.has(voiceRole.role)) return;
+          // if (newState.member.roles.cache.has(voiceRole.role)) return;
 
           try {
             await newState.member.roles.add(voiceRole.role);
@@ -325,7 +325,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
       // Leave Channel
       ((await firestore.collection(oldState.guild.id).doc("config").get()).data().voice as VoiceRole[]).forEach(async (voiceRole: VoiceRole) => {
         if (voiceRole.voiceChannel === oldState.channelID) {
-          if (!oldState.member.roles.cache.has(voiceRole.role)) return;
+          // if (!oldState.member.roles.cache.has(voiceRole.role)) return;
 
           try {
             await oldState.member.roles.remove(voiceRole.role);
