@@ -38,6 +38,8 @@ export default {
   // delete
   delete: " Messages have been deleted.",
   invalidAmount: "❌ Please enter a valid amount: 2 ~ 100",
+  // embed
+  embed_usage: "💡 Correct arguments: <channelID> <messageEmbed>",
   // voiceConnect
   joinToConnect: "💡 To play music, join a voice channel!",
   // voiceDisconnect

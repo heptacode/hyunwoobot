@@ -35,9 +35,11 @@ export default {
   autoRole: "⚙️ 자동 역할",
   autoRole_empty: "설정된 역할이 없어요.",
   autoRole_usage: "💡 올바른 인자값: <add|reset> [user|bot] [역할]",
-  // delete, edit, embed
+  // delete
   delete: "개의 메시지를 삭제했어요!",
   invalidAmount: "❌ 2 ~ 100 사이의 올바른 값을 입력해주세요",
+  // embed
+  embed_usage: "💡 올바른 인자값: <채팅채널ID> <임베드>",
   // voiceConnect
   joinToConnect: "💡 음악을 재생하려면 음성 채널에 접속해주세요!",
   // voiceDisconnect

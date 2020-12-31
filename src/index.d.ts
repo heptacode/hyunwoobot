@@ -38,6 +38,8 @@ export interface Locale {
   // delete
   delete: string;
   invalidAmount: string;
+  // embed
+  embed_usage: string;
   // voiceConnect
   joinToConnect: string;
   // voiceDisconnect

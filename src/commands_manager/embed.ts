@@ -1,5 +1,6 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { Args, Locale, State } from "../";
+import { getChannelID } from "../modules/converter";
 import Log from "../modules/logger";
 
 export default {
@@ -13,9 +14,15 @@ export default {
         });
       }
 
-      await message.channel.send({
-        embed: JSON.parse(args.join(" ").replace(/\n/g, "\\n")) as MessageEmbed,
-      });
+      if (args.length <= 3) {
+        message.react("❌");
+        return message.channel.send(locale.embed_usage);
+      }
+
+      const textChannel = getChannelID(message.guild, args[0]);
+
+      args.shift();
+      await (message.guild.channels.cache.get(textChannel) as TextChannel).send({ embed: JSON.parse(args.join(" ").replace(/\n/g, "\\n")) as MessageEmbed });
 
       return message.react("✅");
     } catch (err) {
