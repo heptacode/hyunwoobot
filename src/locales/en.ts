@@ -89,8 +89,6 @@ export default {
   voiceRole: "⚙️ Voice Channel Roles",
   voiceRole_empty: "No roles have been set.",
   voiceRole_usage: "💡 Correct Arguments: <add|remove> <voiceChannelID> <role> [textChannelID]",
-  voiceRole_append: " was appended",
-  voiceRole_remove: " was removed",
 
   // Permissions
   insufficientPerms_manage_channels: "🚫 You don't have permission to manage channels!",

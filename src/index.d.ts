@@ -89,8 +89,6 @@ export interface Locale {
   voiceRole: string;
   voiceRole_empty: string;
   voiceRole_usage: string;
-  voiceRole_append: string;
-  voiceRole_remove: string;
 
   // Permissions
   insufficientPerms_manage_channels: string;

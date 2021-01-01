@@ -236,8 +236,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
               (newState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
                 embed: {
                   color: config.color.info,
-                  description: `+ <@${newState.member.user.id}>`,
-                  footer: { text: `${getRoleName(newState.guild, voiceRole.role)}${state.get(newState.guild.id).locale.voiceRole_append}`, iconURL: newState.member.user.avatarURL() },
+                  author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },
                 },
               });
             }
@@ -268,9 +267,8 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
             if (voiceRole.textChannel) {
               (oldState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
                 embed: {
-                  color: config.color.info,
-                  description: `- <@${oldState.member.user.id}>`,
-                  footer: { text: `${getRoleName(oldState.guild, voiceRole.role)}${state.get(oldState.guild.id).locale.voiceRole_remove}`, iconURL: oldState.member.user.avatarURL() },
+                  color: config.color.error,
+                  author: { name: oldState.member.user.username, iconURL: oldState.member.user.avatarURL() },
                 },
               });
             }
@@ -294,18 +292,17 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         if (voiceRole.voiceChannel === newState.channelID) {
           // if (newState.member.roles.cache.has(voiceRole.role)) return;
 
+          if (voiceRole.textChannel) {
+            (newState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
+              embed: {
+                color: config.color.info,
+                author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },
+              },
+            });
+          }
+
           try {
             await newState.member.roles.add(voiceRole.role);
-
-            if (voiceRole.textChannel) {
-              (newState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
-                embed: {
-                  color: config.color.info,
-                  description: `+ <@${newState.member.user.id}>`,
-                  footer: { text: `${getRoleName(newState.guild, voiceRole.role)}${state.get(newState.guild.id).locale.voiceRole_append}`, iconURL: newState.member.user.avatarURL() },
-                },
-              });
-            }
 
             Log.p({
               guild: newState.guild,
@@ -333,9 +330,8 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
             if (voiceRole.textChannel) {
               (oldState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
                 embed: {
-                  color: config.color.info,
-                  description: `- <@${oldState.member.user.id}>`,
-                  footer: { text: `${getRoleName(oldState.guild, voiceRole.role)}${state.get(oldState.guild.id).locale.voiceRole_remove}`, iconURL: oldState.member.user.avatarURL() },
+                  color: config.color.error,
+                  author: { name: oldState.member.user.username, iconURL: oldState.member.user.avatarURL() },
                 },
               });
             }

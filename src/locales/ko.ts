@@ -89,8 +89,6 @@ export default {
   voiceRole: "⚙️ 음성 채널 역할",
   voiceRole_empty: "설정된 역할이 없어요.",
   voiceRole_usage: "💡 올바른 인자값: <add|remove> <음성채널ID> <역할> [채팅채널ID]",
-  voiceRole_append: "에 추가됨",
-  voiceRole_remove: "에서 제거됨",
 
   // Permissions
   insufficientPerms_manage_channels: "🚫 채널을 관리할 수 있는 권한이 없습니다.",
