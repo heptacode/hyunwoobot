@@ -292,17 +292,17 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         if (voiceRole.voiceChannel === newState.channelID) {
           // if (newState.member.roles.cache.has(voiceRole.role)) return;
 
-          if (voiceRole.textChannel) {
-            (newState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
-              embed: {
-                color: config.color.info,
-                author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },
-              },
-            });
-          }
-
           try {
             await newState.member.roles.add(voiceRole.role);
+
+            if (voiceRole.textChannel) {
+              (newState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
+                embed: {
+                  color: config.color.info,
+                  author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },
+                },
+              });
+            }
 
             Log.p({
               guild: newState.guild,
