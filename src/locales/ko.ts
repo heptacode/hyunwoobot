@@ -84,7 +84,7 @@ export default {
   log: "📦 로그",
   log_set: "로그 채널이 변경됐어요: ",
   // reactionRole
-  reactionrole_usage: "💡 올바른 인자값: <add|remove|purge> <메시지ID> [이모지] [역할]",
+  reactionrole_usage: "💡 올바른 인자값: <add|remove|purge> <채팅채널ID> <메시지ID> [이모지] [역할]",
   // voice
   voiceRole: "⚙️ 음성 채널 역할",
   voiceRole_empty: "설정된 역할이 없어요.",

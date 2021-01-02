@@ -84,7 +84,7 @@ export default {
   log: "📦 Logging",
   log_set: "Log channel set to: ",
   // reactionRole
-  reactionrole_usage: "💡 Correct Arguments: <add|remove|purge> <messageID> [emoji] [role]",
+  reactionrole_usage: "💡 Correct Arguments: <add|remove|purge> <textChannelID> <messageID> [emoji] [role]",
   // voice
   voiceRole: "⚙️ Voice Channel Roles",
   voiceRole_empty: "No roles have been set.",

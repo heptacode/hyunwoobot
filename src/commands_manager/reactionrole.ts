@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 import { Args, Locale, ReactionRole, ReactionRoleItem, State } from "../";
 import { getHexfromEmoji, getRoleID } from "../modules/converter";
 import firestore from "../modules/firestore";
@@ -16,13 +16,13 @@ export default {
       }
 
       const method = args[0];
-      const messageID = args[1];
-      const emoji = args[2];
-      const role = args[3];
+      const channelID = args[1];
+      const messageID = args[2];
+      const emoji = args[3];
+      const role = args[4];
 
-      const reactionRoleDocRef = firestore.collection(message.guild.id).doc(message.channel.id);
+      const reactionRoleDocRef = firestore.collection(message.guild.id).doc(channelID);
       const reactionRoleDocSnapshot = await reactionRoleDocRef.get();
-
       if (args.length <= 1) {
         await message.react("❌");
         return message.channel.send(locale.reactionrole_usage);
@@ -30,17 +30,22 @@ export default {
         if (args.length <= 3) return message.channel.send(locale.reactionrole_usage);
 
         try {
-          const _message = await message.channel.messages.fetch(messageID);
+          const _message = await ((await message.guild.channels.cache.get(channelID)) as TextChannel).messages.fetch(messageID);
           await _message.react(emoji);
 
           if (!reactionRoleDocSnapshot.exists) await reactionRoleDocRef.set({ [_message.id]: [{ emoji: getHexfromEmoji(emoji), role: getRoleID(message.guild, role) }] } as ReactionRole);
           else {
-            for (const [key, reactionRoleConfig] of Object.entries(reactionRoleDocSnapshot.data())) {
-              if (key === messageID) {
-                reactionRoleConfig.push({ emoji: getHexfromEmoji(emoji), role: getRoleID(message.guild, role) });
-                await reactionRoleDocRef.update({ [_message.id]: reactionRoleConfig });
-                return await message.react("✅");
+            if (messageID in reactionRoleDocSnapshot.data()) {
+              for (const [key, reactionRoleConfig] of Object.entries(reactionRoleDocSnapshot.data())) {
+                if (key === messageID) {
+                  reactionRoleConfig.push({ emoji: getHexfromEmoji(emoji), role: getRoleID(message.guild, role) });
+                  await reactionRoleDocRef.update({ [_message.id]: reactionRoleConfig });
+                  return await message.react("✅");
+                }
               }
+            } else {
+              await reactionRoleDocRef.update({ [_message.id]: [{ emoji: getHexfromEmoji(emoji), role: getRoleID(message.guild, role) }] });
+              return await message.react("✅");
             }
           }
         } catch (err) {
@@ -51,7 +56,7 @@ export default {
         if (args.length <= 2) return message.channel.send(locale.reactionrole_usage);
 
         try {
-          const _message = await message.channel.messages.fetch(messageID);
+          const _message = await ((await message.guild.channels.cache.get(channelID)) as TextChannel).messages.fetch(messageID);
           if (reactionRoleDocSnapshot.exists) {
             for (const [key, reactionRoleConfig] of Object.entries(reactionRoleDocSnapshot.data())) {
               if (key === messageID) {
@@ -72,7 +77,7 @@ export default {
         }
       } else if (method === "purge") {
         try {
-          const _message = await message.channel.messages.fetch(args[1]);
+          const _message = await ((await message.guild.channels.cache.get(channelID)) as TextChannel).messages.fetch(messageID);
 
           const payload: ReactionRole[] = reactionRoleDocSnapshot.data() as ReactionRole[];
           for (const i in payload) {
