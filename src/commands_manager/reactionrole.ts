@@ -1,6 +1,6 @@
 import { Message, TextChannel } from "discord.js";
 import { Args, Locale, ReactionRole, ReactionRoleItem, State } from "../";
-import { getHexfromEmoji, getRoleID } from "../modules/converter";
+import { getChannelID, getHexfromEmoji, getRoleID } from "../modules/converter";
 import firestore from "../modules/firestore";
 import Log from "../modules/logger";
 
@@ -16,7 +16,7 @@ export default {
       }
 
       const method = args[0];
-      const channelID = args[1];
+      const channelID = getChannelID(message.guild, args[1]);
       const messageID = args[2];
       const emoji = args[3];
       const role = args[4];
