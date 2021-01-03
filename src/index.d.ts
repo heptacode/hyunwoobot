@@ -1,6 +1,6 @@
 import { Guild, MessageEmbedOptions, StreamDispatcher, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
 
-export interface Locale {
+interface Locale {
   locale: string;
   // Default
   on: string;
@@ -101,13 +101,13 @@ export interface Locale {
   err_task: string;
 }
 
-export interface Command {
+interface Command {
   name: string;
   aliases?: string[];
   execute: Function;
 }
 
-export interface State {
+interface State {
   locale: Locale;
   textChannel: TextChannel;
   voiceChannel: VoiceChannel;
@@ -128,34 +128,34 @@ export interface State {
   timeout: NodeJS.Timeout;
 }
 
-export type Args = Array<string>;
+type Args = Array<string>;
 
-export interface AlarmDB {
+interface AlarmDB {
   voiceChannel?: VoiceChannel;
   connection?: VoiceConnection;
 }
 
-export interface AutoRole {
+interface AutoRole {
   type: string;
   role: string;
 }
 
-export interface ReactionRole {
+interface ReactionRole {
   [message: string]: ReactionRoleItem[];
 }
 
-export interface ReactionRoleItem {
+interface ReactionRoleItem {
   emoji: string;
   role: string;
 }
 
-export interface VoiceRole {
+interface VoiceRole {
   voiceChannel: string;
   role: string;
   textChannel?: string;
 }
 
-export interface LogData {
+interface LogData {
   guild: Guild;
   embed?: MessageEmbedOptions;
 }

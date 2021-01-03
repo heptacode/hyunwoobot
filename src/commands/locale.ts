@@ -1,14 +1,10 @@
-import fs from "fs";
-import path from "path";
 import { Message } from "discord.js";
 import { Args, Locale, State } from "../";
 import firestore from "../modules/firestore";
+import { locales } from "../app";
 import Log from "../modules/logger";
 
-const locales: string[] = [];
-for (const locale of fs.readdirSync("./src/locales").filter((file) => file.endsWith(".ts"))) {
-  locales.push(path.parse(locale).name);
-}
+const locales_list: string[] = [...locales.keys()];
 
 export default {
   name: "locale",
@@ -19,7 +15,7 @@ export default {
 
       const newValue = message.content.split(" ")[1];
 
-      if (!locales.includes(newValue)) return message.channel.send(`Please enter a valid locale!\nSupported locales : ${locales}`);
+      if (!locales_list.includes(newValue)) return message.channel.send(`Please enter a valid locale!\nSupported locales : ${locales_list.join(", ")}`);
 
       const result = await configDocRef.update({ locale: newValue });
       if (result) {
