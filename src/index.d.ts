@@ -85,6 +85,9 @@ interface Locale {
   // log
   log: string;
   log_set: string;
+  // privateRoom
+  privateRoom_create: string;
+  privateRoom_waiting: string;
   // reactionRole
   reactionrole_usage: string;
   // voice
@@ -128,6 +131,21 @@ interface State {
   isPlaying: boolean;
   volume: number;
   timeout: NodeJS.Timeout;
+}
+
+interface Config {
+  autorole?: AutoRole[];
+  locale: string;
+  log?: string;
+  privateRoom?: string;
+  privateRooms?: PrivateRoom[];
+  voice?: VoiceRole[];
+}
+
+interface PrivateRoom {
+  host: string;
+  room: string;
+  waiting: string;
 }
 
 type Args = Array<string>;

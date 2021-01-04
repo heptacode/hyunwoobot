@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import firestore from "../modules/firestore";
 import { Args, Locale, State } from "../";
-import config from "../config";
+import props from "../props";
 import Log from "../modules/logger";
 import { getChannelID } from "../modules/converter";
 
@@ -9,7 +9,7 @@ export default {
   name: "log",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
-      if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_MESSAGES"))) {
+      if (!message.member.hasPermission("MANAGE_MESSAGES")) {
         message.react("❌");
         return message.channel.send(locale.insufficientPerms_manage_messages).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
@@ -26,7 +26,7 @@ export default {
       await message.channel.send({
         embed: {
           title: locale.log,
-          color: config.color.yellow,
+          color: props.color.yellow,
           description: `${locale.log_set}<#${getChannelID(message.guild, args[0])}>`,
         },
       });

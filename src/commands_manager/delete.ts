@@ -1,6 +1,6 @@
 import { Message, TextChannel } from "discord.js";
 import { Args, Locale, State } from "../";
-import config from "../config";
+import props from "../props";
 import Log from "../modules/logger";
 
 export default {
@@ -8,7 +8,7 @@ export default {
   aliases: ["del", "rm", "remove", "purge"],
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
-      if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_MESSAGES"))) {
+      if (!message.member.hasPermission("MANAGE_MESSAGES")) {
         message.react("❌");
         return message.reply(locale.insufficientPerms_manage_messages).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
@@ -24,7 +24,7 @@ export default {
 
       const result = await (message.channel as TextChannel).bulkDelete(amount);
 
-      if (result) return message.channel.send({ embed: { color: config.color.primary, author: { name: `🗑 ${amount}${locale.delete}` }, footer: { text: message.author.tag }, timestamp: new Date() } });
+      if (result) return message.channel.send({ embed: { color: props.color.primary, author: { name: `🗑 ${amount}${locale.delete}` }, footer: { text: message.author.tag }, timestamp: new Date() } });
       else return message.channel.send(locale.err_cmd);
     } catch (err) {
       Log.e(`Delete > 1 > ${err}`);

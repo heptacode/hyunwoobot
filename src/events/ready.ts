@@ -20,10 +20,7 @@ export default () => {
 
         (await firestore.collection(collection.id).get()).docs.map(async (doc) => {
           try {
-            if (!["server", "config"].includes(doc.id)) {
-              const channel: TextChannel = (await guild.channels.cache.find((channel) => channel.id == doc.id)) as TextChannel;
-              await channel.messages.fetch({ limit: 100 });
-            }
+            if (!["server", "config"].includes(doc.id)) ((await guild.channels.cache.get(doc.id)) as TextChannel).messages.fetch({ limit: 100 });
           } catch (err) {
             Log.e(`Fetch > 2 > ${err}`);
           }

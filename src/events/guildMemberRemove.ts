@@ -1,5 +1,5 @@
-import { Client, GuildMember } from "discord.js";
-import config from "../config";
+import { GuildMember } from "discord.js";
+import props from "../props";
 import { init } from "../modules/init";
 import { client } from "../app";
 import Log from "../modules/logger";
@@ -12,8 +12,8 @@ export default () => {
       Log.p({
         guild: member.guild,
         embed: {
-          color: config.color.info,
-          author: { name: "User Leave", iconURL: config.icon.out },
+          color: props.color.info,
+          author: { name: "User Leave", iconURL: props.icon.out },
           description: `<@${member.user.id}> left the server.`,
           timestamp: new Date(),
         },

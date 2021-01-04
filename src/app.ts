@@ -2,10 +2,10 @@ import path from "path";
 import fs from "fs";
 import { Client, Collection } from "discord.js";
 import { Command, Locale, State } from "./";
-import config from "./config";
+import props from "./props";
 import "dotenv/config";
 
-export const prefix: string = process.env.PREFIX || config.bot.prefix;
+export const prefix: string = process.env.PREFIX || props.bot.prefix;
 export const client: Client = new Client();
 export const locales: Collection<string, Locale> = new Collection();
 export const state: Collection<string, State> = new Collection();

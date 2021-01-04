@@ -8,7 +8,7 @@ export default {
   name: "reactionrole",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
-      if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_MESSAGES"))) {
+      if (!message.member.hasPermission("MANAGE_MESSAGES")) {
         await message.react("❌");
         return message.channel.send(locale.insufficientPerms_manage_messages).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
@@ -80,6 +80,7 @@ export default {
           const _message = await ((await message.guild.channels.cache.get(channelID)) as TextChannel).messages.fetch(messageID);
 
           const payload: ReactionRole[] = reactionRoleDocSnapshot.data() as ReactionRole[];
+
           for (const i in payload) {
             if (payload[messageID] === messageID) {
               payload.splice(Number(i), 1);

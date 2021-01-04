@@ -1,6 +1,6 @@
 import { Collection, EmbedFieldData, Message } from "discord.js";
 import { Args, Command, Locale } from "../";
-import config from "../config";
+import props from "../props";
 
 export default {
   name: "help",
@@ -21,11 +21,11 @@ export default {
 
     return message.channel.send({
       embed: {
-        color: config.color.primary,
-        title: `${config.bot.name} ${isUser ? locale.help : locale.help_manager}`,
-        url: config.bot.website,
+        color: props.color.primary,
+        title: `${props.bot.name} ${isUser ? locale.help : locale.help_manager}`,
+        url: props.bot.website,
         description: isUser ? locale.helpDesc : locale.helpDesc_manager,
-        thumbnail: { url: config.bot.icon },
+        thumbnail: { url: props.bot.icon },
         fields: fields,
       },
     });

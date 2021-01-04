@@ -2,14 +2,14 @@ import { EmbedFieldData, Message } from "discord.js";
 import firestore from "../modules/firestore";
 import { Args, Locale, State, VoiceRole } from "../";
 import { getChannelID, getChannelName, getRoleID } from "../modules/converter";
-import config from "../config";
+import props from "../props";
 import Log from "../modules/logger";
 
 export default {
   name: "voice",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
-      if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_CHANNELS"))) {
+      if (!message.member.hasPermission("MANAGE_CHANNELS")) {
         message.react("❌");
         return message.channel.send(locale.insufficientPerms_manage_channels).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
@@ -41,9 +41,9 @@ export default {
         if (args.length <= 2) return message.channel.send(locale.voiceRole_usage);
 
         voiceConfig = configDocSnapshot.data().voice as VoiceRole[];
-        for (const i in configDocSnapshot.data().voice as VoiceRole[]) {
-          if (configDocSnapshot.data().voice[i].voiceChannel === voiceChannel) voiceConfig.splice(Number(i), 1);
-        }
+        const idx = voiceConfig.findIndex((voiceConfig: VoiceRole) => voiceConfig.voiceChannel === voiceChannel);
+        voiceConfig.splice(idx, 1);
+
         await configDocRef.update({ voice: voiceConfig });
       } else {
         return message.channel.send(locale.voiceRole_usage);
@@ -60,7 +60,7 @@ export default {
 
       message.react("✅");
       return message.channel.send({
-        embed: { title: locale.voiceRole, color: config.color.yellow, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: locale.voiceRole_empty }] },
+        embed: { title: locale.voiceRole, color: props.color.yellow, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: locale.voiceRole_empty }] },
       });
     } catch (err) {
       message.react("❌");

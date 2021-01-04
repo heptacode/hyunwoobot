@@ -7,7 +7,7 @@ export default {
   name: "embed",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
-      if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_MESSAGES"))) {
+      if (!message.member.hasPermission("MANAGE_MESSAGES")) {
         message.react("❌");
         return message.channel.send(locale.insufficientPerms_manage_messages).then((_message: Message) => {
           _message.delete({ timeout: 5000 });

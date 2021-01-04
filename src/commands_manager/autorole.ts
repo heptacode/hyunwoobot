@@ -2,14 +2,14 @@ import { EmbedFieldData, Message } from "discord.js";
 import firestore from "../modules/firestore";
 import { Args, AutoRole, Locale, State } from "../";
 import { getRoleID } from "../modules/converter";
-import config from "../config";
+import props from "../props";
 import Log from "../modules/logger";
 
 export default {
   name: "autorole",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
-      if (!(message.member.hasPermission("ADMINISTRATOR") || message.member.hasPermission("MANAGE_ROLES")))
+      if (!message.member.hasPermission("MANAGE_ROLES"))
         return message.channel.send(locale.insufficientPerms_manage_roles).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
@@ -47,7 +47,7 @@ export default {
         });
 
       return message.channel.send({
-        embed: { title: locale.autoRole, color: config.color.yellow, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: locale.autoRole_empty }] },
+        embed: { title: locale.autoRole, color: props.color.yellow, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: locale.autoRole_empty }] },
       });
     } catch (err) {
       message.react("❌");

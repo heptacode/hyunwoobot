@@ -1,6 +1,6 @@
 import { EmbedFieldData, Message } from "discord.js";
 import { Args, Locale, State } from "../";
-import config from "../config";
+import props from "../props";
 import Log from "../modules/logger";
 
 export default {
@@ -17,10 +17,10 @@ export default {
         fields.push({ name: "\u200B", value: `${state.isPlaying ? "▶️" : "⏹"}${state.isLooped ? " 🔁" : ""}${state.isRepeated ? " 🔂" : ""}` });
         message.channel.send({
           embed: {
-            color: config.color.primary,
+            color: props.color.primary,
             author: {
               name: String(state.volume),
-              iconURL: config.icon.volume,
+              iconURL: props.icon.volume,
             },
             title: state.playlist[0].title,
             url: state.playlist[0].videoURL,

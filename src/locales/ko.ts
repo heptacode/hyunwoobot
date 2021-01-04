@@ -85,6 +85,9 @@ export default {
   // log
   log: "📦 로그",
   log_set: "로그 채널이 변경됐어요: ",
+  // privateRoom
+  privateRoom_create: "개인방 만들기",
+  privateRoom_waiting: "대기실",
   // reactionRole
   reactionrole_usage: "💡 올바른 인자값: <add|remove|purge> <채팅채널ID> <메시지ID> [이모지] [역할]",
   // voice

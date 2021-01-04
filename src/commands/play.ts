@@ -3,7 +3,7 @@ import { Args, Locale, State } from "../";
 import { stream } from "../modules/musicManager";
 import youtube from "scrape-youtube";
 import { getLength } from "../modules/converter";
-import config from "../config";
+import props from "../props";
 import Log from "../modules/logger";
 
 export default {
@@ -62,8 +62,8 @@ export default {
             message.react("✅");
             return message.channel.send({
               embed: {
-                color: config.color.primary,
-                author: { name: locale.enqueued, iconURL: state.playlist[state.playlist.length - 1].requestedBy.avatarURL, url: config.bot.website },
+                color: props.color.primary,
+                author: { name: locale.enqueued, iconURL: state.playlist[state.playlist.length - 1].requestedBy.avatarURL, url: props.bot.website },
                 title: state.playlist[state.playlist.length - 1].title,
                 url: state.playlist[state.playlist.length - 1].videoURL,
                 description: state.playlist[state.playlist.length - 1].channelName,

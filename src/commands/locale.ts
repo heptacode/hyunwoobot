@@ -19,7 +19,6 @@ export default {
 
       const result = await configDocRef.update({ locale: newValue });
       if (result) {
-        Log.d(`ChangeLocale : ${newValue}`);
         message.react("✅");
         return message.channel.send(`${locale.changeLocale}${newValue}`);
       } else {
