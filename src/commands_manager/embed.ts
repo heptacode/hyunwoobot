@@ -14,13 +14,12 @@ export default {
         });
       }
 
-      if (args.length <= 3) {
+      if (args.length <= 1) {
         message.react("❌");
         return message.channel.send(locale.embed_usage);
       }
 
       const textChannel = getChannelID(message.guild, args[0]);
-
       args.shift();
       await (message.guild.channels.cache.get(textChannel) as TextChannel).send({ embed: JSON.parse(args.join(" ").replace(/\n/g, "\\n")) as MessageEmbed });
 

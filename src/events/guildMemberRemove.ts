@@ -1,14 +1,11 @@
 import { GuildMember } from "discord.js";
 import props from "../props";
-import { init } from "../modules/init";
 import { client } from "../app";
 import Log from "../modules/logger";
 
 export default () => {
   client.on("guildMemberRemove", async (member: GuildMember) => {
     try {
-      await init(member.guild);
-
       Log.p({
         guild: member.guild,
         embed: {

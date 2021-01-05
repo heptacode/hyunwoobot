@@ -2,14 +2,11 @@ import { TextChannel, VoiceState } from "discord.js";
 import firestore from "../modules/firestore";
 import { Config, PrivateRoom, VoiceRole } from "../";
 import props from "../props";
-import { init } from "../modules/init";
 import { client, state } from "../app";
 import Log from "../modules/logger";
 
 export default () => {
   client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState) => {
-    await init(newState ? newState.guild : oldState.guild);
-
     const isChannelChange = (oldState: VoiceState, newState: VoiceState) => {
       return (
         oldState.mute === newState.mute &&
@@ -32,21 +29,21 @@ export default () => {
         const config = (await configDocRef.get()).data() as Config;
         // Check If Member Is Host
         if (config.privateRoom && config.privateRooms.find((privateRoomItem: PrivateRoom) => privateRoomItem.host === oldState.member.id)) {
-          const privateRoomItem: PrivateRoom = config.privateRooms.find((privateRoomItem: PrivateRoom) => privateRoomItem.host === oldState.member.id);
-          if (privateRoomItem && oldState.guild.channels.cache.get(privateRoomItem.room)) {
-            await oldState.guild.channels.cache.get(privateRoomItem.room).delete();
-            await oldState.guild.channels.cache.get(privateRoomItem.waiting).delete();
+          const privateRoom: PrivateRoom = config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
+          if (privateRoom && oldState.guild.channels.cache.get(privateRoom.room)) {
+            await oldState.guild.channels.cache.get(privateRoom.room).delete();
+            await oldState.guild.channels.cache.get(privateRoom.waiting).delete();
 
-            const idx = config.privateRooms.findIndex((privateRoomItem: PrivateRoom) => privateRoomItem.host === oldState.member.id);
+            const idx = config.privateRooms.findIndex((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
             config.privateRooms.splice(idx, 1);
             await configDocRef.update({ privateRooms: config.privateRooms });
           }
         }
 
-        const voiceRoleItem: VoiceRole = config.voice.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === oldState.channelID);
-        if (voiceRoleItem && oldState.member.roles.cache.has(voiceRoleItem.role)) {
-          if (voiceRoleItem.textChannel) {
-            (oldState.guild.channels.cache.get(voiceRoleItem.textChannel) as TextChannel).send({
+        const voiceRole: VoiceRole = config.voice.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === oldState.channelID);
+        if (voiceRole && oldState.member.roles.cache.has(voiceRole.role)) {
+          if (voiceRole.textChannel) {
+            (oldState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
               embed: {
                 color: props.color.error,
                 author: { name: oldState.member.user.username, iconURL: oldState.member.user.avatarURL() },
@@ -54,14 +51,14 @@ export default () => {
             });
           }
 
-          await oldState.member.roles.remove(voiceRoleItem.role);
+          await oldState.member.roles.remove(voiceRole.role);
 
           Log.p({
             guild: oldState.guild,
             embed: {
               color: props.color.info,
               author: { name: "Role Remove [Voice]", iconURL: oldState.member.user.avatarURL() },
-              description: `<@${oldState.member.user.id}> -= <@&${voiceRoleItem.role}>`,
+              description: `<@${oldState.member.user.id}> -= <@&${voiceRole.role}>`,
               timestamp: new Date(),
             },
           });
@@ -96,9 +93,6 @@ export default () => {
             parent: newState.guild.channels.cache.get(config.privateRoom).parent,
           });
 
-          // Move Host to Created Room
-          await newState.member.voice.setChannel(_privateRoom);
-
           const _waitingRoomID = await (
             await newState.guild.channels.create(`🚪 ${newState.member.displayName} ${state.get(newState.guild.id).locale.privateRoom_waiting}`, {
               type: "voice",
@@ -122,14 +116,24 @@ export default () => {
 
           config.privateRooms.push({ host: newState.member.id, room: _privateRoom.id, waiting: _waitingRoomID });
           await configDocRef.update({ privateRooms: config.privateRooms });
+
+          // Move Host to Created Room
+          return await newState.member.voice.setChannel(_privateRoom);
+        } else if (config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.waiting === newState.channelID)) {
+          // Waiting Room
+          try {
+            return await newState.member.send({
+              embed: { color: props.color.info, title: state.get(newState.guild.id).locale.privateRoom, description: state.get(newState.guild.id).locale.privateRoom_waitingForMove },
+            });
+          } catch (err) {}
         }
 
-        const voiceRoleItem: VoiceRole = config.voice.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === newState.channelID);
-        if (voiceRoleItem && !newState.member.roles.cache.has(voiceRoleItem.role)) {
-          await newState.member.roles.add(voiceRoleItem.role);
+        const voiceRole: VoiceRole = config.voice.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === newState.channelID);
+        if (voiceRole && !newState.member.roles.cache.has(voiceRole.role)) {
+          await newState.member.roles.add(voiceRole.role);
 
-          if (voiceRoleItem.textChannel) {
-            (newState.guild.channels.cache.get(voiceRoleItem.textChannel) as TextChannel).send({
+          if (voiceRole.textChannel) {
+            (newState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
               embed: {
                 color: props.color.info,
                 author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },
@@ -142,7 +146,7 @@ export default () => {
             embed: {
               color: props.color.info,
               author: { name: "Role Append [Voice]", iconURL: newState.member.user.avatarURL() },
-              description: `<@${newState.member.user.id}> += <@&${voiceRoleItem.role}>`,
+              description: `<@${newState.member.user.id}> += <@&${voiceRole.role}>`,
               timestamp: new Date(),
             },
           });

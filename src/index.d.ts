@@ -86,8 +86,10 @@ interface Locale {
   log: string;
   log_set: string;
   // privateRoom
+  privateRoom: string;
   privateRoom_create: string;
   privateRoom_waiting: string;
+  privateRoom_waitingForMove: string;
   // reactionRole
   reactionrole_usage: string;
   // voice
@@ -161,10 +163,7 @@ interface AutoRole {
 }
 
 interface ReactionRole {
-  [message: string]: ReactionRoleItem[];
-}
-
-interface ReactionRoleItem {
+  message: string;
   emoji: string;
   role: string;
 }

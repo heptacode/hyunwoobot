@@ -2,15 +2,12 @@ import { GuildMember } from "discord.js";
 import firestore from "../modules/firestore";
 import { AutoRole } from "../";
 import props from "../props";
-import { init } from "../modules/init";
 import { client } from "../app";
 import Log from "../modules/logger";
 
 export default () => {
   client.on("guildMemberAdd", async (member: GuildMember) => {
     try {
-      await init(member.guild);
-
       await Log.p({
         guild: member.guild,
         embed: {

@@ -86,8 +86,10 @@ export default {
   log: "📦 Logging",
   log_set: "Log channel set to: ",
   // privateRoom
+  privateRoom: "Private Room",
   privateRoom_create: "Create Private Room",
   privateRoom_waiting: "Waiting Room",
+  privateRoom_waitingForMove: " is Waiting for Move",
   // reactionRole
   reactionrole_usage: "💡 Correct Arguments: <add|remove|purge> <textChannelID> <messageID> [emoji] [role]",
   // voice

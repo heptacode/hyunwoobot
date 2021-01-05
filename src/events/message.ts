@@ -1,6 +1,5 @@
 import { Message } from "discord.js";
 import { Command } from "../";
-import { init } from "../modules/init";
 import { prefix } from "../app";
 import { client, state, commands, commands_manager, commands_hidden } from "../app";
 import Log from "../modules/logger";
@@ -19,8 +18,6 @@ export default () => {
       commands_hidden.get(commandName) ||
       commands_hidden.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
     if (!command) return;
-
-    await init(message.guild);
 
     // if (command.onlyAtServers && message.channel.type === "dm") return message.reply(locale.denyDM);
 

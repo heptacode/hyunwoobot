@@ -1,5 +1,5 @@
 import { Message, TextChannel } from "discord.js";
-import { Args, Locale, ReactionRole, ReactionRoleItem, State } from "../";
+import { Args, Locale, ReactionRole, State } from "../";
 import { getChannelID, getHexfromEmoji, getRoleID } from "../modules/converter";
 import firestore from "../modules/firestore";
 import Log from "../modules/logger";
@@ -21,8 +21,16 @@ export default {
       const emoji = args[3];
       const role = args[4];
 
-      const reactionRoleDocRef = firestore.collection(message.guild.id).doc(channelID);
-      const reactionRoleDocSnapshot = await reactionRoleDocRef.get();
+      const channelDocRef = firestore.collection(message.guild.id).doc(channelID);
+      let channelDocSnapshot = await channelDocRef.get();
+
+      if (!channelDocSnapshot.exists) {
+        await channelDocRef.set({ reactionRoles: [] });
+        channelDocSnapshot = await channelDocRef.get();
+      }
+
+      const reactionRoles = channelDocSnapshot.data().reactionRoles;
+
       if (args.length <= 1) {
         await message.react("❌");
         return message.channel.send(locale.reactionrole_usage);
@@ -33,44 +41,26 @@ export default {
           const _message = await ((await message.guild.channels.cache.get(channelID)) as TextChannel).messages.fetch(messageID);
           await _message.react(emoji);
 
-          if (!reactionRoleDocSnapshot.exists) await reactionRoleDocRef.set({ [_message.id]: [{ emoji: getHexfromEmoji(emoji), role: getRoleID(message.guild, role) }] } as ReactionRole);
-          else {
-            if (messageID in reactionRoleDocSnapshot.data()) {
-              for (const [key, reactionRoleConfig] of Object.entries(reactionRoleDocSnapshot.data())) {
-                if (key === messageID) {
-                  reactionRoleConfig.push({ emoji: getHexfromEmoji(emoji), role: getRoleID(message.guild, role) });
-                  await reactionRoleDocRef.update({ [_message.id]: reactionRoleConfig });
-                  return await message.react("✅");
-                }
-              }
-            } else {
-              await reactionRoleDocRef.update({ [_message.id]: [{ emoji: getHexfromEmoji(emoji), role: getRoleID(message.guild, role) }] });
-              return await message.react("✅");
-            }
-          }
+          reactionRoles.push({ message: _message.id, emoji: getHexfromEmoji(emoji), role: getRoleID(message.guild, role) });
+          await channelDocRef.update({ reactionRoles: reactionRoles });
+
+          return await message.react("✅");
         } catch (err) {
           await message.react("❌");
           Log.e(`ReactionRole > Add > ${err}`);
         }
       } else if (method === "remove") {
         if (args.length <= 2) return message.channel.send(locale.reactionrole_usage);
-
         try {
           const _message = await ((await message.guild.channels.cache.get(channelID)) as TextChannel).messages.fetch(messageID);
-          if (reactionRoleDocSnapshot.exists) {
-            for (const [key, reactionRoleConfig] of Object.entries(reactionRoleDocSnapshot.data())) {
-              if (key === messageID) {
-                for (const i in reactionRoleConfig as ReactionRoleItem[]) {
-                  if (reactionRoleConfig[i].emoji == getHexfromEmoji(emoji)) {
-                    reactionRoleConfig.splice(Number(i), 1);
-                    await reactionRoleDocRef.update({ [_message.id]: reactionRoleConfig });
-                    await _message.reactions.cache.get(emoji).remove();
-                    return await message.react("✅");
-                  }
-                }
-              }
-            }
-          }
+
+          const idx = reactionRoles.findIndex((reactionRole: ReactionRole) => reactionRole.emoji === getHexfromEmoji(emoji));
+          if (!idx) return await message.react("❌");
+
+          reactionRoles.splice(idx, 1);
+          await channelDocRef.update({ reactionRoles: reactionRoles });
+          await _message.reactions.cache.get(emoji).remove();
+          return await message.react("✅");
         } catch (err) {
           await message.react("❌");
           Log.e(`ReactionRole > Remove > ${err}`);
@@ -79,19 +69,13 @@ export default {
         try {
           const _message = await ((await message.guild.channels.cache.get(channelID)) as TextChannel).messages.fetch(messageID);
 
-          const payload: ReactionRole[] = reactionRoleDocSnapshot.data() as ReactionRole[];
-
-          for (const i in payload) {
-            if (payload[messageID] === messageID) {
-              payload.splice(Number(i), 1);
-
-              if (payload.length >= 1) await reactionRoleDocRef.update({ [messageID]: payload });
-              else await reactionRoleDocRef.delete();
-
-              await _message.reactions.removeAll();
-              return await message.react("✅");
-            }
-          }
+          reactionRoles.forEach(() => {
+            const idx = reactionRoles.findIndex((reactionRole: ReactionRole) => reactionRole.message === messageID);
+            reactionRoles.splice(idx, 1);
+          });
+          await channelDocRef.update({ reactionRoles: reactionRoles });
+          await _message.reactions.removeAll();
+          return await message.react("✅");
         } catch (err) {
           await message.react("❌");
           Log.e(`ReactionRole > Purge > ${err}`);

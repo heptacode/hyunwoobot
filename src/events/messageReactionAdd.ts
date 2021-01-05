@@ -1,6 +1,6 @@
 import { MessageReaction, User } from "discord.js";
 import firestore from "../modules/firestore";
-import { ReactionRole, ReactionRoleItem } from "../";
+import { ReactionRole } from "../";
 import { getHexfromEmoji } from "../modules/converter";
 import props from "../props";
 import { client } from "../app";
@@ -17,25 +17,20 @@ export default () => {
         return;
       }
     }
-
     try {
-      const guildRolesRef: ReactionRole[] = (await firestore.collection(reaction.message.guild.id).doc(reaction.message.channel.id).get()).data() as ReactionRole[];
-      if (!guildRolesRef[reaction.message.id]) return;
-
-      const reactionRoleItem: ReactionRoleItem = guildRolesRef[reaction.message.id].find((reactionRoleItem: ReactionRoleItem) => reactionRoleItem.emoji === getHexfromEmoji(reaction.emoji.name));
+      const reactionRoles: ReactionRole[] = (await firestore.collection(reaction.message.guild.id).doc(reaction.message.channel.id).get()).data().reactionRoles;
+      const reactionRole = reactionRoles.find((reactionRole: ReactionRole) => reactionRole.emoji === getHexfromEmoji(reaction.emoji.name));
       // Check If Role Exists
-      if (!reactionRoleItem || !reaction.message.guild.roles.cache.has(reactionRoleItem.role)) return;
+      if (!reactionRole || !reaction.message.guild.roles.cache.has(reactionRole.role)) return;
       // Check If User Has Role
-      if (reaction.message.guild.member(user).roles.cache.has(reactionRoleItem.role)) return;
-
-      reaction.message.guild.member(user).roles.add(reactionRoleItem.role);
-
+      if (reaction.message.guild.member(user).roles.cache.has(reactionRole.role)) return;
+      reaction.message.guild.member(user).roles.add(reactionRole.role);
       return await Log.p({
         guild: reaction.message.guild,
         embed: {
           color: props.color.info,
           author: { name: "Role Append [ReactionRole]", iconURL: user.avatarURL() },
-          description: `<@${user.id}> += <@&${reactionRoleItem.role}>`,
+          description: `<@${user.id}> += <@&${reactionRole.role}>`,
           timestamp: new Date(),
         },
       });
