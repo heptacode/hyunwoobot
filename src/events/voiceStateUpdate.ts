@@ -121,31 +121,31 @@ export default () => {
           ).id;
 
           config.privateRooms.push({ host: newState.member.id, room: _privateRoom.id, waiting: _waitingRoomID });
-          return await configDocRef.update({ privateRooms: config.privateRooms });
-        } else if (!config.privateRooms.find((privateRoomItem: PrivateRoom) => privateRoomItem.room === newState.channelID)) {
-          const voiceRoleItem: VoiceRole = config.voice.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === newState.channelID);
-          if (voiceRoleItem && newState.member.roles.cache.has(voiceRoleItem.role)) {
-            await newState.member.roles.add(voiceRoleItem.role);
+          await configDocRef.update({ privateRooms: config.privateRooms });
+        }
 
-            if (voiceRoleItem.textChannel) {
-              (newState.guild.channels.cache.get(voiceRoleItem.textChannel) as TextChannel).send({
-                embed: {
-                  color: props.color.info,
-                  author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },
-                },
-              });
-            }
+        const voiceRoleItem: VoiceRole = config.voice.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === newState.channelID);
+        if (voiceRoleItem && !newState.member.roles.cache.has(voiceRoleItem.role)) {
+          await newState.member.roles.add(voiceRoleItem.role);
 
-            Log.p({
-              guild: newState.guild,
+          if (voiceRoleItem.textChannel) {
+            (newState.guild.channels.cache.get(voiceRoleItem.textChannel) as TextChannel).send({
               embed: {
                 color: props.color.info,
-                author: { name: "Role Append [Voice]", iconURL: newState.member.user.avatarURL() },
-                description: `<@${newState.member.user.id}> += <@&${voiceRoleItem.role}>`,
-                timestamp: new Date(),
+                author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },
               },
             });
           }
+
+          Log.p({
+            guild: newState.guild,
+            embed: {
+              color: props.color.info,
+              author: { name: "Role Append [Voice]", iconURL: newState.member.user.avatarURL() },
+              description: `<@${newState.member.user.id}> += <@&${voiceRoleItem.role}>`,
+              timestamp: new Date(),
+            },
+          });
         }
       } catch (err) {
         Log.e(`VoiceStateUpdate > Join/Switch > ${err}`);
