@@ -104,10 +104,11 @@ export default {
   voiceRole_usage: "💡 Correct Arguments: <add|remove> <voiceChannelID> <role> [textChannelID]",
 
   // Permissions
-  insufficientPerms_manage_channels: "🚫 You don't have permission to manage channels!",
-  insufficientPerms_manage_roles: "🚫 You don't have permission to manage roles!",
-  insufficientPerms_manage_messages: "🚫 You don't have permission to manage messages!",
-  insufficientPerms_connect: "🚫 Insufficient permissions! (Required permissions : [Connect], [Speak])",
+  insufficientPerms_manage_channels: "🚫 You don't have permission to manage channels.",
+  insufficientPerms_manage_roles: "🚫 You don't have permission to manage roles.",
+  insufficientPerms_manage_messages: "🚫 You don't have permission to manage messages.",
+  insufficientPerms_move_members: "🚫 You don't have permission to move members.",
+  insufficientPerms_connect: "🚫 Insufficient permissions: [Connect], [Speak]",
 
   // Error
   err_cmd: "❌ An error occured while performing the command.",

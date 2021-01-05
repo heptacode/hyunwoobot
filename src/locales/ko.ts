@@ -107,6 +107,7 @@ export default {
   insufficientPerms_manage_channels: "🚫 채널을 관리할 수 있는 권한이 없습니다.",
   insufficientPerms_manage_roles: "🚫 역할을 관리할 수 있는 권한이 없습니다.",
   insufficientPerms_manage_messages: "🚫 메시지를 관리할 수 있는 권한이 없습니다.",
+  insufficientPerms_move_members: "🚫 멤버를 이동할 권한이 없습니다.",
   insufficientPerms_connect: "🚫 저에게 다음 권한을 부여해주세요: [연결], [말하기]",
 
   // Error

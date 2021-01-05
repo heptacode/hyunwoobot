@@ -107,6 +107,7 @@ interface Locale {
   insufficientPerms_manage_channels: string;
   insufficientPerms_manage_roles: string;
   insufficientPerms_manage_messages: string;
+  insufficientPerms_move_members: string;
   insufficientPerms_connect: string;
 
   // Error
