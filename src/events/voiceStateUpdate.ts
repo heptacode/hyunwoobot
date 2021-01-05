@@ -89,10 +89,11 @@ export default () => {
               {
                 type: "member",
                 id: client.user.id,
-                allow: ["MANAGE_CHANNELS", "MOVE_MEMBERS"],
+                allow: ["VIEW_CHANNEL", "MANAGE_CHANNELS", "CONNECT", "MOVE_MEMBERS"],
               },
               { type: "role", id: newState.guild.roles.everyone.id, deny: ["CREATE_INSTANT_INVITE", "CONNECT"] },
             ],
+            parent: newState.guild.channels.cache.get(config.privateRoom).parent,
           });
 
           // Move Host to Created Room
@@ -111,10 +112,11 @@ export default () => {
                 {
                   type: "member",
                   id: client.user.id,
-                  allow: ["MANAGE_CHANNELS", "MOVE_MEMBERS"],
+                  allow: ["VIEW_CHANNEL", "MANAGE_CHANNELS", "CONNECT", "MOVE_MEMBERS"],
                 },
                 { type: "role", id: newState.guild.roles.everyone.id, deny: ["CREATE_INSTANT_INVITE", "SPEAK"] },
               ],
+              parent: newState.guild.channels.cache.get(config.privateRoom).parent,
             })
           ).id;
 
