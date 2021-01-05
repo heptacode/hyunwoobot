@@ -93,6 +93,9 @@ export default () => {
             parent: newState.guild.channels.cache.get(config.privateRoom).parent,
           });
 
+          // Move Host to Created Room
+          await newState.member.voice.setChannel(_privateRoom);
+
           const _waitingRoomID = await (
             await newState.guild.channels.create(`🚪 ${newState.member.displayName} ${state.get(newState.guild.id).locale.privateRoom_waiting}`, {
               type: "voice",
@@ -115,10 +118,7 @@ export default () => {
           ).id;
 
           config.privateRooms.push({ host: newState.member.id, room: _privateRoom.id, waiting: _waitingRoomID });
-          await configDocRef.update({ privateRooms: config.privateRooms });
-
-          // Move Host to Created Room
-          return await newState.member.voice.setChannel(_privateRoom);
+          return await configDocRef.update({ privateRooms: config.privateRooms });
         } else if (config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.waiting === newState.channelID)) {
           // Waiting Room
           try {
