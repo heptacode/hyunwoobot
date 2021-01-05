@@ -24,9 +24,11 @@ interface Locale {
   // help_manager
   help_autorole: string;
   help_delete: string;
+  help_disconnectall: string;
   help_edit: string;
   help_embed: string;
   help_log: string;
+  help_moveall: string;
   help_reactionrole: string;
   help_voice: string;
   // Main
@@ -55,6 +57,8 @@ interface Locale {
   // loop
   joinToToggleLoop: string;
   toggleLoop: string;
+  // moveAll
+  moveAll_usage: string;
   // play
   currentlyPlaying: string;
   videoPrivate: string;

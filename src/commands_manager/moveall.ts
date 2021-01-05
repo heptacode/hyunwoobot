@@ -4,7 +4,7 @@ import { getChannelID } from "../modules/converter";
 import Log from "../modules/logger";
 
 export default {
-  name: "disconnectall",
+  name: "moveall",
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
       if (!message.member.hasPermission("MANAGE_CHANNELS")) {
@@ -14,23 +14,17 @@ export default {
         });
       }
 
-      if (args.length <= 0) {
-        return message.channel.send(locale.disconnectAll_usage);
-      } else if (args[0] === "afk") {
-        message.guild.afkChannel.members.forEach(async (_member: GuildMember) => {
+      const fromChannel = getChannelID(message.guild, args[0]);
+      const targetChannel = getChannelID(message.guild, args[1]);
+
+      if (args.length <= 1) {
+        return message.channel.send(locale.moveAll_usage);
+      } else if ((args[0] === "afk" || fromChannel) && (args[1] === "afk" || targetChannel)) {
+        return message.guild.channels.cache.get(fromChannel).members.forEach(async (_member: GuildMember) => {
           try {
-            await _member.voice.kick();
+            await _member.voice.setChannel(targetChannel);
           } catch (err) {
-            Log.e(`DisconnectAll > AFK > ${err}`);
-          }
-          return await message.react("✅");
-        });
-      } else if (getChannelID(message.guild, args[0])) {
-        message.guild.channels.cache.get(getChannelID(message.guild, args[0])).members.forEach(async (_member: GuildMember) => {
-          try {
-            await _member.voice.kick();
-          } catch (err) {
-            Log.e(`DisconnectAll > ${args[0]} > ${err}`);
+            Log.e(`MoveAll > ${err}`);
           }
           return await message.react("✅");
         });

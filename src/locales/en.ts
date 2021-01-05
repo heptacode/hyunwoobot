@@ -24,9 +24,11 @@ export default {
   // help_manager
   help_autorole: "Give roles when a member/bot joins the server",
   help_delete: "Bulk Delete Messages",
+  help_disconnectall: "Disconnect all users from a voice channel",
   help_edit: "Edit a previous message that I sent",
   help_embed: "Create an embed",
   help_log: "Set a text channel for logging",
+  help_moveall: "Move all users to another voice channel",
   help_reactionrole: "Add/Remove a reaction role",
   help_voice: "Give a role when someone joins a voice channel",
   // Main
@@ -55,6 +57,8 @@ export default {
   // loop
   joinToToggleLoop: "💡 To toggle loop, join a voice channel!",
   toggleLoop: "✅ Loop Toggled ",
+  // moveAll
+  moveAll_usage: "💡 Correct arguments: <afk|fromChannelID> <afk|targetChannelID>",
   // play
   currentlyPlaying: "💿 Currently playing a song.",
   videoPrivate: "🔒 This video is private!",

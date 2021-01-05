@@ -24,9 +24,11 @@ export default {
   // help_manager
   help_autorole: "서버에 접속하는 멤버/봇에게 자동 역할 부여",
   help_delete: "메시지 일괄 삭제",
+  help_disconnectall: "음성 채널 멤버 일괄 연결 끊기",
   help_edit: "메시지 수정",
   help_embed: "임베드 만들기",
   help_log: "로그 채널 설정하기",
+  help_moveall: "음성 채널 멤버 일괄 이동",
   help_reactionrole: "이모지 반응에 따른 역할 부여",
   help_voice: "음성 채널 접속자에게 역할 부여",
   // Main
@@ -55,6 +57,8 @@ export default {
   // loop
   joinToToggleLoop: "💡 반복 재생을 켜거나 끄려면 음성 채널에 접속해주세요!",
   toggleLoop: "✅ 반복 재생이 ",
+  // moveAll
+  moveAll_usage: "💡 올바른 인자값: <afk|음성채널ID> <afk|타겟 음성채널ID>",
   // play
   currentlyPlaying: "💿 현재 재생중인 곡이 있어요.",
   videoPrivate: "🔒 이 비디오는 비공개예요.",
