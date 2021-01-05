@@ -18,8 +18,12 @@ export default () => {
       }
     }
     try {
-      const reactionRoles: ReactionRole[] = (await firestore.collection(reaction.message.guild.id).doc(reaction.message.channel.id).get()).data().reactionRoles;
-      const reactionRole = reactionRoles.find((reactionRole: ReactionRole) => reactionRole.emoji === getHexfromEmoji(reaction.emoji.name));
+      const channelDocRef = firestore.collection(reaction.message.guild.id).doc(reaction.message.channel.id);
+      const channelDocSnapshot = await channelDocRef.get();
+      if (!channelDocSnapshot.exists) return;
+
+      const reactionRoles: ReactionRole[] = channelDocSnapshot.data().reactionRoles;
+      const reactionRole = reactionRoles.find((reactionRole: ReactionRole) => reactionRole.message === reaction.message.id && reactionRole.emoji === getHexfromEmoji(reaction.emoji.name));
       // Check If Role Exists
       if (!reactionRole || !reaction.message.guild.roles.cache.has(reactionRole.role)) return;
       // Check If User Has Role

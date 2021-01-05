@@ -38,6 +38,8 @@ export default {
   // delete
   delete: " Messages have been deleted.",
   invalidAmount: "❌ Please enter a valid amount: 2 ~ 100",
+  // disconnectAll
+  disconnectAll_usage: "💡 Correct arguments: <afk|channelID>",
   // edit
   edit_usage: "💡 Correct arguments: <channelID> <messageID> <messageEmbed>",
   // embed

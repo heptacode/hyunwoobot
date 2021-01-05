@@ -1,0 +1,42 @@
+import { GuildMember, Message } from "discord.js";
+import { Args, Locale, State } from "../";
+import { getChannelID } from "../modules/converter";
+import Log from "../modules/logger";
+
+export default {
+  name: "disconnectall",
+  async execute(locale: Locale, state: State, message: Message, args: Args) {
+    try {
+      if (!message.member.hasPermission("MANAGE_CHANNELS")) {
+        message.react("❌");
+        return message.channel.send(locale.insufficientPerms_manage_channels).then((_message: Message) => {
+          _message.delete({ timeout: 5000 });
+        });
+      }
+
+      if (args.length <= 0) {
+        return message.channel.send(locale.disconnectAll_usage);
+      } else if (args[0] === "afk") {
+        return message.guild.afkChannel.members.forEach(async (_member: GuildMember) => {
+          try {
+            await _member.voice.kick();
+          } catch (err) {
+            Log.e(`DisconnectAll > AFK > ${err}`);
+          }
+        });
+      } else if (getChannelID(message.guild, args[0])) {
+        return message.guild.channels.cache.get(getChannelID(message.guild, args[0])).members.forEach(async (_member: GuildMember) => {
+          try {
+            await _member.voice.kick();
+          } catch (err) {
+            Log.e(`DisconnectAll > ${args[0]} > ${err}`);
+          }
+        });
+      }
+      return await message.react("❌");
+    } catch (err) {
+      message.react("❌");
+      Log.e(`Voice > ${err}`);
+    }
+  },
+};

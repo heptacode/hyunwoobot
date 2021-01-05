@@ -38,6 +38,8 @@ export default {
   // delete
   delete: "개의 메시지를 삭제했어요!",
   invalidAmount: "❌ 2 ~ 100 사이의 올바른 값을 입력해주세요",
+  // disconnectAll
+  disconnectAll_usage: "💡 올바른 인자값: <afk|음성채널ID>",
   // edit
   edit_usage: "💡 올바른 인자값: <채팅채널ID> <메시지ID> <임베드>",
   // embed

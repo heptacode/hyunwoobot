@@ -38,6 +38,8 @@ interface Locale {
   // delete
   delete: string;
   invalidAmount: string;
+  // disconnectAll
+  disconnectAll_usage: string;
   // edit
   edit_usage: string;
   // embed
