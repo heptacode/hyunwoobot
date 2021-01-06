@@ -1,10 +1,11 @@
-import { Guild, MessageEmbedOptions, StreamDispatcher, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
+import { Guild, GuildMember, MessageEmbedOptions, StreamDispatcher, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
 
 interface Locale {
   on: string;
   off: string;
   locale: {
     code: string;
+    name: string;
     changed: string;
   };
   help: {
@@ -14,7 +15,6 @@ interface Locale {
     description_manager: string;
     join: string;
     leave: string;
-    locale: string;
     loop: string;
     pause: string;
     play: string;
@@ -29,8 +29,10 @@ interface Locale {
     disconnectall: string;
     edit: string;
     embed: string;
+    locale: string;
     log: string;
     moveall: string;
+    privateroom: string;
     reactionrole: string;
     voice: string;
   };
@@ -44,6 +46,7 @@ interface Locale {
     voiceRole: string;
   };
   insufficientPerms: {
+    manage_guild: string;
     manage_channels: string;
     manage_roles: string;
     manage_messages: string;
@@ -120,6 +123,31 @@ interface Locale {
   };
 }
 
+type InteractionType = 1 | 2;
+
+interface Interaction {
+  id: string;
+  type: InteractionType;
+  data?: CommandInteractionData;
+  guild_id: string;
+  channel_id: string;
+  member: GuildMember;
+  token: string;
+  version: number;
+}
+
+interface CommandInteractionData {
+  id: string;
+  name: string;
+  options: CommandInteractionDataOption[];
+}
+
+interface CommandInteractionDataOption {
+  name: string;
+  value?: string;
+  options?: CommandInteractionDataOption[];
+}
+
 interface Command {
   name: string;
   aliases?: string[];
@@ -171,7 +199,7 @@ interface Config {
   log?: string;
   privateRoom?: string;
   privateRooms?: PrivateRoom[];
-  voice?: VoiceRole[];
+  voiceRole?: VoiceRole[];
 }
 
 interface PrivateRoom {

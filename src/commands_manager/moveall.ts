@@ -1,37 +1,46 @@
-import { GuildMember, Message } from "discord.js";
-import { Args, Locale, State } from "../";
-import { getChannelID } from "../modules/converter";
+import { GuildMember, TextChannel } from "discord.js";
+import { getChannelName } from "../modules/converter";
+import { Interaction, State } from "../";
 import Log from "../modules/logger";
+import { client } from "../app";
 
 export default {
   name: "moveall",
-  async execute(locale: Locale, state: State, message: Message, args: Args) {
+  options: [
+    {
+      type: 7,
+      name: "from",
+      description: "From TextChannel",
+      required: true,
+    },
+    {
+      type: 7,
+      name: "to",
+      description: "Target TextChannel",
+      required: true,
+    },
+  ],
+  async execute(state: State, interaction: Interaction) {
     try {
-      if (!message.member.hasPermission("MOVE_MEMBERS")) {
-        message.react("❌");
-        return message.channel.send(locale.insufficientPerms.move_members).then((_message: Message) => {
-          _message.delete({ timeout: 5000 });
-        });
-      }
+      const guild = client.guilds.cache.get(interaction.guild_id);
+      const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
 
-      const fromChannel = getChannelID(message.guild, args[0]);
-      const targetChannel = getChannelID(message.guild, args[1]);
+      if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MOVE_MEMBERS"))
+        return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.insufficientPerms.move_members);
 
-      if (args.length <= 1) {
-        return message.channel.send(locale.usage.moveAll);
-      } else if ((args[0] === "afk" || fromChannel) && (args[1] === "afk" || targetChannel)) {
-        return message.guild.channels.cache.get(fromChannel).members.forEach(async (_member: GuildMember) => {
-          try {
-            await _member.voice.setChannel(targetChannel);
-          } catch (err) {
-            Log.e(`MoveAll > ${err}`);
-          }
-          return await message.react("✅");
-        });
-      }
-      return await message.react("❌");
+      const fromChannel = interaction.data.options[0].value;
+      const targetChannel = interaction.data.options[1].value;
+
+      let cnt = 0;
+
+      guild.channels.cache.get(fromChannel).members.forEach(async (_member: GuildMember) => {
+        try {
+          await _member.voice.setChannel(targetChannel);
+          cnt++;
+        } catch (err) {}
+      });
+      return channel.send(`Moved ${cnt}user(s) from ${getChannelName(guild, interaction.data.options[0].value)}`);
     } catch (err) {
-      message.react("❌");
       Log.e(`Voice > ${err}`);
     }
   },

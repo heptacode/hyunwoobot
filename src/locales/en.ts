@@ -5,6 +5,7 @@ export default {
   off: "OFF",
   locale: {
     code: "en",
+    name: "English",
     changed: "✅ Locale changed to ",
   },
   help: {
@@ -14,7 +15,6 @@ export default {
     description_manager: "List of commands and descriptions which managers can use.\n<Required> [Optional]",
     join: "Join a voice channel you are in",
     leave: "Unbind from a voice channel you are in",
-    locale: "Change the default locale for the server",
     loop: "Toggle loop for the playlist",
     pause: "Pause the song",
     play: "Play/Enqueue a music",
@@ -29,8 +29,10 @@ export default {
     disconnectall: "Disconnect all users from a voice channel",
     edit: "Edit a previous message that I sent",
     embed: "Create an embed",
+    locale: "Change the default locale for the server",
     log: "Set a text channel for logging",
     moveall: "Move all users to another voice channel",
+    privateroom: "Set Private Room",
     reactionrole: "Add/Remove a reaction role",
     voice: "Give a role when someone joins a voice channel",
   },
@@ -44,6 +46,7 @@ export default {
     voiceRole: "💡 Correct Arguments: <add|remove> <voiceChannelID> <role> [textChannelID]",
   },
   insufficientPerms: {
+    manage_guild: "🚫 You don't have permission to manage the guild.",
     manage_channels: "🚫 You don't have permission to manage channels.",
     manage_roles: "🚫 You don't have permission to manage roles.",
     manage_messages: "🚫 You don't have permission to manage messages.",

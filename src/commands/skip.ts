@@ -1,11 +1,10 @@
-import { Message } from "discord.js";
-import { Args, Locale, State } from "../";
 import { skip } from "../modules/musicManager";
+import { Interaction, State } from "../";
 
 export default {
   name: "skip",
   aliases: ["fs"],
-  execute(locale: Locale, state: State, message: Message, args: Args) {
-    skip(locale, state, message);
+  execute(state: State, interaction: Interaction) {
+    skip(state, interaction);
   },
 };

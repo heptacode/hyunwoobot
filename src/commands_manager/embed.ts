@@ -1,31 +1,28 @@
-import { Message, MessageEmbed, TextChannel } from "discord.js";
-import { Args, Locale, State } from "../";
+import { MessageEmbed, TextChannel } from "discord.js";
+import { client } from "../app";
 import { getChannelID } from "../modules/converter";
+import { Interaction, State } from "../";
 import Log from "../modules/logger";
 
 export default {
   name: "embed",
-  async execute(locale: Locale, state: State, message: Message, args: Args) {
+  options: [
+    {
+      type: 3,
+      name: "embed",
+      description: "Embed",
+      required: true,
+    },
+  ],
+  async execute(state: State, interaction: Interaction) {
     try {
-      if (!message.member.hasPermission("MANAGE_MESSAGES")) {
-        message.react("❌");
-        return message.channel.send(locale.insufficientPerms.manage_messages).then((_message: Message) => {
-          _message.delete({ timeout: 5000 });
-        });
-      }
+      const guild = client.guilds.cache.get(interaction.guild_id);
 
-      if (args.length <= 1) {
-        message.react("❌");
-        return message.channel.send(locale.usage.embed);
-      }
+      if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MANAGE_MESSAGES"))
+        return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.insufficientPerms.manage_messages);
 
-      const textChannel = getChannelID(message.guild, args[0]);
-      args.shift();
-      await (message.guild.channels.cache.get(textChannel) as TextChannel).send({ embed: JSON.parse(args.join(" ").replace(/\n/g, "\\n")) as MessageEmbed });
-
-      return message.react("✅");
+      return await (guild.channels.cache.get(interaction.channel_id) as TextChannel).send({ embed: JSON.parse(interaction.data.options[0].value.replace(/\n/g, "\\n")) as MessageEmbed });
     } catch (err) {
-      message.react("❌");
       Log.e(`Embed > ${err}`);
     }
   },

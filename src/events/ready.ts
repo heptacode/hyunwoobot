@@ -1,6 +1,6 @@
 import { Guild, TextChannel } from "discord.js";
 import firestore from "../modules/firestore";
-import { client, locales, prefix, state } from "../app";
+import { client, commands, commands_manager, locales, state } from "../app";
 import { State } from "../";
 import Log from "../modules/logger";
 
@@ -32,11 +32,38 @@ export default () => {
         for (const doc of (await collection.get()).docs) {
           if (!["server", "config"].includes(doc.id)) ((await guild.channels.cache.get(doc.id)) as TextChannel).messages.fetch({ limit: 100 });
         }
+
+        for (const [name, command] of commands) {
+          (client as any).api
+            .applications(process.env.APPLICATION)
+            .guilds(guild.id)
+            .commands.post({
+              data: {
+                name: name,
+                description: state.get(guild.id).locale.help[name],
+                options: command.options ? command.options : [],
+              },
+            });
+        }
+
+        for (const [name, command] of commands_manager) {
+          (client as any).api
+            .applications(process.env.APPLICATION)
+            .guilds(guild.id)
+            .commands.post({
+              data: {
+                name: name,
+                description: `[Manager] ${state.get(guild.id).locale.help[name]}`,
+                options: command.options ? command.options : [],
+              },
+            });
+        }
       }
 
       await client.user.setActivity({
         type: "WATCHING",
-        name: `${prefix}help`,
+        // name: `${prefix}help`,
+        name: "/help",
       });
 
       await client.user.setStatus("online");

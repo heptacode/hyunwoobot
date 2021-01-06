@@ -1,31 +1,30 @@
 import { Message } from "discord.js";
-import { Args, Locale, State } from "../";
+import { client } from "../app";
 import firestore from "../modules/firestore";
+import { Interaction, State } from "../";
 import Log from "../modules/logger";
 
 export default {
   name: "privateroom",
-  async execute(locale: Locale, state: State, message: Message, args: Args) {
+  async execute(state: State, interaction: Interaction) {
     try {
-      if (!message.member.hasPermission("MANAGE_CHANNELS")) {
-        await message.react("❌");
-        return message.channel.send(locale.insufficientPerms.manage_channels).then((_message: Message) => {
+      const guild = client.guilds.cache.get(interaction.guild_id);
+
+      if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MANAGE_CHANNELS")) {
+        return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.insufficientPerms.manage_channels).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
       }
 
       const privateRoomID = await (
-        await message.guild.channels.create(locale.privateRoom.create, {
+        await guild.channels.create(state.locale.privateRoom.create, {
           type: "voice",
           userLimit: 1,
         })
       ).id;
 
-      await firestore.collection(message.guild.id).doc("config").update({ privateRoom: privateRoomID });
-
-      return await message.react("✅");
+      return await firestore.collection(guild.id).doc("config").update({ privateRoom: privateRoomID });
     } catch (err) {
-      await message.react("❌");
       Log.e(`ReactionRole > ${err}`);
     }
   },

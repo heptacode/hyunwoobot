@@ -1,8 +1,8 @@
 import { TextChannel, VoiceState } from "discord.js";
 import firestore from "../modules/firestore";
-import { Config, PrivateRoom, VoiceRole } from "../";
-import props from "../props";
 import { client, state } from "../app";
+import props from "../props";
+import { Config, PrivateRoom, VoiceRole } from "../";
 import Log from "../modules/logger";
 
 export default () => {
@@ -40,7 +40,7 @@ export default () => {
           }
         }
 
-        const voiceRole: VoiceRole = config.voice.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === oldState.channelID);
+        const voiceRole: VoiceRole = config.voiceRole.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === oldState.channelID);
         if (voiceRole && oldState.member.roles.cache.has(voiceRole.role)) {
           if (voiceRole.textChannel) {
             (oldState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
@@ -128,7 +128,7 @@ export default () => {
           } catch (err) {}
         }
 
-        const voiceRole: VoiceRole = config.voice.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === newState.channelID);
+        const voiceRole: VoiceRole = config.voiceRole.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === newState.channelID);
         if (voiceRole && !newState.member.roles.cache.has(voiceRole.role)) {
           await newState.member.roles.add(voiceRole.role);
 

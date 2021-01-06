@@ -1,39 +1,40 @@
-import { Message } from "discord.js";
+import { Message, TextChannel } from "discord.js";
+import { client } from "../app";
 import firestore from "../modules/firestore";
-import { Args, Locale, State } from "../";
-import props from "../props";
-import Log from "../modules/logger";
 import { getChannelID } from "../modules/converter";
+import props from "../props";
+import { Interaction, State } from "../";
+import Log from "../modules/logger";
 
 export default {
   name: "log",
-  async execute(locale: Locale, state: State, message: Message, args: Args) {
+  options: [
+    {
+      type: 7,
+      name: "textChannel",
+      description: "TextChannel",
+      required: true,
+    },
+  ],
+  async execute(state: State, interaction: Interaction) {
     try {
-      if (!message.member.hasPermission("MANAGE_MESSAGES")) {
-        message.react("❌");
-        return message.channel.send(locale.insufficientPerms.manage_messages).then((_message: Message) => {
-          _message.delete({ timeout: 5000 });
-        });
+      const guild = client.guilds.cache.get(interaction.guild_id);
+      const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
+
+      if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MANAGE_MESSAGES")) {
+        return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.insufficientPerms.manage_messages);
       }
 
-      (await firestore.collection(message.guild.id).doc("config").get()).data().log = getChannelID(message.guild, args[0]);
+      await firestore.collection(guild.id).doc("config").update({ log: interaction.data.options[0].value });
 
-      await firestore
-        .collection(message.guild.id)
-        .doc("config")
-        .update({ log: getChannelID(message.guild, args[0]) });
-
-      await message.channel.send({
+      return await channel.send({
         embed: {
-          title: locale.log.log,
+          title: state.locale.log.log,
           color: props.color.yellow,
-          description: `${locale.log.set}<#${getChannelID(message.guild, args[0])}>`,
+          description: `${state.locale.log.set}<#${interaction.data.options[0].value}>`,
         },
       });
-
-      return message.react("✅");
     } catch (err) {
-      message.react("❌");
       Log.e(`Log > ${err}`);
     }
   },

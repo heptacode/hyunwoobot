@@ -1,32 +1,39 @@
 import { Message, TextChannel } from "discord.js";
-import { Args, Locale, State } from "../";
+import { client } from "../app";
 import props from "../props";
+import { Interaction, State } from "../";
 import Log from "../modules/logger";
 
 export default {
   name: "delete",
   aliases: ["del", "rm", "remove", "purge"],
-  async execute(locale: Locale, state: State, message: Message, args: Args) {
+  options: [
+    {
+      type: 4,
+      name: "amount",
+      description: "2~100",
+      required: true,
+    },
+  ],
+  async execute(state: State, interaction: Interaction) {
     try {
-      if (!message.member.hasPermission("MANAGE_MESSAGES")) {
-        message.react("❌");
-        return message.reply(locale.insufficientPerms.manage_messages).then((_message: Message) => {
-          _message.delete({ timeout: 5000 });
-        });
-      }
+      const guild = client.guilds.cache.get(interaction.guild_id);
+      const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
 
-      const amount = Number(args[0]);
-      if (amount === NaN || !(amount >= 2 && amount <= 100)) {
-        Log.w(`Delete : Invalid value : ${amount}`);
-        message.react("❌");
-        return message.channel.send(locale.delete.invalidAmount);
-      }
+      if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MANAGE_MESSAGES"))
+        return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.insufficientPerms.manage_messages);
 
-      await (message.channel as TextChannel).bulkDelete(amount);
+      await (channel as TextChannel).bulkDelete(Number(interaction.data.options[0].value));
 
-      return message.channel.send({ embed: { color: props.color.primary, author: { name: `🗑 ${amount}${locale.delete.deleted}` }, footer: { text: message.author.tag }, timestamp: new Date() } });
+      return channel.send({
+        embed: {
+          color: props.color.primary,
+          author: { name: `🗑 ${interaction.data.options[0].value}${state.locale.delete.deleted}` },
+          footer: { text: interaction.member.user.tag },
+          timestamp: new Date(),
+        },
+      });
     } catch (err) {
-      message.react("❌");
       Log.e(`Delete > 1 > ${err}`);
     }
   },

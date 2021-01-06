@@ -1,44 +1,30 @@
-import { GuildMember, Message } from "discord.js";
-import { Args, Locale, State } from "../";
-import { getChannelID } from "../modules/converter";
+import { GuildMember, Message, TextChannel } from "discord.js";
+import { client } from "../app";
+import { getChannelName } from "../modules/converter";
+import { Interaction, State } from "../";
 import Log from "../modules/logger";
 
 export default {
   name: "disconnectall",
-  async execute(locale: Locale, state: State, message: Message, args: Args) {
+  options: [{ type: 7, name: "voiceChannel", description: "VoiceChannel", required: true }],
+  async execute(state: State, interaction: Interaction) {
     try {
-      if (!message.member.hasPermission("MOVE_MEMBERS")) {
-        message.react("❌");
-        return message.channel.send(locale.insufficientPerms.move_members).then((_message: Message) => {
-          _message.delete({ timeout: 5000 });
-        });
-      }
+      const guild = client.guilds.cache.get(interaction.guild_id);
+      const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
 
-      if (args.length <= 0) {
-        return message.channel.send(locale.usage.disconnectAll);
-      } else if (args[0] === "afk") {
-        message.guild.afkChannel.members.forEach(async (_member: GuildMember) => {
-          try {
-            await _member.voice.kick();
-          } catch (err) {
-            Log.e(`DisconnectAll > AFK > ${err}`);
-          }
-          return await message.react("✅");
-        });
-      } else if (getChannelID(message.guild, args[0])) {
-        message.guild.channels.cache.get(getChannelID(message.guild, args[0])).members.forEach(async (_member: GuildMember) => {
-          try {
-            await _member.voice.kick();
-          } catch (err) {
-            Log.e(`DisconnectAll > ${args[0]} > ${err}`);
-          }
-          return await message.react("✅");
-        });
-      } else {
-        return await message.react("❌");
-      }
+      if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MOVE_MEMBERS"))
+        return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.insufficientPerms.move_members);
+
+      let cnt = 0;
+
+      guild.channels.cache.get(interaction.data.options[0].value).members.forEach(async (_member: GuildMember) => {
+        try {
+          await _member.voice.kick();
+          cnt++;
+        } catch (err) {}
+      });
+      return channel.send(`Disconnected ${cnt}user(s) from ${getChannelName(guild, interaction.data.options[0].value)}`);
     } catch (err) {
-      message.react("❌");
       Log.e(`Voice > ${err}`);
     }
   },

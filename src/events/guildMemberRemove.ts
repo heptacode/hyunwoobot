@@ -1,6 +1,6 @@
 import { GuildMember } from "discord.js";
-import props from "../props";
 import { client } from "../app";
+import props from "../props";
 import Log from "../modules/logger";
 
 export default () => {

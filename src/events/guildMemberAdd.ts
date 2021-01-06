@@ -1,8 +1,8 @@
 import { GuildMember } from "discord.js";
 import firestore from "../modules/firestore";
-import { AutoRole } from "../";
-import props from "../props";
 import { client } from "../app";
+import props from "../props";
+import { AutoRole } from "../";
 import Log from "../modules/logger";
 
 export default () => {

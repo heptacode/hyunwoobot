@@ -1,27 +1,74 @@
-import { Message, TextChannel } from "discord.js";
-import { Args, Locale, ReactionRole, State } from "../";
-import { getChannelID, getHexfromEmoji, getRoleID } from "../modules/converter";
+import { TextChannel } from "discord.js";
+import { client } from "../app";
 import firestore from "../modules/firestore";
+import { getHexfromEmoji } from "../modules/converter";
+import { Interaction, ReactionRole, State } from "../";
 import Log from "../modules/logger";
 
 export default {
   name: "reactionrole",
-  async execute(locale: Locale, state: State, message: Message, args: Args) {
+  options: [
+    {
+      type: 1,
+      name: "view",
+      description: "View ReactionRole Config",
+    },
+    {
+      type: 1,
+      name: "add",
+      description: "Add ReactionRole Config",
+      options: [
+        {
+          type: 3,
+          name: "messageID",
+          description: "MessageID",
+          required: true,
+        },
+        {
+          type: 3,
+          name: "emoji",
+          description: "Emoji",
+          required: true,
+        },
+        { type: 8, name: "role", description: "Role", required: true },
+      ],
+    },
+    {
+      type: 1,
+      name: "remove",
+      description: "Remove ReactionRole Config",
+      options: [
+        {
+          type: 3,
+          name: "messageID",
+          description: "MessageID",
+          required: true,
+        },
+        {
+          type: 3,
+          name: "emoji",
+          description: "Emoji",
+          required: true,
+        },
+      ],
+    },
+    {
+      type: 1,
+      name: "purge",
+      description: "Purge ReactionRole Config",
+    },
+  ],
+  async execute(state: State, interaction: Interaction) {
     try {
-      if (!message.member.hasPermission("MANAGE_MESSAGES")) {
-        await message.react("❌");
-        return message.channel.send(locale.insufficientPerms.manage_messages).then((_message: Message) => {
-          _message.delete({ timeout: 5000 });
-        });
-      }
+      const guild = client.guilds.cache.get(interaction.guild_id);
+      const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
 
-      const method = args[0];
-      const channelID = getChannelID(message.guild, args[1]);
-      const messageID = args[2];
-      const emoji = args[3];
-      const role = args[4];
+      if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MANAGE_MESSAGES"))
+        return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.insufficientPerms.manage_messages);
 
-      const channelDocRef = firestore.collection(message.guild.id).doc(channelID);
+      const method = interaction.data.options[0].name;
+
+      const channelDocRef = firestore.collection(guild.id).doc(channel.id);
       let channelDocSnapshot = await channelDocRef.get();
 
       if (!channelDocSnapshot.exists) {
@@ -31,58 +78,53 @@ export default {
 
       const reactionRoles = channelDocSnapshot.data().reactionRoles;
 
-      if (args.length <= 1) {
-        await message.react("❌");
-        return message.channel.send(locale.usage.reactionrole);
-      } else if (method === "add") {
-        if (args.length <= 3) return message.channel.send(locale.usage.reactionrole);
-
+      if (method === "add") {
         try {
-          const _message = await ((await message.guild.channels.cache.get(channelID)) as TextChannel).messages.fetch(messageID);
+          const messageID = interaction.data.options[0].options[0].value;
+          const emoji = interaction.data.options[0].options[1].value;
+          const role = interaction.data.options[0].options[2].value;
+
+          const _message = await channel.messages.fetch(messageID);
           await _message.react(emoji);
 
-          reactionRoles.push({ message: _message.id, emoji: getHexfromEmoji(emoji), role: getRoleID(message.guild, role) });
-          await channelDocRef.update({ reactionRoles: reactionRoles });
-
-          return await message.react("✅");
+          reactionRoles.push({ message: _message.id, emoji: getHexfromEmoji(emoji), role: role });
+          return await channelDocRef.update({ reactionRoles: reactionRoles });
         } catch (err) {
-          await message.react("❌");
           Log.e(`ReactionRole > Add > ${err}`);
         }
       } else if (method === "remove") {
-        if (args.length <= 2) return message.channel.send(locale.usage.reactionrole);
         try {
-          const _message = await ((await message.guild.channels.cache.get(channelID)) as TextChannel).messages.fetch(messageID);
+          const messageID = interaction.data.options[0].options[0].value;
+          const emoji = interaction.data.options[0].options[1].value;
+
+          const _message = await channel.messages.fetch(messageID);
 
           const idx = reactionRoles.findIndex((reactionRole: ReactionRole) => reactionRole.emoji === getHexfromEmoji(emoji));
-          if (!idx) return await message.react("❌");
+          if (!idx) return;
 
           reactionRoles.splice(idx, 1);
           await channelDocRef.update({ reactionRoles: reactionRoles });
-          await _message.reactions.cache.get(emoji).remove();
-          return await message.react("✅");
+          return await _message.reactions.cache.get(emoji).remove();
         } catch (err) {
-          await message.react("❌");
           Log.e(`ReactionRole > Remove > ${err}`);
         }
       } else if (method === "purge") {
         try {
-          const _message = await ((await message.guild.channels.cache.get(channelID)) as TextChannel).messages.fetch(messageID);
+          const messageID = interaction.data.options[0].options[0].value;
+
+          const _message = await channel.messages.fetch(messageID);
 
           reactionRoles.forEach(() => {
             const idx = reactionRoles.findIndex((reactionRole: ReactionRole) => reactionRole.message === messageID);
             reactionRoles.splice(idx, 1);
           });
           await channelDocRef.update({ reactionRoles: reactionRoles });
-          await _message.reactions.removeAll();
-          return await message.react("✅");
+          return await _message.reactions.removeAll();
         } catch (err) {
-          await message.react("❌");
           Log.e(`ReactionRole > Purge > ${err}`);
         }
       }
     } catch (err) {
-      await message.react("❌");
       Log.e(`ReactionRole > ${err}`);
     }
   },

@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import schedule from "node-schedule";
 import { alarmDB, activateAlarm, sendAlarm } from "../modules/voiceManager";
-import { AlarmDB, Args, Locale, State } from "../";
+import { AlarmDB, Args, State } from "../";
 import Log from "../modules/logger";
 
 schedule.scheduleJob(
@@ -16,7 +16,7 @@ schedule.scheduleJob(
 
 export default {
   name: "alarm",
-  execute(locale: Locale, state: State, message: Message, args: Args) {
+  execute(state: State, message: Message, args: Args) {
     activateAlarm(message, alarmDB);
   },
 };

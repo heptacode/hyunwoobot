@@ -1,7 +1,7 @@
-import chalk from "chalk";
 import { TextChannel } from "discord.js";
-import { LogData } from "../";
+import chalk from "chalk";
 import firestore from "./firestore";
+import { LogData } from "../";
 
 class log {
   private getTsp(): string {

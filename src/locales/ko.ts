@@ -3,7 +3,7 @@ import { Locale } from "../";
 export default {
   on: "켜졌어요.",
   off: "꺼졌어요.",
-  locale: { code: "ko", changed: "✅ 언어가 변경됐어요: " },
+  locale: { code: "ko", name: "한국어", changed: "✅ 언어가 변경됐어요: " },
   help: {
     help: "도움말",
     help_manager: "도움말 [관리자]",
@@ -11,7 +11,6 @@ export default {
     description_manager: "관리자가 사용 가능한 명령어와 도움말 목록이예요!\n<필수 인자> [선택적 인자]",
     join: "음성 채널에 접속시키기",
     leave: "음성 채널에서 내보내기",
-    locale: "서버의 기본 언어 설정",
     loop: "플레이리스트 반복 재생 활성화/비활성화",
     pause: "재생 중인 노래 일시중지",
     play: "노래 재생/대기열에 추가",
@@ -26,8 +25,10 @@ export default {
     disconnectall: "음성 채널 멤버 일괄 연결 끊기",
     edit: "메시지 수정",
     embed: "임베드 만들기",
+    locale: "서버의 기본 언어 설정",
     log: "로그 채널 설정하기",
     moveall: "음성 채널 멤버 일괄 이동",
+    privateroom: "개인방 초기화하기",
     reactionrole: "이모지 반응에 따른 역할 부여",
     voice: "음성 채널 접속자에게 역할 부여",
   },
@@ -41,6 +42,7 @@ export default {
     voiceRole: "💡 올바른 인자값: <add|remove> <음성채널ID> <역할> [채팅채널ID]",
   },
   insufficientPerms: {
+    manage_guild: "🚫 서버를 관리할 수 있는 권한이 없습니다.",
     manage_channels: "🚫 채널을 관리할 수 있는 권한이 없습니다.",
     manage_roles: "🚫 역할을 관리할 수 있는 권한이 없습니다.",
     manage_messages: "🚫 메시지를 관리할 수 있는 권한이 없습니다.",

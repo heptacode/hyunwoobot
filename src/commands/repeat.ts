@@ -1,25 +1,24 @@
-import { Message } from "discord.js";
-import { Args, Locale, State } from "../";
+import { TextChannel } from "discord.js";
+import { client } from "../app";
+import { Interaction, State } from "../";
 import Log from "../modules/logger";
 
 export default {
   name: "repeat",
   aliases: ["rp"],
-  async execute(locale: Locale, state: State, message: Message, args: Args) {
+  async execute(state: State, interaction: Interaction) {
     try {
-      if (!message.member.voice.channel) {
-        message.react("❌");
-        return message.channel.send(locale.repeat.joinToToggle);
-      }
+      const guild = client.guilds.cache.get(interaction.guild_id);
+      const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
+      const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
+
+      if (!voiceChannel) return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.repeat.joinToToggle);
 
       state.isRepeated = !state.isRepeated;
 
-      Log.s(`ToggleRepeat : ${state.isRepeated ? "ON" : "OFF"}`);
-      message.react("✅");
-      return message.channel.send(`${locale.repeat.toggled}${state.isRepeated ? `${locale.on}` : `${locale.off}`}`);
+      return channel.send(`${state.locale.repeat.toggled}${state.isRepeated ? `${state.locale.on}` : `${state.locale.off}`}`);
     } catch (err) {
-      message.react("❌");
-      Log.e(`ToggleRepeat > 1 > ${err}`);
+      Log.e(`ToggleRepeat > ${err}`);
     }
   },
 };

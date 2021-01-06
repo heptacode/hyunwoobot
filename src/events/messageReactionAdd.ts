@@ -1,9 +1,9 @@
 import { MessageReaction, User } from "discord.js";
 import firestore from "../modules/firestore";
-import { ReactionRole } from "../";
+import { client } from "../app";
 import { getHexfromEmoji } from "../modules/converter";
 import props from "../props";
-import { client } from "../app";
+import { ReactionRole } from "../";
 import Log from "../modules/logger";
 
 export default () => {

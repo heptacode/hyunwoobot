@@ -1,11 +1,9 @@
-import { Message } from "discord.js";
-import { Args, Locale, State } from "../";
 import { voiceConnect } from "../modules/voiceManager";
+import { Interaction, State } from "../";
 
 export default {
   name: "join",
-  aliases: ["j"],
-  execute(locale: Locale, state: State, message: Message, args: Args) {
-    voiceConnect(locale, state, message);
+  execute(state: State, interaction: Interaction) {
+    voiceConnect(state, interaction);
   },
 };

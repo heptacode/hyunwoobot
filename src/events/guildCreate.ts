@@ -19,7 +19,7 @@ export default () => {
     if (!configDocSnapshot.exists) {
       Log.d(`Firestore Initialize for guild [ ${guild.name} | ${guild.id} ]`);
       try {
-        await configDocRef.set({ autorole: [], locale: "ko", log: "", privateRoom: "", privateRooms: [], voice: [] } as Config);
+        await configDocRef.set({ autorole: [], locale: "ko", log: "", privateRoom: "", privateRooms: [], voiceRole: [] } as Config);
       } catch (err) {
         Log.e(`Firestore Initialize > ${err}`);
       }

@@ -1,13 +1,16 @@
-import { Message } from "discord.js";
-import { Locale, State } from "../";
+import { client } from "../app";
+import { Interaction, State } from "../";
 import ytdl from "ytdl-core";
 import { getLength } from "./converter";
 import { voiceConnect, voiceDisconnect } from "./voiceManager";
 import Log from "./logger";
+import { Message, TextChannel } from "discord.js";
 
-export const stream = async (locale: Locale, state: State, message: Message) => {
+export const stream = async (state: State, interaction: Interaction) => {
   try {
-    if (!state.connection) await voiceConnect(locale, state, message);
+    const channel = client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.channel_id) as TextChannel;
+
+    if (!state.connection) await voiceConnect(state, interaction);
 
     try {
       state.dispatcher = state.connection.play(ytdl(state.playlist[0].videoURL), {
@@ -20,11 +23,11 @@ export const stream = async (locale: Locale, state: State, message: Message) => 
       state.dispatcher.on("start", () => {
         if (state.timeout) clearTimeout(state.timeout);
         state.isPlaying = true;
-        message.channel.send({
+        channel.send({
           embed: {
             color: "#0099ff",
             author: {
-              name: `${state.isLooped ? "🔁 " : ""}${state.isRepeated ? "🔂 " : ""}${locale.music.nowPlaying}`,
+              name: `${state.isLooped ? "🔁 " : ""}${state.isRepeated ? "🔂 " : ""}${state.locale.music.nowPlaying}`,
               iconURL: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/play.png?alt=media&token=38cc0c28-41b4-44aa-9f2f-0ad9c23859ab",
             },
             title: state.playlist[0].title,
@@ -32,8 +35,8 @@ export const stream = async (locale: Locale, state: State, message: Message) => 
             description: state.playlist[0].channelName,
             thumbnail: { url: state.playlist[0].thumbnailURL },
             fields: [
-              { name: locale.music.length, value: getLength(state.playlist[0].length), inline: true },
-              { name: locale.music.remaining, value: state.playlist.length - 1, inline: true },
+              { name: state.locale.music.length, value: getLength(state.playlist[0].length), inline: true },
+              { name: state.locale.music.remaining, value: state.playlist.length - 1, inline: true },
             ],
             footer: { text: state.playlist[0].requestedBy.tag, iconURL: state.playlist[0].requestedBy.avatarURL },
           },
@@ -51,10 +54,10 @@ export const stream = async (locale: Locale, state: State, message: Message) => 
               state.playlist.shift();
             }
             if (state.playlist.length >= 1) {
-              stream(locale, state, message);
-            } else state.timeout = setTimeout(() => voiceDisconnect(locale, state, message, true), 10000);
+              stream(state, interaction);
+            } else state.timeout = setTimeout(() => voiceDisconnect(state, interaction, true), 10000);
           } else {
-            state.timeout = setTimeout(() => voiceDisconnect(locale, state, message, true), 10000);
+            state.timeout = setTimeout(() => voiceDisconnect(state, interaction, true), 10000);
           }
         } catch (err) {
           Log.e(`Stream > 4 > ${err}`);
@@ -71,34 +74,36 @@ export const stream = async (locale: Locale, state: State, message: Message) => 
   }
 };
 
-export const skip = async (locale: Locale, state: State, message: Message) => {
+export const skip = async (state: State, interaction: Interaction) => {
   try {
-    if (!message.member.voice.channel) {
-      message.react("❌");
-      return message.channel.send(locale.skip.joinToSkip).then((_message: Message) => {
+    const guild = client.guilds.cache.get(interaction.guild_id);
+    const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
+    const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
+    if (!voiceChannel) {
+      return channel.send(state.locale.skip.joinToSkip).then((_message: Message) => {
         _message.delete({ timeout: 5000 });
       });
     }
 
-    if (state.playlist.length === 0) return message.channel.send(locale.skip.noSongToSkip);
+    if (state.playlist.length === 0) return channel.send(state.locale.skip.noSongToSkip);
 
     state.playlist.shift();
 
     state.dispatcher.end();
 
-    message.react("⏩");
-    return message.channel.send(locale.skip.skipped);
+    return channel.send(state.locale.skip.skipped);
   } catch (err) {
-    message.react("❌");
     Log.e(`Skip > 1 > ${err}`);
   }
 };
 
-export const resume = async (locale: Locale, state: State, message: Message) => {
+export const resume = async (state: State, interaction: Interaction) => {
   try {
-    if (!message.member.voice.channel) {
-      message.react("❌");
-      return message.channel.send(locale.voiceConnect.joinToConnect).then((_message: Message) => {
+    const guild = client.guilds.cache.get(interaction.guild_id);
+    const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
+    const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
+    if (!voiceChannel) {
+      return channel.send(state.locale.voiceConnect.joinToConnect).then((_message: Message) => {
         _message.delete({ timeout: 5000 });
       });
     }
@@ -106,16 +111,17 @@ export const resume = async (locale: Locale, state: State, message: Message) => 
     state.dispatcher.resume();
     state.isPlaying = true;
   } catch (err) {
-    message.react("❌");
     Log.e(`Resume > 1 > ${err}`);
   }
 };
 
-export const pause = async (locale: Locale, state: State, message: Message) => {
+export const pause = async (state: State, interaction: Interaction) => {
+  const guild = client.guilds.cache.get(interaction.guild_id);
+  const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
+  const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
   try {
-    if (!message.member.voice.channel) {
-      message.react("❌");
-      return message.channel.send(locale.stop.joinToStop).then((_message: Message) => {
+    if (!voiceChannel) {
+      return channel.send(state.locale.stop.joinToStop).then((_message: Message) => {
         _message.delete({ timeout: 5000 });
       });
     }
@@ -123,17 +129,18 @@ export const pause = async (locale: Locale, state: State, message: Message) => {
     state.dispatcher.pause(true);
     state.isPlaying = false;
   } catch (err) {
-    message.react("❌");
-    message.channel.send(locale.stop.notNow);
+    channel.send(state.locale.stop.notNow);
     Log.e(`Pause > 1 > ${err}`);
   }
 };
 
-export const stop = (locale: Locale, state: State, message: Message) => {
+export const stop = (state: State, interaction: Interaction) => {
+  const guild = client.guilds.cache.get(interaction.guild_id);
+  const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
+  const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
   try {
-    if (!message.member.voice.channel) {
-      message.react("❌");
-      return message.channel.send(locale.stop.joinToStop).then((_message: Message) => {
+    if (!voiceChannel) {
+      return channel.send(state.locale.stop.joinToStop).then((_message: Message) => {
         _message.delete({ timeout: 5000 });
       });
     }
@@ -141,27 +148,26 @@ export const stop = (locale: Locale, state: State, message: Message) => {
     state.dispatcher.pause(true);
     state.isPlaying = false;
   } catch (err) {
-    message.react("❌");
-    message.channel.send(`${locale.stop.notNow}`);
+    channel.send(`${state.locale.stop.notNow}`);
     Log.e(`Stop > 1 > ${err}`);
   }
 };
 
-export const toggleLoop = (locale: Locale, state: State, message: Message) => {
+export const toggleLoop = (state: State, interaction: Interaction) => {
+  const guild = client.guilds.cache.get(interaction.guild_id);
+  const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
+  const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
   try {
-    if (!message.member.voice.channel) {
-      message.react("❌");
-      return message.channel.send(locale.loop.joinToToggle).then((_message: Message) => {
+    if (!voiceChannel) {
+      return channel.send(state.locale.loop.joinToToggle).then((_message: Message) => {
         _message.delete({ timeout: 5000 });
       });
     }
 
     state.isLooped = !state.isLooped;
 
-    message.react("✅");
-    return message.channel.send(`${locale.loop.toggled}${state.isLooped ? `${locale.on}` : `${locale.off}`}`);
+    return channel.send(`${state.locale.loop.toggled}${state.isLooped ? `${state.locale.on}` : `${state.locale.off}`}`);
   } catch (err) {
-    message.react("❌");
     Log.e(`ToggleLoop > 1 > ${err}`);
   }
 };
