@@ -10,7 +10,7 @@ export default {
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
       if (!message.member.hasPermission("MANAGE_ROLES"))
-        return message.channel.send(locale.insufficientPerms_manage_roles).then((_message: Message) => {
+        return message.channel.send(locale.insufficientPerms.manage_roles).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
 
@@ -26,7 +26,7 @@ export default {
       if (args.length === 0) {
         autoRoleConfig = configDocSnapshot.data().autoRole as AutoRole[];
       } else if (method === "add") {
-        if (!["user", "bot"].includes(type)) return message.channel.send(locale.autoRole_usage);
+        if (!["user", "bot"].includes(type)) return message.channel.send(locale.usage.autoRole);
 
         autoRoleConfig = configDocSnapshot.data().autoRole as AutoRole[];
         autoRoleConfig.push({ type: type, role: getRoleID(message.guild, role) });
@@ -36,7 +36,7 @@ export default {
         await configDocRef.update({ autoRole: [] });
         message.react("✅");
       } else {
-        message.channel.send(locale.autoRole_usage);
+        message.channel.send(locale.usage.autoRole);
         return await message.react("❌");
       }
 
@@ -47,7 +47,7 @@ export default {
         });
 
       return message.channel.send({
-        embed: { title: locale.autoRole, color: props.color.yellow, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: locale.autoRole_empty }] },
+        embed: { title: locale.autoRole.autoRole, color: props.color.yellow, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: locale.autoRole.empty }] },
       });
     } catch (err) {
       message.react("❌");

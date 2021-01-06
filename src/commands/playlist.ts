@@ -11,7 +11,7 @@ export default {
       if (state.playlist.length != 0) {
         const fields: EmbedFieldData[] = [];
         for (const i in state.playlist) {
-          if (Number(i) === 0) fields.push({ name: locale.nowPlaying, value: state.playlist[i].title });
+          if (Number(i) === 0) fields.push({ name: locale.music.nowPlaying, value: state.playlist[i].title });
           else fields.push({ name: `#${i}`, value: state.playlist[i].title });
         }
         fields.push({ name: "\u200B", value: `${state.isPlaying ? "▶️" : "⏹"}${state.isLooped ? " 🔁" : ""}${state.isRepeated ? " 🔂" : ""}` });
@@ -30,12 +30,12 @@ export default {
           },
         });
       } else {
+        message.channel.send(locale.music.empty);
         Log.w(`Playlist > Playlist Empty`);
-        message.channel.send(locale.playlistEmpty);
       }
     } catch (err) {
+      message.react("❌");
       Log.e(`Playlist > 1 > ${err}`);
-      message.channel.send(locale.err_cmd);
     }
   },
 };

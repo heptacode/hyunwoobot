@@ -9,6 +9,24 @@ const locales_list: string[] = [...locales.keys()];
 export default {
   name: "locale",
   aliases: ["lang"],
+  options: [
+    {
+      type: 3,
+      name: "code",
+      description: "Locale Code",
+      required: true,
+      choices: [
+        {
+          name: "ko",
+          value: "한국어",
+        },
+        {
+          name: "en",
+          value: "English",
+        },
+      ],
+    },
+  ],
   async execute(locale: Locale, state: State, message: Message, args: Args) {
     try {
       const configDocRef = firestore.collection(message.guild.id).doc("config");
@@ -20,7 +38,7 @@ export default {
       const result = await configDocRef.update({ locale: newValue });
       if (result) {
         message.react("✅");
-        return message.channel.send(`${locale.changeLocale}${newValue}`);
+        return message.channel.send(`${locale.locale.changed}${newValue}`);
       } else {
         message.react("❌");
         Log.e(`ChangeLocale > 2 > ${result}`);

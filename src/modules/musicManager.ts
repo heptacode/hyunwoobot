@@ -24,7 +24,7 @@ export const stream = async (locale: Locale, state: State, message: Message) => 
           embed: {
             color: "#0099ff",
             author: {
-              name: `${state.isLooped ? "🔁 " : ""}${state.isRepeated ? "🔂 " : ""}${locale.nowPlaying}`,
+              name: `${state.isLooped ? "🔁 " : ""}${state.isRepeated ? "🔂 " : ""}${locale.music.nowPlaying}`,
               iconURL: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/play.png?alt=media&token=38cc0c28-41b4-44aa-9f2f-0ad9c23859ab",
             },
             title: state.playlist[0].title,
@@ -32,8 +32,8 @@ export const stream = async (locale: Locale, state: State, message: Message) => 
             description: state.playlist[0].channelName,
             thumbnail: { url: state.playlist[0].thumbnailURL },
             fields: [
-              { name: locale.length, value: getLength(state.playlist[0].length), inline: true },
-              { name: locale.remaning, value: state.playlist.length - 1, inline: true },
+              { name: locale.music.length, value: getLength(state.playlist[0].length), inline: true },
+              { name: locale.music.remaining, value: state.playlist.length - 1, inline: true },
             ],
             footer: { text: state.playlist[0].requestedBy.tag, iconURL: state.playlist[0].requestedBy.avatarURL },
           },
@@ -75,19 +75,19 @@ export const skip = async (locale: Locale, state: State, message: Message) => {
   try {
     if (!message.member.voice.channel) {
       message.react("❌");
-      return message.channel.send(locale.joinToSkip).then((_message: Message) => {
+      return message.channel.send(locale.skip.joinToSkip).then((_message: Message) => {
         _message.delete({ timeout: 5000 });
       });
     }
 
-    if (state.playlist.length === 0) return message.channel.send(locale.noSongToSkip);
+    if (state.playlist.length === 0) return message.channel.send(locale.skip.noSongToSkip);
 
     state.playlist.shift();
 
     state.dispatcher.end();
 
     message.react("⏩");
-    return message.channel.send(locale.skipped);
+    return message.channel.send(locale.skip.skipped);
   } catch (err) {
     message.react("❌");
     Log.e(`Skip > 1 > ${err}`);
@@ -98,7 +98,7 @@ export const resume = async (locale: Locale, state: State, message: Message) => 
   try {
     if (!message.member.voice.channel) {
       message.react("❌");
-      return message.channel.send(locale.joinToConnect).then((_message: Message) => {
+      return message.channel.send(locale.voiceConnect.joinToConnect).then((_message: Message) => {
         _message.delete({ timeout: 5000 });
       });
     }
@@ -115,7 +115,7 @@ export const pause = async (locale: Locale, state: State, message: Message) => {
   try {
     if (!message.member.voice.channel) {
       message.react("❌");
-      return message.channel.send(locale.joinToStop).then((_message: Message) => {
+      return message.channel.send(locale.stop.joinToStop).then((_message: Message) => {
         _message.delete({ timeout: 5000 });
       });
     }
@@ -124,7 +124,7 @@ export const pause = async (locale: Locale, state: State, message: Message) => {
     state.isPlaying = false;
   } catch (err) {
     message.react("❌");
-    message.channel.send(locale.stopNotNow);
+    message.channel.send(locale.stop.notNow);
     Log.e(`Pause > 1 > ${err}`);
   }
 };
@@ -133,7 +133,7 @@ export const stop = (locale: Locale, state: State, message: Message) => {
   try {
     if (!message.member.voice.channel) {
       message.react("❌");
-      return message.channel.send(locale.joinToStop).then((_message: Message) => {
+      return message.channel.send(locale.stop.joinToStop).then((_message: Message) => {
         _message.delete({ timeout: 5000 });
       });
     }
@@ -142,7 +142,7 @@ export const stop = (locale: Locale, state: State, message: Message) => {
     state.isPlaying = false;
   } catch (err) {
     message.react("❌");
-    message.channel.send(`${locale.stopNotNow}`);
+    message.channel.send(`${locale.stop.notNow}`);
     Log.e(`Stop > 1 > ${err}`);
   }
 };
@@ -151,7 +151,7 @@ export const toggleLoop = (locale: Locale, state: State, message: Message) => {
   try {
     if (!message.member.voice.channel) {
       message.react("❌");
-      return message.channel.send(locale.joinToToggleLoop).then((_message: Message) => {
+      return message.channel.send(locale.loop.joinToToggle).then((_message: Message) => {
         _message.delete({ timeout: 5000 });
       });
     }
@@ -159,7 +159,7 @@ export const toggleLoop = (locale: Locale, state: State, message: Message) => {
     state.isLooped = !state.isLooped;
 
     message.react("✅");
-    return message.channel.send(`${locale.toggleLoop}${state.isLooped ? `${locale.on}` : `${locale.off}`}`);
+    return message.channel.send(`${locale.loop.toggled}${state.isLooped ? `${locale.on}` : `${locale.off}`}`);
   } catch (err) {
     message.react("❌");
     Log.e(`ToggleLoop > 1 > ${err}`);

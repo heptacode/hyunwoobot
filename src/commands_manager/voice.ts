@@ -11,7 +11,7 @@ export default {
     try {
       if (!message.member.hasPermission("MANAGE_CHANNELS")) {
         message.react("❌");
-        return message.channel.send(locale.insufficientPerms_manage_channels).then((_message: Message) => {
+        return message.channel.send(locale.insufficientPerms.manage_channels).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
       }
@@ -29,7 +29,7 @@ export default {
       if (args.length === 0) {
         voiceConfig = configDocSnapshot.data().voice as VoiceRole[];
       } else if (method === "add") {
-        if (args.length <= 2) return message.channel.send(locale.voiceRole_usage);
+        if (args.length <= 2) return message.channel.send(locale.usage.voiceRole);
 
         voiceConfig = configDocSnapshot.data().voice as VoiceRole[];
 
@@ -38,7 +38,7 @@ export default {
 
         await configDocRef.update({ voice: voiceConfig });
       } else if (method === "remove") {
-        if (args.length <= 2) return message.channel.send(locale.voiceRole_usage);
+        if (args.length <= 2) return message.channel.send(locale.usage.voiceRole);
 
         voiceConfig = configDocSnapshot.data().voice as VoiceRole[];
         const idx = voiceConfig.findIndex((voiceConfig: VoiceRole) => voiceConfig.voiceChannel === voiceChannel);
@@ -46,7 +46,7 @@ export default {
 
         await configDocRef.update({ voice: voiceConfig });
       } else {
-        return message.channel.send(locale.voiceRole_usage);
+        return message.channel.send(locale.usage.voiceRole);
       }
 
       const fields: EmbedFieldData[] = [];
@@ -60,7 +60,7 @@ export default {
 
       message.react("✅");
       return message.channel.send({
-        embed: { title: locale.voiceRole, color: props.color.yellow, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: locale.voiceRole_empty }] },
+        embed: { title: locale.voiceRole.voiceRole, color: props.color.yellow, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: locale.voiceRole.empty }] },
       });
     } catch (err) {
       message.react("❌");

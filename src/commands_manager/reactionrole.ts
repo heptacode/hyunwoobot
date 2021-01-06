@@ -10,7 +10,7 @@ export default {
     try {
       if (!message.member.hasPermission("MANAGE_MESSAGES")) {
         await message.react("❌");
-        return message.channel.send(locale.insufficientPerms_manage_messages).then((_message: Message) => {
+        return message.channel.send(locale.insufficientPerms.manage_messages).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
       }
@@ -33,9 +33,9 @@ export default {
 
       if (args.length <= 1) {
         await message.react("❌");
-        return message.channel.send(locale.reactionrole_usage);
+        return message.channel.send(locale.usage.reactionrole);
       } else if (method === "add") {
-        if (args.length <= 3) return message.channel.send(locale.reactionrole_usage);
+        if (args.length <= 3) return message.channel.send(locale.usage.reactionrole);
 
         try {
           const _message = await ((await message.guild.channels.cache.get(channelID)) as TextChannel).messages.fetch(messageID);
@@ -50,7 +50,7 @@ export default {
           Log.e(`ReactionRole > Add > ${err}`);
         }
       } else if (method === "remove") {
-        if (args.length <= 2) return message.channel.send(locale.reactionrole_usage);
+        if (args.length <= 2) return message.channel.send(locale.usage.reactionrole);
         try {
           const _message = await ((await message.guild.channels.cache.get(channelID)) as TextChannel).messages.fetch(messageID);
 

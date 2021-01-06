@@ -9,14 +9,14 @@ export default {
     try {
       if (!message.member.voice.channel) {
         message.react("❌");
-        return message.channel.send(locale.joinToToggleRepeat);
+        return message.channel.send(locale.repeat.joinToToggle);
       }
 
       state.isRepeated = !state.isRepeated;
 
       Log.s(`ToggleRepeat : ${state.isRepeated ? "ON" : "OFF"}`);
       message.react("✅");
-      return message.channel.send(`${locale.toggleRepeat}${state.isRepeated ? `${locale.on}` : `${locale.off}`}`);
+      return message.channel.send(`${locale.repeat.toggled}${state.isRepeated ? `${locale.on}` : `${locale.off}`}`);
     } catch (err) {
       message.react("❌");
       Log.e(`ToggleRepeat > 1 > ${err}`);

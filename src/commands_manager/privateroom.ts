@@ -9,13 +9,13 @@ export default {
     try {
       if (!message.member.hasPermission("MANAGE_CHANNELS")) {
         await message.react("❌");
-        return message.channel.send(locale.insufficientPerms_manage_channels).then((_message: Message) => {
+        return message.channel.send(locale.insufficientPerms.manage_channels).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
       }
 
       const privateRoomID = await (
-        await message.guild.channels.create(locale.privateRoom_create, {
+        await message.guild.channels.create(locale.privateRoom.create, {
           type: "voice",
           userLimit: 1,
         })

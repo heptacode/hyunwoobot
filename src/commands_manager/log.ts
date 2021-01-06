@@ -11,7 +11,7 @@ export default {
     try {
       if (!message.member.hasPermission("MANAGE_MESSAGES")) {
         message.react("❌");
-        return message.channel.send(locale.insufficientPerms_manage_messages).then((_message: Message) => {
+        return message.channel.send(locale.insufficientPerms.manage_messages).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
       }
@@ -25,9 +25,9 @@ export default {
 
       await message.channel.send({
         embed: {
-          title: locale.log,
+          title: locale.log.log,
           color: props.color.yellow,
-          description: `${locale.log_set}<#${getChannelID(message.guild, args[0])}>`,
+          description: `${locale.log.set}<#${getChannelID(message.guild, args[0])}>`,
         },
       });
 

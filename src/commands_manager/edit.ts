@@ -9,14 +9,14 @@ export default {
     try {
       if (!message.member.hasPermission("MANAGE_MESSAGES")) {
         message.react("❌");
-        return message.channel.send(locale.insufficientPerms_manage_messages).then((_message: Message) => {
+        return message.channel.send(locale.insufficientPerms.manage_messages).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
       }
 
       if (args.length <= 3) {
         await message.react("❌");
-        return message.channel.send(locale.edit_usage);
+        return message.channel.send(locale.usage.edit);
       }
 
       const _message = await ((await message.guild.channels.cache.get(getChannelID(message.guild, args[0]))) as TextChannel).messages.fetch(args[1]);

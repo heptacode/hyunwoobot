@@ -9,7 +9,7 @@ export default {
     try {
       if (!message.member.hasPermission("MOVE_MEMBERS")) {
         message.react("❌");
-        return message.channel.send(locale.insufficientPerms_move_members).then((_message: Message) => {
+        return message.channel.send(locale.insufficientPerms.move_members).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
       }
@@ -18,7 +18,7 @@ export default {
       const targetChannel = getChannelID(message.guild, args[1]);
 
       if (args.length <= 1) {
-        return message.channel.send(locale.moveAll_usage);
+        return message.channel.send(locale.usage.moveAll);
       } else if ((args[0] === "afk" || fromChannel) && (args[1] === "afk" || targetChannel)) {
         return message.guild.channels.cache.get(fromChannel).members.forEach(async (_member: GuildMember) => {
           try {

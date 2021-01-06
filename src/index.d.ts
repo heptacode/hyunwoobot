@@ -1,124 +1,147 @@
 import { Guild, MessageEmbedOptions, StreamDispatcher, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
 
 interface Locale {
-  locale: string;
-  // Default
   on: string;
   off: string;
-  // help
-  help: string;
-  help_manager: string;
-  helpDesc: string;
-  helpDesc_manager: string;
-  help_join: string;
-  help_leave: string;
-  help_locale: string;
-  help_loop: string;
-  help_pause: string;
-  help_play: string;
-  help_playlist: string;
-  help_repeat: string;
-  help_skip: string;
-  help_stop: string;
-  help_volume: string;
-  // help_manager
-  help_autorole: string;
-  help_delete: string;
-  help_disconnectall: string;
-  help_edit: string;
-  help_embed: string;
-  help_log: string;
-  help_moveall: string;
-  help_reactionrole: string;
-  help_voice: string;
-  // Main
-  denyDM: string;
-  // autorole
-  autoRole: string;
-  autoRole_empty: string;
-  autoRole_usage: string;
-  // delete
-  delete: string;
-  invalidAmount: string;
-  // disconnectAll
-  disconnectAll_usage: string;
-  // edit
-  edit_usage: string;
-  // embed
-  embed_usage: string;
-  // voiceConnect
-  joinToConnect: string;
-  // voiceDisconnect
-  notInVoiceChannel: string;
-  leave: string;
-  disconnectTimeout: string;
-  // locale
-  changeLocale: string;
-  // loop
-  joinToToggleLoop: string;
-  toggleLoop: string;
-  // moveAll
-  moveAll_usage: string;
-  // play
-  currentlyPlaying: string;
-  videoPrivate: string;
-  videoAgeRestricted: string;
-  urlInvalid: string;
-  enqueued: string;
-  nowPlaying: string;
-  length: string;
-  remaning: string;
-  position: string;
-  // playlist
-  playlist: string;
-  playlistEmpty: string;
-  playlistNotExists: string;
-  // repeat
-  joinToToggleRepeat: string;
-  toggleRepeat: string;
-  // skip
-  joinToSkip: string;
-  noSongToSkip: string;
-  skipped: string;
-  // stop
-  joinToStop: string;
-  stopNotNow: string;
-  // volume
-  joinToChangeVolume: string;
-  currentVolume: string;
-  invalidVolume: string;
-  changeVolume: string;
-  // log
-  log: string;
-  log_set: string;
-  // privateRoom
-  privateRoom: string;
-  privateRoom_create: string;
-  privateRoom_waiting: string;
-  privateRoom_waitingForMove: string;
-  // reactionRole
-  reactionrole_usage: string;
-  // voice
-  voiceRole: string;
-  voiceRole_empty: string;
-  voiceRole_usage: string;
+  locale: {
+    code: string;
+    changed: string;
+  };
+  help: {
+    help: string;
+    help_manager: string;
+    description: string;
+    description_manager: string;
+    join: string;
+    leave: string;
+    locale: string;
+    loop: string;
+    pause: string;
+    play: string;
+    playlist: string;
+    repeat: string;
+    skip: string;
+    stop: string;
+    volume: string;
+    // manager
+    autorole: string;
+    delete: string;
+    disconnectall: string;
+    edit: string;
+    embed: string;
+    log: string;
+    moveall: string;
+    reactionrole: string;
+    voice: string;
+  };
+  usage: {
+    autoRole: string;
+    disconnectAll: string;
+    edit: string;
+    embed: string;
+    moveAll: string;
+    reactionrole: string;
+    voiceRole: string;
+  };
+  insufficientPerms: {
+    manage_channels: string;
+    manage_roles: string;
+    manage_messages: string;
+    move_members: string;
+    connect: string;
+  };
 
-  // Permissions
-  insufficientPerms_manage_channels: string;
-  insufficientPerms_manage_roles: string;
-  insufficientPerms_manage_messages: string;
-  insufficientPerms_move_members: string;
-  insufficientPerms_connect: string;
-
-  // Error
-  err_cmd: string;
-  err_task: string;
+  autoRole: {
+    autoRole: string;
+    empty: string;
+  };
+  delete: {
+    deleted: string;
+    invalidAmount: string;
+  };
+  voiceConnect: {
+    joinToConnect: string;
+  };
+  voiceDisconnect: {
+    notInVoiceChannel: string;
+    leave: string;
+    timeout: string;
+  };
+  loop: {
+    joinToToggle: string;
+    toggled: string;
+  };
+  music: {
+    currentlyPlaying: string;
+    private: string;
+    ageRestricted: string;
+    urlInvalid: string;
+    enqueued: string;
+    nowPlaying: string;
+    length: string;
+    playlist: string;
+    remaining: string;
+    position: string;
+    empty: string;
+    notExists: string;
+  };
+  repeat: {
+    joinToToggle: string;
+    toggled: string;
+  };
+  skip: {
+    joinToSkip: string;
+    noSongToSkip: string;
+    skipped: string;
+  };
+  stop: {
+    joinToStop: string;
+    notNow: string;
+  };
+  volume: {
+    joinToChange: string;
+    currentVolume: string;
+    invalid: string;
+    changed: string;
+  };
+  log: {
+    log: string;
+    set: string;
+  };
+  privateRoom: {
+    privateRoom: string;
+    create: string;
+    waitingRoom: string;
+    waitingForMove: string;
+  };
+  voiceRole: {
+    voiceRole: string;
+    empty: string;
+  };
 }
 
 interface Command {
   name: string;
   aliases?: string[];
+  options?: CommandOptions[];
   execute: Function;
+}
+
+type CommandOptionType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+
+interface CommandOptions {
+  type: CommandOptionType;
+  name: string;
+  description: string;
+  default?: boolean;
+  required?: boolean;
+  choices?: CommandOptionChoice[];
+  options?: CommandOptions[];
+}
+
+interface CommandOptionChoice {
+  name: string;
+  value: number | string;
 }
 
 interface State {

@@ -10,7 +10,7 @@ export default {
     try {
       if (!message.member.hasPermission("MANAGE_MESSAGES")) {
         message.react("❌");
-        return message.reply(locale.insufficientPerms_manage_messages).then((_message: Message) => {
+        return message.reply(locale.insufficientPerms.manage_messages).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
       }
@@ -19,16 +19,15 @@ export default {
       if (amount === NaN || !(amount >= 2 && amount <= 100)) {
         Log.w(`Delete : Invalid value : ${amount}`);
         message.react("❌");
-        return message.channel.send(locale.invalidAmount);
+        return message.channel.send(locale.delete.invalidAmount);
       }
 
-      const result = await (message.channel as TextChannel).bulkDelete(amount);
+      await (message.channel as TextChannel).bulkDelete(amount);
 
-      if (result) return message.channel.send({ embed: { color: props.color.primary, author: { name: `🗑 ${amount}${locale.delete}` }, footer: { text: message.author.tag }, timestamp: new Date() } });
-      else return message.channel.send(locale.err_cmd);
+      return message.channel.send({ embed: { color: props.color.primary, author: { name: `🗑 ${amount}${locale.delete.deleted}` }, footer: { text: message.author.tag }, timestamp: new Date() } });
     } catch (err) {
+      message.react("❌");
       Log.e(`Delete > 1 > ${err}`);
-      message.channel.send(locale.err_cmd);
     }
   },
 };

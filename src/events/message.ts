@@ -19,8 +19,6 @@ export default () => {
       commands_hidden.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
     if (!command) return;
 
-    // if (command.onlyAtServers && message.channel.type === "dm") return message.reply(locale.denyDM);
-
     try {
       if (commandName === "help") command.execute(state.get(message.guild.id).locale, message, args, commands, commands_manager);
       else command.execute(state.get(message.guild.id).locale, state.get(message.guild.id), message, args);

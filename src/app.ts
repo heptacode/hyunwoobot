@@ -15,7 +15,7 @@ export const commands_hidden: Collection<string, Command> = new Collection();
 
 for (const file of fs.readdirSync(path.resolve(__dirname, "../src/locales")).filter((file) => file.match(/(.js|.ts)$/))) {
   const locale: Locale = require(path.resolve(__dirname, `../src/locales/${file}`)).default;
-  locales.set(locale.locale, locale);
+  locales.set(locale.locale.code, locale);
 }
 
 for (const file of fs.readdirSync(path.resolve(__dirname, "../src/commands")).filter((file) => file.match(/(.js|.ts)$/))) {

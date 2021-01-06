@@ -9,12 +9,12 @@ export const voiceConnect = async (locale: Locale, state: State, message: Messag
     // Not in voice channel
     if (!voiceChannel) {
       message.react("❌");
-      return message.channel.send(locale.joinToConnect);
+      return message.channel.send(locale.voiceConnect.joinToConnect);
     }
     // Insufficient perms
     if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
       message.react("❌");
-      return message.channel.send(locale.insufficientPerms_connect);
+      return message.channel.send(locale.insufficientPerms.connect);
     }
 
     try {
@@ -41,10 +41,10 @@ export const voiceDisconnect = (locale: Locale, state: State, message: Message, 
     state.voiceChannel = null;
 
     Log.d(`VoiceDisconnect${timeout ? " : Timeout" : ""}`);
-    message.channel.send(`${timeout ? locale.disconnectTimeout : locale.leave}`);
+    message.channel.send(`${timeout ? locale.voiceDisconnect.timeout : locale.voiceDisconnect.leave}`);
   } catch (err) {
     message.react("❌");
-    message.channel.send(locale.notInVoiceChannel);
+    message.channel.send(locale.voiceDisconnect.notInVoiceChannel);
   }
 };
 

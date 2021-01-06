@@ -15,8 +15,8 @@ export default {
       let payload;
       if (!query && state.playlist.length !== 0) {
         if (!state.isPlaying) return stream(locale, state, message);
-        else return message.channel.send(locale.currentlyPlaying);
-      } else if (!query && state.playlist.length === 0) return message.channel.send(locale.playlistEmpty);
+        else return message.channel.send(locale.music.currentlyPlaying);
+      } else if (!query && state.playlist.length === 0) return message.channel.send(locale.music.empty);
 
       const result = (await youtube.search(query, { type: "video" })).videos;
       if (result.length >= 1) {
@@ -48,12 +48,12 @@ export default {
           } else {
             Log.d(`Enqueue : ${payload.title}`);
             const fields: EmbedFieldData[] = [
-              { name: locale.length, value: getLength(state.playlist[state.playlist.length - 1].length), inline: true },
-              { name: locale.position, value: state.playlist.length - 1, inline: true },
+              { name: locale.music.length, value: getLength(state.playlist[state.playlist.length - 1].length), inline: true },
+              { name: locale.music.position, value: state.playlist.length - 1, inline: true },
               // { name: "\u200B", value: "\u200B" },
             ];
             for (const i in state.playlist) {
-              if (Number(i) == 0) fields.push({ name: locale.nowPlaying, value: state.playlist[i].title });
+              if (Number(i) == 0) fields.push({ name: locale.music.nowPlaying, value: state.playlist[i].title });
               else fields.push({ name: `#${i}`, value: state.playlist[i].title });
             }
 
@@ -63,7 +63,7 @@ export default {
             return message.channel.send({
               embed: {
                 color: props.color.primary,
-                author: { name: locale.enqueued, iconURL: state.playlist[state.playlist.length - 1].requestedBy.avatarURL, url: props.bot.website },
+                author: { name: locale.music.enqueued, iconURL: state.playlist[state.playlist.length - 1].requestedBy.avatarURL, url: props.bot.website },
                 title: state.playlist[state.playlist.length - 1].title,
                 url: state.playlist[state.playlist.length - 1].videoURL,
                 description: state.playlist[state.playlist.length - 1].channelName,
@@ -78,7 +78,7 @@ export default {
         }
       } else {
         message.react("❌");
-        message.channel.send(locale.urlInvalid);
+        message.channel.send(locale.music.urlInvalid);
         Log.e(`Enqueue > No Result`);
       }
     } catch (err) {

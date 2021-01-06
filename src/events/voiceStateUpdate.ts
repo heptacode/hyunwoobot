@@ -97,7 +97,7 @@ export default () => {
           await newState.member.voice.setChannel(_privateRoom);
 
           const _waitingRoomID = await (
-            await newState.guild.channels.create(`🚪 ${newState.member.displayName} ${state.get(newState.guild.id).locale.privateRoom_waiting}`, {
+            await newState.guild.channels.create(`🚪 ${newState.member.displayName} ${state.get(newState.guild.id).locale.privateRoom.waitingRoom}`, {
               type: "voice",
               permissionOverwrites: [
                 {
@@ -123,7 +123,7 @@ export default () => {
           // Waiting Room
           try {
             return await newState.member.send({
-              embed: { color: props.color.info, title: state.get(newState.guild.id).locale.privateRoom, description: state.get(newState.guild.id).locale.privateRoom_waitingForMove },
+              embed: { color: props.color.info, title: state.get(newState.guild.id).locale.privateRoom.privateRoom, description: state.get(newState.guild.id).locale.privateRoom.waitingForMove },
             });
           } catch (err) {}
         }

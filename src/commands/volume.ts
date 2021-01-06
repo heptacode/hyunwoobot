@@ -9,18 +9,18 @@ export default {
     try {
       if (!message.member.voice.channel) {
         message.react("❌");
-        return message.channel.send(locale.joinToChangeVolume).then((_message: Message) => {
+        return message.channel.send(locale.volume.joinToChange).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
       }
 
       const newVolume = Number(args[0]);
       if (!newVolume) {
-        return message.channel.send(`${locale.currentVolume}${state.volume}`);
+        return message.channel.send(`${locale.volume.currentVolume}${state.volume}`);
       } else if (!(newVolume >= 0 && newVolume <= 10)) {
         Log.w(`ChangeVolume > Invalid value: ${newVolume}`);
         message.react("❌");
-        return message.channel.send(locale.invalidVolume);
+        return message.channel.send(locale.volume.invalid);
       }
 
       state.dispatcher.setVolume(newVolume / 5);
@@ -29,7 +29,7 @@ export default {
 
       Log.s(`ChangeVolume: ${newVolume}`);
       message.react("✅");
-      return message.channel.send(locale.changeVolume);
+      return message.channel.send(locale.volume.changed);
     } catch (err) {
       message.react("❌");
       Log.e(`ChangeVolume > 1 > ${err}`);

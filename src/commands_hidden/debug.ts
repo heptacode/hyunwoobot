@@ -18,7 +18,6 @@ export default {
       Log.v("------------------------------------------------------------------------------------");
     } catch (err) {
       Log.e(`Debug > 1 > ${err}`);
-      message.channel.send(`${locale.err_cmd}`);
     }
   },
 };

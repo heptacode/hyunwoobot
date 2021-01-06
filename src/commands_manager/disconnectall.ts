@@ -9,13 +9,13 @@ export default {
     try {
       if (!message.member.hasPermission("MOVE_MEMBERS")) {
         message.react("❌");
-        return message.channel.send(locale.insufficientPerms_move_members).then((_message: Message) => {
+        return message.channel.send(locale.insufficientPerms.move_members).then((_message: Message) => {
           _message.delete({ timeout: 5000 });
         });
       }
 
       if (args.length <= 0) {
-        return message.channel.send(locale.disconnectAll_usage);
+        return message.channel.send(locale.usage.disconnectAll);
       } else if (args[0] === "afk") {
         message.guild.afkChannel.members.forEach(async (_member: GuildMember) => {
           try {
@@ -34,8 +34,9 @@ export default {
           }
           return await message.react("✅");
         });
+      } else {
+        return await message.react("❌");
       }
-      return await message.react("❌");
     } catch (err) {
       message.react("❌");
       Log.e(`Voice > ${err}`);

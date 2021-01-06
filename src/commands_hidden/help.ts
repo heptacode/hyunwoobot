@@ -9,22 +9,22 @@ export default {
     const fields: EmbedFieldData[] = [];
 
     if (args[0] !== "manager") {
-      commands.forEach((command: Command, key: string) => {
-        fields.push({ name: command.name, value: `${command.aliases ? `(${command.aliases.join(", ")})\n` : ""}${locale[`help_${command.name}`]}`, inline: true });
-      });
+      for (const [key, command] of commands_manager) {
+        fields.push({ name: command.name, value: `${command.aliases ? `(${command.aliases.join(", ")})\n` : ""}${locale.help[command.name]}`, inline: true });
+      }
     } else {
       isUser = false;
-      commands_manager.forEach((command: Command, key: string) => {
-        fields.push({ name: command.name, value: `${command.aliases ? `(${command.aliases.join(", ")})\n` : ""}${locale[`help_${command.name}`]}`, inline: true });
-      });
+      for (const [key, command] of commands_manager) {
+        fields.push({ name: command.name, value: `${command.aliases ? `(${command.aliases.join(", ")})\n` : ""}${locale.help[command.name]}`, inline: true });
+      }
     }
 
     return message.channel.send({
       embed: {
         color: props.color.primary,
-        title: `${props.bot.name} ${isUser ? locale.help : locale.help_manager}`,
+        title: `${props.bot.name} ${isUser ? locale.help.help : locale.help.help_manager}`,
         url: props.bot.website,
-        description: isUser ? locale.helpDesc : locale.helpDesc_manager,
+        description: isUser ? locale.help.description : locale.help.description_manager,
         thumbnail: { url: props.bot.icon },
         fields: fields,
       },
