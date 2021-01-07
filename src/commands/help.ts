@@ -5,6 +5,7 @@ import { Interaction, Locale, State } from "../";
 
 export default {
   name: "help",
+  version: 1,
   options(locale: Locale) {
     return [
       {
@@ -23,7 +24,7 @@ export default {
     for (const [name, command] of !isManager ? commands : commands_manager) {
       fields.push({
         name: `${name}${state.locale.usage[name] ? ` ${state.locale.usage[name]}` : ""}`,
-        value: `${command.aliases ? `(${command.aliases.join(", ")})\n` : ""}${state.locale.help[name]}`,
+        value: state.locale.help[name],
         inline: true,
       });
     }

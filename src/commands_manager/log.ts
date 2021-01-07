@@ -8,6 +8,7 @@ import Log from "../modules/logger";
 
 export default {
   name: "log",
+  version: 1,
   options(locale: Locale) {
     return [
       {

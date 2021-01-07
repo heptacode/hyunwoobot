@@ -11,7 +11,7 @@ for (const [code, locale] of locales) {
 
 export default {
   name: "locale",
-  aliases: ["lang"],
+  version: 1,
   options(locale: Locale) {
     return [
       {

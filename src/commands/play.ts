@@ -9,7 +9,7 @@ import Log from "../modules/logger";
 
 export default {
   name: "play",
-  aliases: ["p", "eq", "enqueue"],
+  version: 1,
   options(locale: Locale) {
     return [
       {

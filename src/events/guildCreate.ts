@@ -11,6 +11,8 @@ export default () => {
       .doc("server")
       .set(JSON.parse(JSON.stringify(guild)));
 
+    await firestore.collection(guild.id).doc("commands").set({});
+
     const configDocRef = firestore.collection(guild.id).doc("config");
     const configDocSnapshot = await configDocRef.get();
 

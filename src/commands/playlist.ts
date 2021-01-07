@@ -6,7 +6,7 @@ import Log from "../modules/logger";
 
 export default {
   name: "playlist",
-  aliases: ["ls", "list", "queue"],
+  version: 1,
   execute(state: State, interaction: Interaction) {
     const channel = client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.channel_id) as TextChannel;
     try {

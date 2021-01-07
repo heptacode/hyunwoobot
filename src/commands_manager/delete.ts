@@ -6,6 +6,7 @@ import Log from "../modules/logger";
 
 export default {
   name: "delete",
+  version: 1,
   options(locale: Locale) {
     return [
       {

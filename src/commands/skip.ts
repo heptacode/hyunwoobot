@@ -3,7 +3,7 @@ import { Interaction, State } from "../";
 
 export default {
   name: "skip",
-  aliases: ["fs"],
+  version: 1,
   execute(state: State, interaction: Interaction) {
     skip(state, interaction);
   },

@@ -5,6 +5,7 @@ import Log from "../modules/logger";
 
 export default {
   name: "setafktimeout",
+  version: 1,
   options(locale: Locale) {
     return [
       {

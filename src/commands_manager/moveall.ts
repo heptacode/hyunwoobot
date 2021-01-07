@@ -6,6 +6,7 @@ import { client } from "../app";
 
 export default {
   name: "moveall",
+  version: 1,
   options(locale: Locale) {
     return [
       {

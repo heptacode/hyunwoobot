@@ -9,7 +9,7 @@ export default () => {
 
     const args: string[] = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName: string = args[0].toLowerCase();
-    const command: Command = commands_hidden.get(commandName) || commands_hidden.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
+    const command: Command = commands_hidden.get(commandName);
     if (!command) return;
 
     args.shift();

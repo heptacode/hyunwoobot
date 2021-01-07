@@ -7,6 +7,7 @@ import Log from "../modules/logger";
 
 export default {
   name: "autorole",
+  version: 1,
   options(locale: Locale) {
     return [
       {

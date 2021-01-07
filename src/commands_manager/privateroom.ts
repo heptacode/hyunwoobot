@@ -6,6 +6,7 @@ import Log from "../modules/logger";
 
 export default {
   name: "privateroom",
+  version: 1,
   async execute(state: State, interaction: Interaction) {
     try {
       const guild = client.guilds.cache.get(interaction.guild_id);

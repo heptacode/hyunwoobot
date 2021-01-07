@@ -6,6 +6,7 @@ import Log from "../modules/logger";
 
 export default {
   name: "disconnectall",
+  version: 1,
   options(locale: Locale) {
     return [{ type: 7, name: "voiceChannel", description: locale.voiceChannel, required: true }];
   },

@@ -5,7 +5,7 @@ import Log from "../modules/logger";
 
 export default {
   name: "volume",
-  aliases: ["v", "vol"],
+  version: 1,
   options(locale: Locale) {
     return [
       {

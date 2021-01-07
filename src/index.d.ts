@@ -192,7 +192,7 @@ interface CommandInteractionDataOption {
 
 interface Command {
   name: string;
-  aliases?: string[];
+  version: number;
   options?: Function;
   execute: Function;
 }
