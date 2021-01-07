@@ -52,8 +52,8 @@ export default {
     //
     autorole: "<view|add|purge> [user|bot] [역할]",
     disconnectall: "<음성채널>",
-    edit: "<메시지ID> <임베드>",
-    embed: "<임베드>",
+    edit: "<채팅채널> <메시지ID> <임베드>",
+    embed: "<채팅채널> <임베드>",
     locale: "<언어 코드>",
     log: "<채팅채널>",
     moveall: "<음성채널> <타겟 음성채널>",

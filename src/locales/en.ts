@@ -52,8 +52,8 @@ export default {
     //
     autorole: "<view|add|purge> [user|bot] [role]",
     disconnectall: "<textChannel>",
-    edit: "<messageID> <messageEmbed>",
-    embed: "<messageEmbed>",
+    edit: "<textChannel> <messageID> <messageEmbed>",
+    embed: "<textChannel> <messageEmbed>",
     locale: "<code>",
     log: "<textChannel>",
     moveall: "<fromVoiceChannel> <targetVoiceChannel>",

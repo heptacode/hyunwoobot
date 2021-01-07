@@ -12,8 +12,10 @@ export default () => {
     const command: Command = commands_hidden.get(commandName) || commands_hidden.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
     if (!command) return;
 
+    args.shift();
+
     try {
-      await command.execute(state.get(message.guild.id), message, args.shift());
+      await command.execute(state.get(message.guild.id), message, args);
     } catch (err) {
       await message.react("❌");
       Log.e(`Main > ${JSON.stringify(message.content)} > ${err}`);
