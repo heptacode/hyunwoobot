@@ -4,20 +4,22 @@ import { stream } from "../modules/musicManager";
 import { getLength } from "../modules/converter";
 import youtube from "scrape-youtube";
 import props from "../props";
-import { Interaction, State } from "../";
+import { Interaction, Locale, State } from "../";
 import Log from "../modules/logger";
 
 export default {
   name: "play",
   aliases: ["p", "eq", "enqueue"],
-  options: [
-    {
-      type: 3,
-      name: "query",
-      description: "Search Query",
-      required: true,
-    },
-  ],
+  options(locale: Locale) {
+    return [
+      {
+        type: 3,
+        name: "query",
+        description: "Search Query",
+        required: true,
+      },
+    ];
+  },
   async execute(state: State, interaction: Interaction) {
     const channel = client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.channel_id) as TextChannel;
     try {

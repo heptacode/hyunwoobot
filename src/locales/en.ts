@@ -3,14 +3,23 @@ import { Locale } from "../";
 export default {
   on: "ON",
   off: "OFF",
+  manager: "[Manager]",
+  scope: "Scope",
+  role: "Role",
+  textChannel: "TextChannel",
+  voiceChannel: "VoiceChannel",
+  messageID: "MessageID",
+  embed: "Embed",
+  emoji: "Emoji",
+
   locale: {
+    locale: "Locale",
     code: "en",
     name: "English",
     changed: "✅ Locale changed to ",
   },
   help: {
     help: "Help",
-    help_manager: "Help [Manager]",
     description: "List of commands and descriptions you can use.\n(For manager commands, add [manager] for an argument)\n<Required> [Optional]",
     description_manager: "List of commands and descriptions which managers can use.\n<Required> [Optional]",
     join: "Join a voice channel you are in",
@@ -23,7 +32,7 @@ export default {
     skip: "Skip current music",
     stop: "Stop the music",
     volume: "Change the volume",
-    // manager
+    //
     autorole: "Give roles when a member/bot joins the server",
     delete: "Bulk Delete Messages",
     disconnectall: "Disconnect all users from a voice channel",
@@ -34,16 +43,22 @@ export default {
     moveall: "Move all users to another voice channel",
     privateroom: "Set Private Room",
     reactionrole: "Add/Remove a reaction role",
-    voice: "Give a role when someone joins a voice channel",
+    setafktimeout: "Set minutes to kick AFK users",
+    voicerole: "Give a role when someone joins a voice channel",
   },
   usage: {
-    autoRole: "💡 Correct arguments: <add|reset> [user|bot] [role]",
-    disconnectAll: "💡 Correct arguments: <afk|channelID>",
-    edit: "💡 Correct arguments: <channelID> <messageID> <messageEmbed>",
-    embed: "💡 Correct arguments: <channelID> <messageEmbed>",
-    moveAll: "💡 Correct arguments: <afk|fromChannelID> <afk|targetChannelID>",
-    reactionrole: "💡 Correct Arguments: <add|remove|purge> <textChannelID> <messageID> [emoji] [role]",
-    voiceRole: "💡 Correct Arguments: <add|remove> <voiceChannelID> <role> [textChannelID]",
+    help: "[manager]",
+    volume: "<1~10>",
+    //
+    autorole: "<view|add|purge> [user|bot] [role]",
+    disconnectall: "<textChannel>",
+    edit: "<messageID> <messageEmbed>",
+    embed: "<messageEmbed>",
+    locale: "<code>",
+    log: "<textChannel>",
+    moveall: "<fromVoiceChannel> <targetVoiceChannel>",
+    reactionrole: "<view|add|remove|purge> <textChannel> <messageID> [emoji] [role]",
+    voicerole: "<view|add|remove|purge> <voiceChannel> <role> [textChannel]",
   },
   insufficientPerms: {
     manage_guild: "🚫 You don't have permission to manage the guild.",
@@ -53,9 +68,18 @@ export default {
     move_members: "🚫 You don't have permission to move members.",
     connect: "🚫 Insufficient permissions: [Connect], [Speak]",
   },
+
+  afkTimeout: {
+    set: "AFK Timeout was set to: ",
+    kicked: " was kicked due to inactivity.",
+    options: {
+      minutesToKick: "Minutes to Timeout",
+    },
+  },
   autoRole: {
     autoRole: "⚙️ Auto Roles",
     empty: "No roles have been set.",
+    options: { view: "View AutoRole Config", add: "Add AutoRole Config", purge: "Purge AutoRole Config" },
   },
   delete: {
     deleted: " Messages have been deleted.",
@@ -86,6 +110,14 @@ export default {
     position: "Position in Playlist",
     empty: "🗑 Playlist is empty.",
     notExists: "❌ Playlist not exists.",
+  },
+  reactionRole: {
+    options: {
+      view: "View ReactionRole Config",
+      add: "Add ReactionRole Config",
+      remove: "Remove ReactionRole Config",
+      purge: "Purge ReactionRole Config",
+    },
   },
   repeat: {
     joinToToggle: "💡 To toggle repeat, join a voice channel!",
@@ -119,5 +151,12 @@ export default {
   voiceRole: {
     voiceRole: "⚙️ Voice Channel Roles",
     empty: "No roles have been set.",
+    options: {
+      view: "View VoiceRole Config",
+      add: "Add VoiceRole Config",
+      remove: "Remove VoiceRole Config",
+      purge: "Purge VoiceRole Config",
+      channelToSendLogs: "TextChannel to send Enter/Leave Information",
+    },
   },
 } as Locale;

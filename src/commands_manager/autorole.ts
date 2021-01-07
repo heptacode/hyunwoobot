@@ -2,41 +2,43 @@ import { EmbedFieldData, TextChannel } from "discord.js";
 import { client } from "../app";
 import firestore from "../modules/firestore";
 import props from "../props";
-import { AutoRole, Interaction, State } from "../";
+import { AutoRole, Interaction, Locale, State } from "../";
 import Log from "../modules/logger";
 
 export default {
   name: "autorole",
-  options: [
-    {
-      type: 1,
-      name: "view",
-      description: "View AutoRole Config",
-    },
-    {
-      type: 1,
-      name: "add",
-      description: "Add AutoRole Config",
-      options: [
-        {
-          type: 3,
-          name: "type",
-          description: "User/Bot",
-          required: true,
-          choices: [
-            { name: "user", value: "user" },
-            { name: "bot", value: "bot" },
-          ],
-        },
-        { type: 8, name: "role", description: "Role", required: true },
-      ],
-    },
-    {
-      type: 1,
-      name: "reset",
-      description: "Reset AutoRole Config",
-    },
-  ],
+  options(locale: Locale) {
+    return [
+      {
+        type: 1,
+        name: "view",
+        description: `${locale.manager} ${locale.autoRole.options.view}`,
+      },
+      {
+        type: 1,
+        name: "add",
+        description: `${locale.manager} ${locale.autoRole.options.add}`,
+        options: [
+          {
+            type: 3,
+            name: "type",
+            description: "User/Bot",
+            required: true,
+            choices: [
+              { name: "user", value: "user" },
+              { name: "bot", value: "bot" },
+            ],
+          },
+          { type: 8, name: "role", description: locale.role, required: true },
+        ],
+      },
+      {
+        type: 1,
+        name: "purge",
+        description: `${locale.manager} ${locale.autoRole.options.purge}`,
+      },
+    ];
+  },
   async execute(state: State, interaction: Interaction) {
     try {
       const guild = client.guilds.cache.get(interaction.guild_id);
@@ -58,7 +60,7 @@ export default {
         autoRoleConfig = configDocSnapshot.data().autoRole as AutoRole[];
         autoRoleConfig.push({ type: interaction.data.options[0].options[0].value, role: interaction.data.options[0].options[1].value });
         await configDocRef.update({ autoRole: autoRoleConfig });
-      } else if (method === "reset") {
+      } else if (method === "purge") {
         await configDocRef.update({ autoRole: [] });
       }
 

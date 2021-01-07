@@ -1,24 +1,26 @@
 import { MessageEmbed, TextChannel } from "discord.js";
-import { Interaction, State } from "../";
+import { Interaction, Locale, State } from "../";
 import Log from "../modules/logger";
 import { client } from "../app";
 
 export default {
   name: "edit",
-  options: [
-    {
-      type: 3,
-      name: "messageID",
-      description: "2~100",
-      required: true,
-    },
-    {
-      type: 3,
-      name: "embed",
-      description: "Embed",
-      required: true,
-    },
-  ],
+  options(locale: Locale) {
+    return [
+      {
+        type: 3,
+        name: "messageID",
+        description: "2~100",
+        required: true,
+      },
+      {
+        type: 3,
+        name: "embed",
+        description: locale.embed,
+        required: true,
+      },
+    ];
+  },
   async execute(state: State, interaction: Interaction) {
     try {
       const guild = client.guilds.cache.get(interaction.guild_id);

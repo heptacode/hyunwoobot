@@ -1,63 +1,65 @@
 import { EmbedFieldData, TextChannel } from "discord.js";
 import { client } from "../app";
 import firestore from "../modules/firestore";
-import { getChannelID, getChannelName, getRoleID } from "../modules/converter";
+import { getChannelName } from "../modules/converter";
 import props from "../props";
-import { Interaction, State, VoiceRole } from "../";
+import { Interaction, Locale, State, VoiceRole } from "../";
 import Log from "../modules/logger";
 
 export default {
   name: "voicerole",
-  options: [
-    {
-      type: 1,
-      name: "view",
-      description: "View VoiceRole Config",
-    },
-    {
-      type: 1,
-      name: "add",
-      description: "Add VoiceRole Config",
-      options: [
-        {
-          type: 7,
-          name: "voiceChannel",
-          description: "VoiceChannel",
-          required: true,
-        },
-        {
-          type: 8,
-          name: "role",
-          description: "Role",
-          required: true,
-        },
-        {
-          type: 7,
-          name: "textChannel",
-          description: "TextChannel to Send Info",
-          required: false,
-        },
-      ],
-    },
-    {
-      type: 1,
-      name: "remove",
-      description: "Remove ReactionRole Config",
-      options: [
-        {
-          type: 7,
-          name: "voiceChannel",
-          description: "VoiceChannel",
-          required: true,
-        },
-      ],
-    },
-    {
-      type: 1,
-      name: "purge",
-      description: "Purge VoiceRole Config",
-    },
-  ],
+  options(locale: Locale) {
+    return [
+      {
+        type: 1,
+        name: "view",
+        description: `${locale.manager} ${locale.voiceRole.options.view}`,
+      },
+      {
+        type: 1,
+        name: "add",
+        description: `${locale.manager} ${locale.voiceRole.options.add}`,
+        options: [
+          {
+            type: 7,
+            name: "voiceChannel",
+            description: locale.voiceChannel,
+            required: true,
+          },
+          {
+            type: 8,
+            name: "role",
+            description: locale.role,
+            required: true,
+          },
+          {
+            type: 7,
+            name: "textChannel",
+            description: locale.voiceRole.options.channelToSendLogs,
+            required: false,
+          },
+        ],
+      },
+      {
+        type: 1,
+        name: "remove",
+        description: `${locale.manager} ${locale.voiceRole.options.remove}`,
+        options: [
+          {
+            type: 7,
+            name: "voiceChannel",
+            description: locale.voiceChannel,
+            required: true,
+          },
+        ],
+      },
+      {
+        type: 1,
+        name: "purge",
+        description: `${locale.manager} ${locale.voiceRole.options.purge}`,
+      },
+    ];
+  },
   async execute(state: State, interaction: Interaction) {
     try {
       const guild = client.guilds.cache.get(interaction.guild_id);

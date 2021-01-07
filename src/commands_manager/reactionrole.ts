@@ -2,62 +2,64 @@ import { TextChannel } from "discord.js";
 import { client } from "../app";
 import firestore from "../modules/firestore";
 import { getHexfromEmoji } from "../modules/converter";
-import { Interaction, ReactionRole, State } from "../";
+import { Interaction, Locale, ReactionRole, State } from "../";
 import Log from "../modules/logger";
 
 export default {
   name: "reactionrole",
-  options: [
-    {
-      type: 1,
-      name: "view",
-      description: "View ReactionRole Config",
-    },
-    {
-      type: 1,
-      name: "add",
-      description: "Add ReactionRole Config",
-      options: [
-        {
-          type: 3,
-          name: "messageID",
-          description: "MessageID",
-          required: true,
-        },
-        {
-          type: 3,
-          name: "emoji",
-          description: "Emoji",
-          required: true,
-        },
-        { type: 8, name: "role", description: "Role", required: true },
-      ],
-    },
-    {
-      type: 1,
-      name: "remove",
-      description: "Remove ReactionRole Config",
-      options: [
-        {
-          type: 3,
-          name: "messageID",
-          description: "MessageID",
-          required: true,
-        },
-        {
-          type: 3,
-          name: "emoji",
-          description: "Emoji",
-          required: true,
-        },
-      ],
-    },
-    {
-      type: 1,
-      name: "purge",
-      description: "Purge ReactionRole Config",
-    },
-  ],
+  options(locale: Locale) {
+    return [
+      {
+        type: 1,
+        name: "view",
+        description: `${locale.manager} ${locale.reactionRole.options.view}`,
+      },
+      {
+        type: 1,
+        name: "add",
+        description: `${locale.manager} ${locale.reactionRole.options.add}`,
+        options: [
+          {
+            type: 3,
+            name: "messageID",
+            description: locale.messageID,
+            required: true,
+          },
+          {
+            type: 3,
+            name: "emoji",
+            description: locale.emoji,
+            required: true,
+          },
+          { type: 8, name: "role", description: locale.role, required: true },
+        ],
+      },
+      {
+        type: 1,
+        name: "remove",
+        description: `${locale.manager} ${locale.reactionRole.options.remove}`,
+        options: [
+          {
+            type: 3,
+            name: "messageID",
+            description: locale.messageID,
+            required: true,
+          },
+          {
+            type: 3,
+            name: "emoji",
+            description: locale.emoji,
+            required: true,
+          },
+        ],
+      },
+      {
+        type: 1,
+        name: "purge",
+        description: `${locale.manager} ${locale.reactionRole.options.purge}`,
+      },
+    ];
+  },
   async execute(state: State, interaction: Interaction) {
     try {
       const guild = client.guilds.cache.get(interaction.guild_id);

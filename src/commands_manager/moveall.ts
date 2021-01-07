@@ -1,25 +1,27 @@
 import { GuildMember, TextChannel } from "discord.js";
 import { getChannelName } from "../modules/converter";
-import { Interaction, State } from "../";
+import { Interaction, Locale, State } from "../";
 import Log from "../modules/logger";
 import { client } from "../app";
 
 export default {
   name: "moveall",
-  options: [
-    {
-      type: 7,
-      name: "from",
-      description: "From TextChannel",
-      required: true,
-    },
-    {
-      type: 7,
-      name: "to",
-      description: "Target TextChannel",
-      required: true,
-    },
-  ],
+  options(locale: Locale) {
+    return [
+      {
+        type: 7,
+        name: "from",
+        description: locale.textChannel,
+        required: true,
+      },
+      {
+        type: 7,
+        name: "to",
+        description: locale.textChannel,
+        required: true,
+      },
+    ];
+  },
   async execute(state: State, interaction: Interaction) {
     try {
       const guild = client.guilds.cache.get(interaction.guild_id);

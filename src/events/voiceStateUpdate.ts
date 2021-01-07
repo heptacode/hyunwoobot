@@ -40,6 +40,11 @@ export default () => {
           }
         }
 
+        if (state.get(oldState.guild.id).afkChannel.has(oldState.member.id)) {
+          clearTimeout(state.get(oldState.guild.id).afkChannel.get(oldState.member.id));
+          state.get(oldState.guild.id).afkChannel.delete(oldState.member.id);
+        }
+
         const voiceRole: VoiceRole = config.voiceRole.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === oldState.channelID);
         if (voiceRole && oldState.member.roles.cache.has(voiceRole.role)) {
           if (voiceRole.textChannel) {
@@ -126,6 +131,23 @@ export default () => {
               embed: { color: props.color.info, title: state.get(newState.guild.id).locale.privateRoom.privateRoom, description: state.get(newState.guild.id).locale.privateRoom.waitingForMove },
             });
           } catch (err) {}
+        }
+
+        if (state.get(newState.guild.id).afkChannel.has(newState.member.id)) {
+          clearTimeout(state.get(newState.guild.id).afkChannel.get(newState.member.id));
+          state.get(newState.guild.id).afkChannel.delete(newState.member.id);
+        }
+
+        if (config.afkTimeout > 0 && newState.channelID === newState.guild.afkChannelID) {
+          state.get(newState.guild.id).afkChannel.set(
+            newState.member.id,
+            setTimeout(async () => {
+              try {
+                await newState.kick();
+                await newState.guild.systemChannel.send(`${newState.member.user.tag}${state.get(newState.guild.id).locale.afkTimeout.kicked}`);
+              } catch (err) {}
+            }, config.afkTimeout * 3600000)
+          );
         }
 
         const voiceRole: VoiceRole = config.voiceRole.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === newState.channelID);

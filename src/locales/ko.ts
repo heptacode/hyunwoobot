@@ -3,14 +3,27 @@ import { Locale } from "../";
 export default {
   on: "켜졌어요.",
   off: "꺼졌어요.",
-  locale: { code: "ko", name: "한국어", changed: "✅ 언어가 변경됐어요: " },
+  manager: "[매니저]",
+  scope: "범위",
+  role: "역할",
+  textChannel: "채팅채널",
+  voiceChannel: "음성채널",
+  messageID: "메시지 ID",
+  embed: "임베드",
+  emoji: "이모지",
+
+  locale: {
+    locale: "언어",
+    code: "ko",
+    name: "한국어",
+    changed: "✅ 언어가 변경됐어요: ",
+  },
   help: {
     help: "도움말",
-    help_manager: "도움말 [관리자]",
     description: "사용 가능한 명령어와 도움말 목록이예요!\n(관리자 명령어를 보려면 [manager]를 인자로 붙여주세요)\n<필수 인자> [선택적 인자]",
     description_manager: "관리자가 사용 가능한 명령어와 도움말 목록이예요!\n<필수 인자> [선택적 인자]",
-    join: "음성 채널에 접속시키기",
-    leave: "음성 채널에서 내보내기",
+    join: "음성채널에 접속시키기",
+    leave: "음성채널에서 내보내기",
     loop: "플레이리스트 반복 재생 활성화/비활성화",
     pause: "재생 중인 노래 일시중지",
     play: "노래 재생/대기열에 추가",
@@ -22,24 +35,30 @@ export default {
     // manager
     autorole: "서버에 접속하는 멤버/봇에게 자동 역할 부여",
     delete: "메시지 일괄 삭제",
-    disconnectall: "음성 채널 멤버 일괄 연결 끊기",
+    disconnectall: "음성채널 멤버 일괄 연결 끊기",
     edit: "메시지 수정",
     embed: "임베드 만들기",
     locale: "서버의 기본 언어 설정",
     log: "로그 채널 설정하기",
-    moveall: "음성 채널 멤버 일괄 이동",
+    moveall: "음성채널 멤버 일괄 이동",
     privateroom: "개인방 초기화하기",
     reactionrole: "이모지 반응에 따른 역할 부여",
-    voice: "음성 채널 접속자에게 역할 부여",
+    setafktimeout: "자리 비움 자동 연결 해제 시간 설정",
+    voicerole: "음성채널 접속자에게 역할 부여",
   },
   usage: {
-    autoRole: "💡 올바른 인자값: <add|reset> [user|bot] [역할]",
-    disconnectAll: "💡 올바른 인자값: <afk|음성채널ID>",
-    edit: "💡 올바른 인자값: <채팅채널ID> <메시지ID> <임베드>",
-    embed: "💡 올바른 인자값: <채팅채널ID> <임베드>",
-    moveAll: "💡 올바른 인자값: <afk|음성채널ID> <afk|타겟 음성채널ID>",
-    reactionrole: "💡 올바른 인자값: <add|remove|purge> <채팅채널ID> <메시지ID> [이모지] [역할]",
-    voiceRole: "💡 올바른 인자값: <add|remove> <음성채널ID> <역할> [채팅채널ID]",
+    help: "[manager]",
+    volume: "<1~10>",
+    //
+    autorole: "<view|add|purge> [user|bot] [역할]",
+    disconnectall: "<음성채널>",
+    edit: "<메시지ID> <임베드>",
+    embed: "<임베드>",
+    locale: "<언어 코드>",
+    log: "<채팅채널>",
+    moveall: "<음성채널> <타겟 음성채널>",
+    reactionrole: "<view|add|remove|purge> <채팅채널> <메시지ID> [이모지] [역할]",
+    voicerole: "<view|add|remove|purge> <음성채널> <역할> [채팅채널]",
   },
   insufficientPerms: {
     manage_guild: "🚫 서버를 관리할 수 있는 권한이 없습니다.",
@@ -49,24 +68,37 @@ export default {
     move_members: "🚫 멤버를 이동할 권한이 없습니다.",
     connect: "🚫 저에게 다음 권한을 부여해주세요: [연결], [말하기]",
   },
+
+  afkTimeout: {
+    set: "자리비움 자동 연결 해제 시간이 업데이트 됐어요: ",
+    kicked: "님께서 일정시간 자리를 비워서 자동으로 연결 해제되었습니다.",
+    options: {
+      minutesToKick: "자동 연결 해제까지 대기 시간(분)",
+    },
+  },
   autoRole: {
     autoRole: "⚙️ 자동 역할",
     empty: "설정된 역할이 없어요.",
+    options: {
+      view: "설정된 자동 역할 보기",
+      add: "자동 역할 추가",
+      purge: "자동 역할 초기화",
+    },
   },
   delete: {
     deleted: "개의 메시지를 삭제했어요!",
     invalidAmount: "❌ 2 ~ 100 사이의 올바른 값을 입력해주세요",
   },
   voiceConnect: {
-    joinToConnect: "💡 음악을 재생하려면 음성 채널에 접속해주세요!",
+    joinToConnect: "💡 음악을 재생하려면 음성채널에 접속해주세요!",
   },
   voiceDisconnect: {
-    notInVoiceChannel: "🚫 저는 지금 음성 채널에 있지 않아요!",
+    notInVoiceChannel: "🚫 저는 지금 음성채널에 있지 않아요!",
     leave: "🚪 채널에서 나왔어요.",
     timeout: "🚪 장시간 대기열이 비어있어 채널에서 나왔어요.",
   },
   loop: {
-    joinToToggle: "💡 반복 재생을 켜거나 끄려면 음성 채널에 접속해주세요!",
+    joinToToggle: "💡 반복 재생을 켜거나 끄려면 음성채널에 접속해주세요!",
     toggled: "✅ 반복 재생이 ",
   },
   music: {
@@ -83,21 +115,29 @@ export default {
     empty: "🗑 플레이리스트가 비어있어요.",
     notExists: "❌ 플레이리스트가 존재하지 않아요.",
   },
+  reactionRole: {
+    options: {
+      view: "설정된 이모지 역할 보기",
+      add: "이모지 역할 추가",
+      remove: "이모지 역할 삭제",
+      purge: "이모지 역할 초기화",
+    },
+  },
   repeat: {
-    joinToToggle: "💡 1곡 반복 재생을 켜거나 끄려면 음성 채널에 접속해주세요!",
+    joinToToggle: "💡 1곡 반복 재생을 켜거나 끄려면 음성채널에 접속해주세요!",
     toggled: "✅ 1곡 반복 재생이 ",
   },
   skip: {
-    joinToSkip: "💡 재생중인 곡을 건너뛰려면 음성 채널에 접속해주세요!",
+    joinToSkip: "💡 재생중인 곡을 건너뛰려면 음성채널에 접속해주세요!",
     noSongToSkip: "❌ 건너뛸 곡이 없어요!",
     skipped: "⏩ 건너뛰었어요!",
   },
   stop: {
-    joinToStop: "💡 재생을 중단하려면 음성 채널에 접속해주세요!",
+    joinToStop: "💡 재생을 중단하려면 음성채널에 접속해주세요!",
     notNow: "💡 지금은 사용할 수 없어요!",
   },
   volume: {
-    joinToChange: "💡 음량을 변경하려면 음성 채널에 접속해주세요!",
+    joinToChange: "💡 음량을 변경하려면 음성채널에 접속해주세요!",
     currentVolume: "🔈 현재 음량 : ",
     invalid: "❌ 0 ~ 10 사이의 올바른 값을 입력해주세요.",
     changed: "🔈 음량이 변경됐어요. 새로운 음량은 다음 곡부터 적용돼요.",
@@ -113,7 +153,14 @@ export default {
     waitingForMove: "님이 개인방 대기실에 입장하여 이동을 기다리고 있습니다.",
   },
   voiceRole: {
-    voiceRole: "⚙️ 음성 채널 역할",
+    voiceRole: "⚙️ 음성채널 역할",
     empty: "설정된 역할이 없어요.",
+    options: {
+      view: "설정된 음성채널 역할 보기",
+      add: "음성채널 역할 추가",
+      remove: "음성채널 역할 삭제",
+      purge: "음성채널 역할 초기화",
+      channelToSendLogs: "로그를 기록할 채팅채널",
+    },
   },
 } as Locale;

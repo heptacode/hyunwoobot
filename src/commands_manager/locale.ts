@@ -1,7 +1,7 @@
 import { TextChannel } from "discord.js";
 import firestore from "../modules/firestore";
 import { client, locales } from "../app";
-import { Interaction, State } from "../";
+import { Interaction, Locale, State } from "../";
 import Log from "../modules/logger";
 
 const choices = [];
@@ -12,15 +12,17 @@ for (const [code, locale] of locales) {
 export default {
   name: "locale",
   aliases: ["lang"],
-  options: [
-    {
-      type: 3,
-      name: "locale",
-      description: "Locale",
-      required: true,
-      choices: choices,
-    },
-  ],
+  options(locale: Locale) {
+    return [
+      {
+        type: 3,
+        name: "locale",
+        description: locale.locale.locale,
+        required: true,
+        choices: choices,
+      },
+    ];
+  },
   async execute(state: State, interaction: Interaction) {
     try {
       const guild = client.guilds.cache.get(interaction.guild_id);

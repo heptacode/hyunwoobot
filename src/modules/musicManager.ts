@@ -102,11 +102,11 @@ export const resume = async (state: State, interaction: Interaction) => {
     const guild = client.guilds.cache.get(interaction.guild_id);
     const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
     const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
-    if (!voiceChannel) {
+
+    if (!voiceChannel)
       return channel.send(state.locale.voiceConnect.joinToConnect).then((_message: Message) => {
         _message.delete({ timeout: 5000 });
       });
-    }
 
     state.dispatcher.resume();
     state.isPlaying = true;

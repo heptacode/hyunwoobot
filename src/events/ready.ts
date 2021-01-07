@@ -1,4 +1,4 @@
-import { Guild, TextChannel } from "discord.js";
+import { Collection, Guild, TextChannel } from "discord.js";
 import firestore from "../modules/firestore";
 import { client, commands, commands_manager, locales, state } from "../app";
 import { State } from "../";
@@ -25,6 +25,7 @@ export default () => {
           isPlaying: false,
           volume: 2,
           timeout: null,
+          afkChannel: new Collection(),
         } as State);
 
         Log.d(`LocalDB Initialize for guild [ ${guild.name} | ${guild.id} ]`);
@@ -41,7 +42,7 @@ export default () => {
               data: {
                 name: name,
                 description: state.get(guild.id).locale.help[name],
-                options: command.options ? command.options : [],
+                options: command.options ? command.options(state.get(guild.id).locale) : [],
               },
             });
         }
@@ -53,8 +54,8 @@ export default () => {
             .commands.post({
               data: {
                 name: name,
-                description: `[Manager] ${state.get(guild.id).locale.help[name]}`,
-                options: command.options ? command.options : [],
+                description: `${state.get(guild.id).locale.manager} ${state.get(guild.id).locale.help[name]}`,
+                options: command.options ? command.options(state.get(guild.id).locale) : [],
               },
             });
         }

@@ -3,19 +3,21 @@ import { client } from "../app";
 import firestore from "../modules/firestore";
 import { getChannelID } from "../modules/converter";
 import props from "../props";
-import { Interaction, State } from "../";
+import { Interaction, Locale, State } from "../";
 import Log from "../modules/logger";
 
 export default {
   name: "log",
-  options: [
-    {
-      type: 7,
-      name: "textChannel",
-      description: "TextChannel",
-      required: true,
-    },
-  ],
+  options(locale: Locale) {
+    return [
+      {
+        type: 7,
+        name: "textChannel",
+        description: locale.textChannel,
+        required: true,
+      },
+    ];
+  },
   async execute(state: State, interaction: Interaction) {
     try {
       const guild = client.guilds.cache.get(interaction.guild_id);

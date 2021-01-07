@@ -1,12 +1,14 @@
 import { GuildMember, Message, TextChannel } from "discord.js";
 import { client } from "../app";
 import { getChannelName } from "../modules/converter";
-import { Interaction, State } from "../";
+import { Interaction, Locale, State } from "../";
 import Log from "../modules/logger";
 
 export default {
   name: "disconnectall",
-  options: [{ type: 7, name: "voiceChannel", description: "VoiceChannel", required: true }],
+  options(locale: Locale) {
+    return [{ type: 7, name: "voiceChannel", description: locale.voiceChannel, required: true }];
+  },
   async execute(state: State, interaction: Interaction) {
     try {
       const guild = client.guilds.cache.get(interaction.guild_id);

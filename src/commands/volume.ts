@@ -1,31 +1,33 @@
 import { Message, TextChannel } from "discord.js";
 import { client } from "../app";
-import { Interaction, State } from "../";
+import { Interaction, Locale, State } from "../";
 import Log from "../modules/logger";
 
 export default {
   name: "volume",
   aliases: ["v", "vol"],
-  options: [
-    {
-      type: 4,
-      name: "value",
-      description: "1~10",
-      required: true,
-      choices: [
-        { name: 1, value: 1 },
-        { name: 2, value: 2 },
-        { name: 3, value: 3 },
-        { name: 4, value: 4 },
-        { name: 5, value: 5 },
-        { name: 6, value: 6 },
-        { name: 7, value: 7 },
-        { name: 8, value: 8 },
-        { name: 9, value: 9 },
-        { name: 10, value: 10 },
-      ],
-    },
-  ],
+  options(locale: Locale) {
+    return [
+      {
+        type: 4,
+        name: "value",
+        description: "1~10",
+        required: true,
+        choices: [
+          { name: 1, value: 1 },
+          { name: 2, value: 2 },
+          { name: 3, value: 3 },
+          { name: 4, value: 4 },
+          { name: 5, value: 5 },
+          { name: 6, value: 6 },
+          { name: 7, value: 7 },
+          { name: 8, value: 8 },
+          { name: 9, value: 9 },
+          { name: 10, value: 10 },
+        ],
+      },
+    ];
+  },
   async execute(state: State, interaction: Interaction) {
     try {
       const guild = client.guilds.cache.get(interaction.guild_id);

@@ -6,8 +6,6 @@ import Log from "../modules/logger";
 
 export default () => {
   client.on("guildCreate", async (guild: Guild) => {
-    Log.d(`Joined new guild: ${guild.name}`);
-
     await firestore
       .collection(guild.id)
       .doc("server")
@@ -17,9 +15,9 @@ export default () => {
     const configDocSnapshot = await configDocRef.get();
 
     if (!configDocSnapshot.exists) {
-      Log.d(`Firestore Initialize for guild [ ${guild.name} | ${guild.id} ]`);
       try {
-        await configDocRef.set({ autorole: [], locale: "ko", log: "", privateRoom: "", privateRooms: [], voiceRole: [] } as Config);
+        await configDocRef.set({ afkTimeout: -1, autorole: [], locale: "ko", log: "", privateRoom: "", privateRooms: [], voiceRole: [] } as Config);
+        Log.d(`Firestore Initialize for guild [ ${guild.name} | ${guild.id} ]`);
       } catch (err) {
         Log.e(`Firestore Initialize > ${err}`);
       }

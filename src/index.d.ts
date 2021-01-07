@@ -1,16 +1,25 @@
-import { Guild, GuildMember, MessageEmbedOptions, StreamDispatcher, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
+import { Collection, Guild, GuildMember, MessageEmbedOptions, StreamDispatcher, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
 
 interface Locale {
   on: string;
   off: string;
+  manager: string;
+  scope: string;
+  role: string;
+  textChannel: string;
+  voiceChannel: string;
+  messageID: string;
+  embed: string;
+  emoji: string;
+
   locale: {
+    locale: string;
     code: string;
     name: string;
     changed: string;
   };
   help: {
     help: string;
-    help_manager: string;
     description: string;
     description_manager: string;
     join: string;
@@ -23,7 +32,7 @@ interface Locale {
     skip: string;
     stop: string;
     volume: string;
-    // manager
+    //
     autorole: string;
     delete: string;
     disconnectall: string;
@@ -34,16 +43,22 @@ interface Locale {
     moveall: string;
     privateroom: string;
     reactionrole: string;
-    voice: string;
+    setafktimeout: string;
+    voicerole: string;
   };
   usage: {
-    autoRole: string;
-    disconnectAll: string;
+    help: string;
+    volume: string;
+    //
+    autorole: string;
+    disconnectall: string;
     edit: string;
     embed: string;
-    moveAll: string;
+    locale: string;
+    log: string;
+    moveall: string;
     reactionrole: string;
-    voiceRole: string;
+    voicerole: string;
   };
   insufficientPerms: {
     manage_guild: string;
@@ -54,9 +69,21 @@ interface Locale {
     connect: string;
   };
 
+  afkTimeout: {
+    set: string;
+    kicked: string;
+    options: {
+      minutesToKick: string;
+    };
+  };
   autoRole: {
     autoRole: string;
     empty: string;
+    options: {
+      view: string;
+      add: string;
+      purge: string;
+    };
   };
   delete: {
     deleted: string;
@@ -87,6 +114,14 @@ interface Locale {
     position: string;
     empty: string;
     notExists: string;
+  };
+  reactionRole: {
+    options: {
+      view: string;
+      add: string;
+      remove: string;
+      purge: string;
+    };
   };
   repeat: {
     joinToToggle: string;
@@ -120,6 +155,13 @@ interface Locale {
   voiceRole: {
     voiceRole: string;
     empty: string;
+    options: {
+      view: string;
+      add: string;
+      remove: string;
+      purge: string;
+      channelToSendLogs: string;
+    };
   };
 }
 
@@ -151,7 +193,7 @@ interface CommandInteractionDataOption {
 interface Command {
   name: string;
   aliases?: string[];
-  options?: CommandOptions[];
+  options?: Function;
   execute: Function;
 }
 
@@ -191,9 +233,11 @@ interface State {
   isPlaying: boolean;
   volume: number;
   timeout: NodeJS.Timeout;
+  afkChannel: Collection<string, NodeJS.Timeout>;
 }
 
 interface Config {
+  afkTimeout: number;
   autorole?: AutoRole[];
   locale: string;
   log?: string;
