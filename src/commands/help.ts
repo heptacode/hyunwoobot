@@ -2,6 +2,7 @@ import { EmbedFieldData } from "discord.js";
 import { client, commands, commands_manager, prefix } from "../app";
 import props from "../props";
 import { Interaction, Locale, State } from "../";
+import { sendEmbed } from "../modules/embedSender";
 
 export default {
   name: "help",
@@ -29,15 +30,17 @@ export default {
       });
     }
 
-    return (await client.users.cache.get(interaction.member.user.id).createDM()).send({
-      embed: {
-        color: props.color.primary,
+    return sendEmbed(
+      { interaction: interaction },
+      {
+        color: props.color.purple,
         title: `${props.bot.name} ${!isManager ? state.locale.help.help : `${state.locale.help.help} ${state.locale.manager}`}`,
         url: props.bot.website,
         description: !isManager ? state.locale.help.description : state.locale.help.description_manager,
         thumbnail: { url: props.bot.icon },
         fields: fields,
       },
-    });
+      { dm: true }
+    );
   },
 };

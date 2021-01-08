@@ -16,7 +16,9 @@ export default {
     locale: "언어",
     code: "ko",
     name: "한국어",
-    changed: "✅ 언어가 변경됐어요: ",
+    noChange: "❌ 변경된 사항이 없어요.",
+    pending: "❕ 언어를 변경하는 중이예요. 잠시만 기다려주세요.",
+    changed: "✅ 언어가 변경됐어요.",
   },
   help: {
     help: "도움말",
@@ -24,10 +26,10 @@ export default {
     description_manager: "관리자가 사용 가능한 명령어와 도움말 목록이예요!\n<필수 인자> [선택적 인자]",
     join: "음성채널에 접속시키기",
     leave: "음성채널에서 내보내기",
-    loop: "플레이리스트 반복 재생 활성화/비활성화",
+    loop: "반복 재생 활성화/비활성화",
     pause: "재생 중인 노래 일시중지",
     play: "노래 재생/대기열에 추가",
-    queue: "플레이리스트 띄우기",
+    queue: "대기열 보기",
     repeat: "한 곡 반복 활성화/비활성화",
     skip: "재생 중인 곡 건너뛰기",
     stop: "재생 중인 곡 중지하기",
@@ -72,10 +74,11 @@ export default {
   },
 
   afkTimeout: {
-    set: "자리비움 자동 연결 해제 시간이 업데이트 됐어요: ",
-    kicked: "님께서 일정시간 자리를 비워서 자동으로 연결 해제되었습니다.",
+    afkTimeout: "자리비움 연결 해제",
+    set: "자리비움 연결 해제 시간이 업데이트 됐어요: ",
+    disconnected: "님께서 일정시간 자리를 비워서 연결 해제되었습니다.",
     options: {
-      minutesToKick: "자동 연결 해제까지 대기 시간(분)",
+      minutesToDisconnect: "자동 연결 해제까지 대기 시간(분)",
     },
   },
   autoRole: {
@@ -109,7 +112,7 @@ export default {
     enqueued: "추가됨",
     nowPlaying: "현재 재생중",
     length: "길이",
-    queue: "💿 대기열",
+    queue: "대기열",
     remaining: "남은 곡",
     position: "재생까지 남은 곡",
     empty: "🗑 대기열이 비어있어요.",

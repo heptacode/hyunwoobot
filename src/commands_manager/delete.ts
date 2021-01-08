@@ -29,7 +29,7 @@ export default {
 
       return await channel.send({
         embed: {
-          color: props.color.primary,
+          color: props.color.purple,
           author: { name: `🗑 ${interaction.data.options[0].value}${state.locale.delete.deleted}` },
           footer: { text: `${interaction.member.user.username}#${interaction.member.user.discriminator}` },
           timestamp: new Date(),

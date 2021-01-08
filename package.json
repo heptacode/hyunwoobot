@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/heptacode/discordbot#readme",
   "dependencies": {
-    "@discordjs/opus": "^0.3.2",
+    "@discordjs/opus": "^0.3.3",
     "chalk": "^4.1.0",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
@@ -29,7 +29,7 @@
     "path": "^0.12.7",
     "pm2": "^4.5.0",
     "scrape-youtube": "^2.0.7",
-    "ytdl-core": "^4.2.1"
+    "ytdl-core": "^4.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

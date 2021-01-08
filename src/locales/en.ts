@@ -16,7 +16,9 @@ export default {
     locale: "Locale",
     code: "en",
     name: "English",
-    changed: "✅ Locale changed to ",
+    noChange: "❌ No changes have been made.",
+    pending: "❕ Currently updating locale configuration. Please wait.",
+    changed: "✅ Locale updated.",
   },
   help: {
     help: "Help",
@@ -24,7 +26,7 @@ export default {
     description_manager: "List of commands and descriptions which managers can use.\n<Required> [Optional]",
     join: "Join a voice channel you are in",
     leave: "Unbind from a voice channel you are in",
-    loop: "Toggle loop for the playlist",
+    loop: "Toggle loop for the queue",
     pause: "Pause the song",
     play: "Play/Enqueue a music",
     queue: "Show Queue",
@@ -72,10 +74,11 @@ export default {
   },
 
   afkTimeout: {
+    afkTimeout: "AFK Timeout",
     set: "AFK Timeout was set to: ",
-    kicked: " was kicked due to inactivity.",
+    disconnected: " was disconnected due to inactivity.",
     options: {
-      minutesToKick: "Minutes to Timeout",
+      minutesToDisconnect: "Minutes to Timeout",
     },
   },
   autoRole: {

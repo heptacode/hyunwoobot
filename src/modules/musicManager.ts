@@ -3,6 +3,7 @@ import { client } from "../app";
 import ytdl from "ytdl-core";
 import youtube from "scrape-youtube";
 import { getLength } from "./converter";
+import { sendEmbed } from "./embedSender";
 import { voiceConnect, voiceDisconnect } from "./voiceManager";
 import props from "../props";
 import { Interaction, State } from "../";
@@ -10,90 +11,89 @@ import Log from "./logger";
 
 export const play = async (state: State, interaction: Interaction) => {
   try {
-    const channel = client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.channel_id) as TextChannel;
-    const query = interaction.data.options[0].value;
-    let payload;
-
-    if (!query && state.queue.length !== 0) {
+    if (!interaction.data.options && state.queue.length !== 0) {
       if (!state.isPlaying) return stream(state, interaction);
-      else return channel.send(state.locale.music.currentlyPlaying);
-    } else if (!query && state.queue.length === 0) return channel.send(state.locale.music.empty);
+      else
+        return sendEmbed(
+          { interaction: interaction },
+          {
+            color: props.color.cyan,
+            description: `**${state.locale.music.currentlyPlaying}**`,
+          },
+          { guild: true }
+        );
+    } else if (!interaction.data.options && state.queue.length <= 0)
+      return sendEmbed(
+        { interaction: interaction },
+        {
+          color: props.color.red,
+          description: `**${state.locale.music.empty}**`,
+        },
+        { guild: true }
+      );
 
-    const result = (await youtube.search(query, { type: "video" })).videos;
+    const result = (await youtube.search(interaction.data.options[0].value, { type: "video" })).videos;
     if (result.length >= 1) {
       if (result.length === 1) {
-        payload = {
+        state.queue.push({
           title: result[0].title,
           channelName: result[0].channel.name,
           length: result[0].duration,
           thumbnailURL: result[0].thumbnail,
           videoURL: result[0].link,
-          requestedBy: { tag: `${interaction.member.user.username}#${interaction.member.user.discriminator}`, avatarURL: interaction.member.user.avatarURL() },
-        };
+          requestedBy: { tag: `${interaction.member.user.username}#${interaction.member.user.discriminator}`, avatarURL: client.users.cache.get(interaction.member.user.id).avatarURL() },
+        });
       } else {
         // Query Search
-        payload = {
+        state.queue.push({
           title: result[0].title,
           channelName: result[0].channel.name,
           length: result[0].duration,
           thumbnailURL: result[0].thumbnail,
           videoURL: result[0].link,
-          requestedBy: { tag: `${interaction.member.user.username}#${interaction.member.user.discriminator}`, avatarURL: interaction.member.user.avatarURL() },
-        };
+          requestedBy: { tag: `${interaction.member.user.username}#${interaction.member.user.discriminator}`, avatarURL: client.users.cache.get(interaction.member.user.id).avatarURL() },
+        });
         // return message.channel.send(locale.urlInvalid);
       }
       try {
-        state.queue.push(payload);
         if (state.queue.length === 1) {
           return stream(state, interaction);
         } else {
-          Log.d(`Enqueue : ${payload.title}`);
           const fields: EmbedFieldData[] = [
             { name: state.locale.music.length, value: getLength(state.queue[state.queue.length - 1].length), inline: true },
             { name: state.locale.music.position, value: state.queue.length - 1, inline: true },
-            // { name: "\u200B", value: "\u200B" },
+            { name: "\u200B", value: "─────────────────────" },
           ];
           for (const i in state.queue) {
-            if (Number(i) == 0) fields.push({ name: state.locale.music.nowPlaying, value: state.queue[i].title });
-            else fields.push({ name: `#${i}`, value: state.queue[i].title });
+            fields.push({ name: `#${i}`, value: state.queue[i].title });
           }
-
           fields.push({ name: "\u200B", value: `${state.isPlaying ? "▶️" : "⏹"}${state.isLooped ? " 🔁" : ""}${state.isRepeated ? " 🔂" : ""}` });
 
-          return channel.send({
-            embed: {
-              color: props.color.primary,
-              author: { name: state.locale.music.enqueued, iconURL: state.queue[state.queue.length - 1].requestedBy.avatarURL, url: props.bot.website },
+          return sendEmbed(
+            { interaction: interaction },
+            {
+              color: props.color.cyan,
+              author: { name: state.locale.music.enqueued, iconURL: props.icon.enqueue, url: props.bot.website },
               title: state.queue[state.queue.length - 1].title,
               url: state.queue[state.queue.length - 1].videoURL,
               description: state.queue[state.queue.length - 1].channelName,
               thumbnail: { url: state.queue[state.queue.length - 1].thumbnailURL },
               fields: fields,
             },
-          });
+            { guild: true }
+          );
         }
       } catch (err) {
         Log.e(`Play > 2 > ${err}`);
       }
     } else {
-      try {
-        return (await client.users.cache.get(interaction.member.user.id).createDM()).send({
-          embed: {
-            color: props.color.error,
-            title: state.locale.music.noResult,
-          },
-        });
-      } catch (err) {
-        return channel
-          .send({
-            embed: {
-              color: props.color.error,
-              title: state.locale.music.noResult,
-              footer: { text: `${interaction.member.user.username}#${interaction.member.user.discriminator}` },
-            },
-          })
-          .then((_message: Message) => _message.delete({ timeout: 5000 }));
-      }
+      return sendEmbed(
+        { interaction: interaction },
+        {
+          color: props.color.red,
+          description: `**${state.locale.music.noResult}**`,
+        }
+      );
     }
   } catch (err) {
     Log.e(`Play > 1 > ${err}`);
@@ -103,26 +103,32 @@ export const play = async (state: State, interaction: Interaction) => {
 const stream = async (state: State, interaction: Interaction) => {
   try {
     const channel = client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.channel_id) as TextChannel;
-
     if (!state.connection) await voiceConnect(state, interaction);
-
     try {
       state.dispatcher = state.connection.play(ytdl(state.queue[0].videoURL), {
         // quality: "highestaudio",
         highWaterMark: 1 << 25,
       });
 
-      state.dispatcher.setVolumeLogarithmic(state.volume / 5);
+      state.dispatcher.setVolume(state.volume / 5);
 
       state.dispatcher.on("start", () => {
         if (state.timeout) clearTimeout(state.timeout);
         state.isPlaying = true;
+        sendEmbed(
+          { interaction: interaction },
+          {
+            color: props.color.red,
+            description: `**${state.locale.music.noResult}**`,
+          }
+        );
+
         channel.send({
           embed: {
             color: "#0099ff",
             author: {
               name: `${state.isLooped ? "🔁 " : ""}${state.isRepeated ? "🔂 " : ""}${state.locale.music.nowPlaying}`,
-              iconURL: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/play.png?alt=media&token=38cc0c28-41b4-44aa-9f2f-0ad9c23859ab",
+              iconURL: props.icon.play,
             },
             title: state.queue[0].title,
             url: state.queue[0].videoURL,
@@ -148,10 +154,10 @@ const stream = async (state: State, interaction: Interaction) => {
               state.queue.shift();
             }
             if (state.queue.length >= 1) {
-              stream(state, interaction);
-            } else state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 10000);
+              return stream(state, interaction);
+            } else state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 30000);
           } else {
-            state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 10000);
+            state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 30000);
           }
         } catch (err) {
           Log.e(`Stream > 4 > ${err}`);

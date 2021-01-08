@@ -9,7 +9,7 @@ export default () => {
       Log.p({
         guild: member.guild,
         embed: {
-          color: props.color.info,
+          color: props.color.cyan,
           author: { name: "User Leave", iconURL: props.icon.out },
           description: `<@${member.user.id}> left the server.`,
           timestamp: new Date(),

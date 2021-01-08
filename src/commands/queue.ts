@@ -1,6 +1,6 @@
-import { EmbedFieldData, TextChannel } from "discord.js";
-import { client } from "../app";
+import { EmbedFieldData } from "discord.js";
 import props from "../props";
+import { sendEmbed } from "../modules/embedSender";
 import { Interaction, State } from "../";
 import Log from "../modules/logger";
 
@@ -8,18 +8,18 @@ export default {
   name: "queue",
   version: 1,
   execute(state: State, interaction: Interaction) {
-    const channel = client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.channel_id) as TextChannel;
     try {
-      if (state.queue.length != 0) {
+      if (state.queue.length) {
         const fields: EmbedFieldData[] = [];
         for (const i in state.queue) {
-          if (Number(i) === 0) fields.push({ name: state.locale.music.nowPlaying, value: state.queue[i].title });
-          else fields.push({ name: `#${i}`, value: state.queue[i].title });
+          fields.push({ name: `#${i}`, value: state.queue[i].title });
         }
         fields.push({ name: "\u200B", value: `${state.isPlaying ? "▶️" : "⏹"}${state.isLooped ? " 🔁" : ""}${state.isRepeated ? " 🔂" : ""}` });
-        channel.send({
-          embed: {
-            color: props.color.primary,
+
+        return sendEmbed(
+          { interaction: interaction },
+          {
+            color: props.color.purple,
             author: {
               name: String(state.volume),
               iconURL: props.icon.volume,
@@ -30,9 +30,17 @@ export default {
             thumbnail: { url: state.queue[0].thumbnailURL },
             fields: fields,
           },
-        });
+          { guild: true }
+        );
       } else {
-        channel.send(state.locale.music.empty);
+        return sendEmbed(
+          { interaction: interaction },
+          {
+            color: props.color.purple,
+            description: `**${state.locale.music.empty}**`,
+          },
+          { guild: true }
+        );
       }
     } catch (err) {
       Log.e(`Queue > ${err}`);

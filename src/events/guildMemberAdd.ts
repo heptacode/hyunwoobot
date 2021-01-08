@@ -11,7 +11,7 @@ export default () => {
       await Log.p({
         guild: member.guild,
         embed: {
-          color: props.color.info,
+          color: props.color.cyan,
           author: { name: "User Join", iconURL: props.icon.in },
           description: `<@${member.user.id}> joined the server.`,
           timestamp: new Date(),
@@ -26,7 +26,7 @@ export default () => {
         await Log.p({
           guild: member.guild,
           embed: {
-            color: props.color.info,
+            color: props.color.cyan,
             author: { name: "Role Append [AutoRole]", iconURL: props.icon.role_append },
             description: `<@${member.user.id}> += <@&${autoRole.role}>`,
             timestamp: new Date(),

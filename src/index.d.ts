@@ -16,6 +16,8 @@ interface Locale {
     locale: string;
     code: string;
     name: string;
+    noChange: string;
+    pending: string;
     changed: string;
   };
   help: {
@@ -72,10 +74,11 @@ interface Locale {
   };
 
   afkTimeout: {
+    afkTimeout: string;
     set: string;
-    kicked: string;
+    disconnected: string;
     options: {
-      minutesToKick: string;
+      minutesToDisconnect: string;
     };
   };
   autoRole: {

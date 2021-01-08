@@ -36,12 +36,12 @@ export default () => {
 
         const commandsDocRef = collection.doc("commands");
         const registeredCommands = (await commandsDocRef.get()).data();
-        const updatedCommands: { id: string; name: string; version: number }[] = [];
+        const updatedCommands: any = {};
 
         for (const [name, command] of commands) {
           try {
             if (registeredCommands[name] && registeredCommands[name].version >= command.version) continue;
-            updatedCommands.push({
+            updatedCommands[name] = {
               id: (
                 await (client as any).api
                   .applications(process.env.APPLICATION)
@@ -56,7 +56,7 @@ export default () => {
               ).id,
               name: name,
               version: command.version,
-            });
+            };
           } catch (err) {
             Log.e(`CommandRegister > ${err}`);
           }
@@ -65,7 +65,7 @@ export default () => {
         for (const [name, command] of commands_manager) {
           try {
             if ((registeredCommands[name] && registeredCommands[name].version >= command.version) || command.messageOnly) continue;
-            updatedCommands.push({
+            updatedCommands[name] = {
               id: (
                 await (client as any).api
                   .applications(process.env.APPLICATION)
@@ -80,20 +80,13 @@ export default () => {
               ).id,
               name: name,
               version: command.version,
-            });
+            };
           } catch (err) {
             Log.e(`CommandRegister > Manager > ${err}`);
           }
         }
 
-        if (updatedCommands.length) {
-          const payload: any = {};
-          for (const command of updatedCommands) {
-            payload[command.name] = { id: command.id, name: command.name, version: command.version };
-          }
-          await commandsDocRef.update(payload);
-          Log.s(`Registered ${updatedCommands.length} command(s) to ${guild.name}: ${Object.keys(payload).join(", ")}`);
-        }
+        if (Object.keys(updatedCommands).length) await commandsDocRef.update(updatedCommands);
       }
 
       await client.user.setActivity({

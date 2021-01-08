@@ -4,6 +4,7 @@ import { client, state } from "../app";
 import props from "../props";
 import { Config, PrivateRoom, VoiceRole } from "../";
 import Log from "../modules/logger";
+import locale from "../commands_manager/locale";
 
 export default () => {
   client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState) => {
@@ -50,7 +51,7 @@ export default () => {
           if (voiceRole.textChannel) {
             (oldState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
               embed: {
-                color: props.color.error,
+                color: props.color.red,
                 author: { name: oldState.member.user.username, iconURL: oldState.member.user.avatarURL() },
               },
             });
@@ -61,7 +62,7 @@ export default () => {
           Log.p({
             guild: oldState.guild,
             embed: {
-              color: props.color.info,
+              color: props.color.cyan,
               author: { name: "Role Remove [Voice]", iconURL: oldState.member.user.avatarURL() },
               description: `<@${oldState.member.user.id}> -= <@&${voiceRole.role}>`,
               timestamp: new Date(),
@@ -128,7 +129,7 @@ export default () => {
           // Waiting Room
           try {
             return await newState.member.send({
-              embed: { color: props.color.info, title: state.get(newState.guild.id).locale.privateRoom.privateRoom, description: state.get(newState.guild.id).locale.privateRoom.waitingForMove },
+              embed: { color: props.color.cyan, title: state.get(newState.guild.id).locale.privateRoom.privateRoom, description: state.get(newState.guild.id).locale.privateRoom.waitingForMove },
             });
           } catch (err) {}
         }
@@ -144,7 +145,15 @@ export default () => {
             setTimeout(async () => {
               try {
                 await newState.kick();
-                await newState.guild.systemChannel.send(`${newState.member.user.tag}${state.get(newState.guild.id).locale.afkTimeout.kicked}`);
+                await Log.p({
+                  guild: newState.guild,
+                  embed: {
+                    color: props.color.cyan,
+                    author: { name: state.get(newState.guild.id).locale.afkTimeout.afkTimeout, iconURL: oldState.member.user.avatarURL() },
+                    description: `<@${newState.member.user.id}>${state.get(newState.guild.id).locale.afkTimeout.disconnected}`,
+                    timestamp: new Date(),
+                  },
+                });
               } catch (err) {}
             }, config.afkTimeout * 3600000)
           );
@@ -152,7 +161,7 @@ export default () => {
           Log.p({
             guild: newState.guild,
             embed: {
-              color: props.color.info,
+              color: props.color.cyan,
               author: { name: "Start Countdown [AFKTimeout]", iconURL: oldState.member.user.avatarURL() },
               description: `<@${newState.member.user.id}>`,
               timestamp: new Date(),
@@ -167,7 +176,7 @@ export default () => {
           if (voiceRole.textChannel) {
             (newState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
               embed: {
-                color: props.color.info,
+                color: props.color.cyan,
                 author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },
               },
             });
@@ -176,7 +185,7 @@ export default () => {
           Log.p({
             guild: newState.guild,
             embed: {
-              color: props.color.info,
+              color: props.color.cyan,
               author: { name: "Role Append [Voice]", iconURL: newState.member.user.avatarURL() },
               description: `<@${newState.member.user.id}> += <@&${voiceRole.role}>`,
               timestamp: new Date(),

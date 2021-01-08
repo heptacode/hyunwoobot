@@ -32,7 +32,7 @@ export default () => {
       return await Log.p({
         guild: reaction.message.guild,
         embed: {
-          color: props.color.info,
+          color: props.color.cyan,
           author: { name: "Role Remove [ReactionRole]", iconURL: user.avatarURL() },
           description: `<@${user.id}> -= <@&${reactionRole.role}>`,
           timestamp: new Date(),

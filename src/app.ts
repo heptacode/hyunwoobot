@@ -1,8 +1,8 @@
 import path from "path";
 import fs from "fs";
 import { Client, Collection } from "discord.js";
-import { Command, Locale, State } from "./";
 import props from "./props";
+import { Command, Locale, State } from "./";
 import "dotenv/config";
 
 export const prefix: string = process.env.PREFIX || props.bot.prefix;

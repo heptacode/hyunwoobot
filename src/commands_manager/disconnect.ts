@@ -30,7 +30,7 @@ export default {
 
       return channel.send({
         embed: {
-          color: props.color.primary,
+          color: props.color.purple,
           author: { name: state.locale.disconnect.disconnect },
           description: `${cnt}${state.locale.disconnect.disconnected}${getChannelName(guild, interaction.data.options[0].value)}`,
           footer: { text: `${interaction.member.user.username}#${interaction.member.user.discriminator}` },

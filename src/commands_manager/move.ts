@@ -46,7 +46,7 @@ export default {
 
       return channel.send({
         embed: {
-          color: props.color.primary,
+          color: props.color.purple,
           author: { name: `⚙️ ${state.locale.move.move}` },
           description: `${cnt}${state.locale.move.moved}${getChannelName(guild, fromChannel)} ➡️ ${getChannelName(guild, targetChannel)}`,
           footer: { text: `${interaction.member.user.username}#${interaction.member.user.discriminator}` },

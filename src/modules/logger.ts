@@ -38,7 +38,7 @@ class log {
     try {
       const logChannel = (await firestore.collection(payload.guild.id).doc("config").get()).data().log;
       const channel: TextChannel = (await payload.guild.channels.cache.get(logChannel)) as TextChannel;
-      channel.send({ embed: payload.embed });
+      await channel.send({ embed: payload.embed });
     } catch (err) {
       this.e(`Log Publish > ${err}`);
     }

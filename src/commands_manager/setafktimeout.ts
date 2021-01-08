@@ -11,7 +11,7 @@ export default {
       {
         type: 4,
         name: "minutes",
-        description: locale.afkTimeout.options.minutesToKick,
+        description: locale.afkTimeout.options.minutesToDisconnect,
         required: true,
       },
     ];
