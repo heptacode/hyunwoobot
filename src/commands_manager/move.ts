@@ -1,24 +1,25 @@
-import { GuildMember, TextChannel } from "discord.js";
+import { TextChannel } from "discord.js";
 import { getChannelName } from "../modules/converter";
 import { Interaction, Locale, State } from "../";
 import Log from "../modules/logger";
+import props from "../props";
 import { client } from "../app";
 
 export default {
-  name: "moveall",
-  version: 1,
+  name: "move",
+  version: 2,
   options(locale: Locale) {
     return [
       {
         type: 7,
         name: "from",
-        description: locale.textChannel,
+        description: locale.voiceChannel,
         required: true,
       },
       {
         type: 7,
         name: "to",
-        description: locale.textChannel,
+        description: locale.voiceChannel,
         required: true,
       },
     ];
@@ -34,17 +35,26 @@ export default {
       const fromChannel = interaction.data.options[0].value;
       const targetChannel = interaction.data.options[1].value;
 
-      let cnt = 0;
+      const cnt = guild.channels.cache.get(fromChannel).members.size;
+      if (cnt <= 0) return;
 
-      guild.channels.cache.get(fromChannel).members.forEach(async (_member: GuildMember) => {
+      for (const [key, member] of guild.channels.cache.get(fromChannel).members) {
         try {
-          await _member.voice.setChannel(targetChannel);
-          cnt++;
+          await member.voice.setChannel(targetChannel);
         } catch (err) {}
+      }
+
+      return channel.send({
+        embed: {
+          color: props.color.primary,
+          author: { name: `⚙️ ${state.locale.move.move}` },
+          description: `${cnt}${state.locale.move.moved}${getChannelName(guild, fromChannel)} ➡️ ${getChannelName(guild, targetChannel)}`,
+          footer: { text: `${interaction.member.user.username}#${interaction.member.user.discriminator}` },
+          timestamp: new Date(),
+        },
       });
-      return channel.send(`Moved ${cnt}user(s) from ${getChannelName(guild, interaction.data.options[0].value)}`);
     } catch (err) {
-      Log.e(`Voice > ${err}`);
+      Log.e(`Move > ${err}`);
     }
   },
 };

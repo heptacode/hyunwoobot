@@ -34,18 +34,10 @@ export default {
       const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
       const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
       if (!voiceChannel) {
-        return channel.send(`<@${interaction.member.user.id}>, ${state.locale.volume.joinToChange}`).then((_message: Message) => {
-          _message.delete({ timeout: 5000 });
-        });
+        return channel.send(`<@${interaction.member.user.id}>, ${state.locale.music.joinVoiceChannel}`).then((_message: Message) => _message.delete({ timeout: 5000 }));
       }
 
       const newVolume = Number(interaction.data.options[0].value);
-      if (!newVolume) {
-        return channel.send(`${state.locale.volume.currentVolume}${state.volume}`);
-      } else if (!(newVolume >= 0 && newVolume <= 10)) {
-        Log.w(`ChangeVolume > Invalid value: ${newVolume}`);
-        return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.volume.invalid);
-      }
 
       state.dispatcher.setVolume(newVolume / 5);
 

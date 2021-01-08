@@ -5,7 +5,7 @@ import Log from "../modules/logger";
 export default () => {
   (client as any).ws.on("INTERACTION_CREATE", async (interaction: Interaction) => {
     try {
-      const command = commands.get(interaction.data.name) || commands_manager.get(interaction.data.name);
+      const command = commands.get(interaction.data.name) || commands_manager.find((cmd) => cmd.name === interaction.data.name && !cmd.messageOnly);
       if (!command) return;
 
       command.execute(state.get(client.guilds.cache.get(interaction.guild_id).id), interaction);

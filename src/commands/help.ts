@@ -1,5 +1,5 @@
 import { EmbedFieldData } from "discord.js";
-import { client, commands, commands_manager } from "../app";
+import { client, commands, commands_manager, prefix } from "../app";
 import props from "../props";
 import { Interaction, Locale, State } from "../";
 
@@ -23,7 +23,7 @@ export default {
 
     for (const [name, command] of !isManager ? commands : commands_manager) {
       fields.push({
-        name: `${name}${state.locale.usage[name] ? ` ${state.locale.usage[name]}` : ""}`,
+        name: `${command.messageOnly ? prefix : "/"}${name}${state.locale.usage[name] ? ` ${state.locale.usage[name]}` : ""}`,
         value: state.locale.help[name],
         inline: true,
       });

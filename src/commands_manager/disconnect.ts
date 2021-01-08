@@ -1,11 +1,12 @@
-import { GuildMember, Message, TextChannel } from "discord.js";
+import { TextChannel } from "discord.js";
 import { client } from "../app";
 import { getChannelName } from "../modules/converter";
 import { Interaction, Locale, State } from "../";
+import props from "../props";
 import Log from "../modules/logger";
 
 export default {
-  name: "disconnectall",
+  name: "disconnect",
   version: 1,
   options(locale: Locale) {
     return [{ type: 7, name: "voiceChannel", description: locale.voiceChannel, required: true }];
@@ -18,17 +19,26 @@ export default {
       if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MOVE_MEMBERS"))
         return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.insufficientPerms.move_members);
 
-      let cnt = 0;
+      const cnt = guild.channels.cache.get(interaction.data.options[0].value).members.size;
+      if (cnt <= 0) return;
 
-      guild.channels.cache.get(interaction.data.options[0].value).members.forEach(async (_member: GuildMember) => {
+      for (const [key, member] of guild.channels.cache.get(interaction.data.options[0].value).members) {
         try {
-          await _member.voice.kick();
-          cnt++;
+          await member.voice.kick();
         } catch (err) {}
+      }
+
+      return channel.send({
+        embed: {
+          color: props.color.primary,
+          author: { name: state.locale.disconnect.disconnect },
+          description: `${cnt}${state.locale.disconnect.disconnected}${getChannelName(guild, interaction.data.options[0].value)}`,
+          footer: { text: `${interaction.member.user.username}#${interaction.member.user.discriminator}` },
+          timestamp: new Date(),
+        },
       });
-      return channel.send(`Disconnected ${cnt}user(s) from ${getChannelName(guild, interaction.data.options[0].value)}`);
     } catch (err) {
-      Log.e(`Voice > ${err}`);
+      Log.e(`Disconnect > ${err}`);
     }
   },
 };

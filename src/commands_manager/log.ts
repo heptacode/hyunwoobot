@@ -1,14 +1,13 @@
-import { Message, TextChannel } from "discord.js";
+import { TextChannel } from "discord.js";
 import { client } from "../app";
 import firestore from "../modules/firestore";
-import { getChannelID } from "../modules/converter";
 import props from "../props";
 import { Interaction, Locale, State } from "../";
 import Log from "../modules/logger";
 
 export default {
   name: "log",
-  version: 1,
+  version: 2,
   options(locale: Locale) {
     return [
       {

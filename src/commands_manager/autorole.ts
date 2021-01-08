@@ -55,7 +55,7 @@ export default {
 
       let autoRoleConfig: AutoRole[] = [];
 
-      if (method === "show") {
+      if (method === "view") {
         autoRoleConfig = configDocSnapshot.data().autoRole as AutoRole[];
       } else if (method === "add") {
         autoRoleConfig = configDocSnapshot.data().autoRole as AutoRole[];

@@ -148,6 +148,16 @@ export default () => {
               } catch (err) {}
             }, config.afkTimeout * 3600000)
           );
+
+          Log.p({
+            guild: newState.guild,
+            embed: {
+              color: props.color.info,
+              author: { name: "Start Countdown [AFKTimeout]", iconURL: oldState.member.user.avatarURL() },
+              description: `<@${newState.member.user.id}>`,
+              timestamp: new Date(),
+            },
+          });
         }
 
         const voiceRole: VoiceRole = config.voiceRole.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === newState.channelID);

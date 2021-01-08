@@ -12,9 +12,9 @@ export default {
       const guild = client.guilds.cache.get(interaction.guild_id);
 
       if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MANAGE_CHANNELS")) {
-        return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.insufficientPerms.manage_channels).then((_message: Message) => {
-          _message.delete({ timeout: 5000 });
-        });
+        return (await client.users.cache.get(interaction.member.user.id).createDM())
+          .send(state.locale.insufficientPerms.manage_channels)
+          .then((_message: Message) => _message.delete({ timeout: 5000 }));
       }
 
       const privateRoomID = await (

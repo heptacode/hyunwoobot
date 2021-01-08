@@ -27,7 +27,7 @@ interface Locale {
     loop: string;
     pause: string;
     play: string;
-    playlist: string;
+    queue: string;
     repeat: string;
     skip: string;
     stop: string;
@@ -35,12 +35,12 @@ interface Locale {
     //
     autorole: string;
     delete: string;
-    disconnectall: string;
+    disconnect: string;
     edit: string;
     embed: string;
     locale: string;
     log: string;
-    moveall: string;
+    move: string;
     privateroom: string;
     reactionrole: string;
     setafktimeout: string;
@@ -51,13 +51,15 @@ interface Locale {
     volume: string;
     //
     autorole: string;
-    disconnectall: string;
+    delete: string;
+    disconnect: string;
     edit: string;
     embed: string;
     locale: string;
     log: string;
-    moveall: string;
+    move: string;
     reactionrole: string;
+    setafktimeout: string;
     voicerole: string;
   };
   insufficientPerms: {
@@ -87,33 +89,35 @@ interface Locale {
   };
   delete: {
     deleted: string;
-    invalidAmount: string;
   };
-  voiceConnect: {
-    joinToConnect: string;
+  disconnect: {
+    disconnect: string;
+    disconnected: string;
   };
   voiceDisconnect: {
     notInVoiceChannel: string;
-    leave: string;
-    timeout: string;
   };
   loop: {
-    joinToToggle: string;
     toggled: string;
   };
   music: {
+    joinVoiceChannel: string;
     currentlyPlaying: string;
     private: string;
     ageRestricted: string;
-    urlInvalid: string;
+    noResult: string;
     enqueued: string;
     nowPlaying: string;
     length: string;
-    playlist: string;
+    queue: string;
     remaining: string;
     position: string;
     empty: string;
-    notExists: string;
+    options: { query: string };
+  };
+  move: {
+    move: string;
+    moved: string;
   };
   reactionRole: {
     options: {
@@ -124,22 +128,13 @@ interface Locale {
     };
   };
   repeat: {
-    joinToToggle: string;
     toggled: string;
   };
   skip: {
-    joinToSkip: string;
     noSongToSkip: string;
     skipped: string;
   };
-  stop: {
-    joinToStop: string;
-    notNow: string;
-  };
   volume: {
-    joinToChange: string;
-    currentVolume: string;
-    invalid: string;
     changed: string;
   };
   log: {
@@ -193,6 +188,7 @@ interface CommandInteractionDataOption {
 interface Command {
   name: string;
   version: number;
+  messageOnly?: boolean;
   options?: Function;
   execute: Function;
 }
@@ -220,7 +216,7 @@ interface State {
   voiceChannel: VoiceChannel;
   connection: VoiceConnection;
   dispatcher: StreamDispatcher;
-  playlist: {
+  queue: {
     title: string;
     channelName: string;
     length: number;

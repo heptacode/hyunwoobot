@@ -1,7 +1,7 @@
 import { Collection, Guild, TextChannel } from "discord.js";
 import firestore from "../modules/firestore";
 import { client, commands, commands_manager, locales, state } from "../app";
-import { Command, State } from "../";
+import { State } from "../";
 import Log from "../modules/logger";
 
 export default () => {
@@ -19,7 +19,7 @@ export default () => {
           textChannel: null,
           voiceChannel: null,
           connection: null,
-          playlist: [],
+          queue: [],
           isLooped: false,
           isRepeated: false,
           isPlaying: false,
@@ -41,7 +41,6 @@ export default () => {
         for (const [name, command] of commands) {
           try {
             if (registeredCommands[name] && registeredCommands[name].version >= command.version) continue;
-            console.dir(name);
             updatedCommands.push({
               id: (
                 await (client as any).api
@@ -65,8 +64,7 @@ export default () => {
 
         for (const [name, command] of commands_manager) {
           try {
-            if (registeredCommands[name] && registeredCommands[name].version >= command.version) continue;
-            console.dir(name);
+            if ((registeredCommands[name] && registeredCommands[name].version >= command.version) || command.messageOnly) continue;
             updatedCommands.push({
               id: (
                 await (client as any).api
@@ -94,6 +92,7 @@ export default () => {
             payload[command.name] = { id: command.id, name: command.name, version: command.version };
           }
           await commandsDocRef.update(payload);
+          Log.s(`Registered ${updatedCommands.length} command(s) to ${guild.name}: ${Object.keys(payload).join(", ")}`);
         }
       }
 

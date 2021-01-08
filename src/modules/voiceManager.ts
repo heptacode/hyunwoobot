@@ -11,7 +11,7 @@ export const voiceConnect = async (state: State, interaction: Interaction) => {
   const permissions = voiceChannel.permissionsFor(client.user);
   try {
     // Not in voice channel
-    if (!voiceChannel) return channel.send(state.locale.voiceConnect.joinToConnect);
+    if (!voiceChannel) return channel.send(state.locale.music.joinVoiceChannel);
 
     // Insufficient perms
     if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
@@ -32,16 +32,13 @@ export const voiceConnect = async (state: State, interaction: Interaction) => {
   }
 };
 
-export const voiceDisconnect = (state: State, interaction: Interaction, timeout?: boolean) => {
+export const voiceDisconnect = (state: State, interaction: Interaction) => {
   const channel = client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.channel_id) as TextChannel;
   try {
     state.isPlaying = false;
     state.voiceChannel.leave();
     state.connection = null;
     state.voiceChannel = null;
-
-    Log.d(`VoiceDisconnect${timeout ? " : Timeout" : ""}`);
-    channel.send(`${timeout ? state.locale.voiceDisconnect.timeout : state.locale.voiceDisconnect.leave}`);
   } catch (err) {
     channel.send(state.locale.voiceDisconnect.notInVoiceChannel);
   }

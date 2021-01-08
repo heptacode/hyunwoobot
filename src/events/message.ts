@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { client, state, commands_hidden, prefix } from "../app";
+import { client, state, commands_hidden, prefix, commands_manager } from "../app";
 import { Command } from "../";
 import Log from "../modules/logger";
 
@@ -9,7 +9,7 @@ export default () => {
 
     const args: string[] = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName: string = args[0].toLowerCase();
-    const command: Command = commands_hidden.get(commandName);
+    const command: Command = commands_manager.find((cmd) => cmd.name === commandName && cmd.messageOnly) || commands_hidden.get(commandName);
     if (!command) return;
 
     args.shift();

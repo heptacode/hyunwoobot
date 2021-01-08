@@ -18,21 +18,21 @@ export default () => {
         },
       });
 
-      const autoRoleItem: AutoRole = await (await firestore.collection(member.guild.id).doc("config").get())
-        .data()
-        .autoRole.find((autoRoleItem: AutoRole) => (autoRoleItem.type === "user" && !member.user.bot) || (autoRoleItem.type === "bot" && member.user.bot));
-      if (!autoRoleItem) return;
-      await member.roles.add(autoRoleItem.role);
+      for (const autoRole of (await firestore.collection(member.guild.id).doc("config").get()).data().autoRole) {
+        if (!(autoRole.type === "user" && !member.user.bot) || !(autoRole.type === "bot" && member.user.bot)) continue;
 
-      await Log.p({
-        guild: member.guild,
-        embed: {
-          color: props.color.info,
-          author: { name: "Role Append [AutoRole]", iconURL: props.icon.role_append },
-          description: `<@${member.user.id}> += <@&${autoRoleItem.role}>`,
-          timestamp: new Date(),
-        },
-      });
+        await member.roles.add(autoRole.role);
+
+        await Log.p({
+          guild: member.guild,
+          embed: {
+            color: props.color.info,
+            author: { name: "Role Append [AutoRole]", iconURL: props.icon.role_append },
+            description: `<@${member.user.id}> += <@&${autoRole.role}>`,
+            timestamp: new Date(),
+          },
+        });
+      }
     } catch (err) {
       Log.e(`GuildMemberAdd > ${err}`);
     }

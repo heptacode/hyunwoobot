@@ -27,11 +27,11 @@ export default {
 
       await channel.bulkDelete(Number(interaction.data.options[0].value) + 1);
 
-      return channel.send({
+      return await channel.send({
         embed: {
           color: props.color.primary,
           author: { name: `🗑 ${interaction.data.options[0].value}${state.locale.delete.deleted}` },
-          footer: { text: interaction.member.user.tag },
+          footer: { text: `${interaction.member.user.username}#${interaction.member.user.discriminator}` },
           timestamp: new Date(),
         },
       });
