@@ -31,11 +31,11 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      await voiceStateCheck(state.locale, interaction);
+      if ((await voiceStateCheck(state.locale, interaction)) || !state.connection.dispatcher) return;
 
       const newVolume = Number(interaction.data.options[0].value);
 
-      state.dispatcher.setVolume(newVolume / 5);
+      state.connection.dispatcher.setVolumeLogarithmic(newVolume / 10);
 
       state.volume = newVolume;
 
@@ -43,7 +43,7 @@ export default {
         { interaction: interaction },
         {
           color: props.color.purple,
-          description: `🔈 **${state.locale.music.volumeChanged}**`,
+          description: `🔈 **${state.locale.music.volumeChanged}${newVolume}**`,
         },
         { guild: true }
       );

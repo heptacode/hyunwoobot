@@ -15,8 +15,8 @@ export const sendEmbed = async (
       const guild: Guild = payload.member ? payload.member.guild : client.guilds.cache.get(payload.interaction.guild_id);
 
       let channel: TextChannel;
-      if (options.guild && options.system) channel = guild.systemChannel;
-      else if (options.guild && options.log) {
+      if (options && options.guild && options.system) channel = guild.systemChannel;
+      else if (options && options.guild && options.log) {
         const logChannel = (
           await firestore
             .collection(payload.member ? payload.member.guild.id : payload.interaction.guild_id)

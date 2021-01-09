@@ -95,6 +95,7 @@ export default {
   disconnect: {
     disconnect: "Disconnect",
     disconnected: " user(s) have been disconnected from ",
+    notVoiceChannel: "Not a voice channel.",
   },
   voiceDisconnect: {
     notInVoiceChannel: "I'm currently not in a voice channel!",
@@ -114,7 +115,7 @@ export default {
     repeatToggled: "Repeat Toggled ",
     noSongToSkip: "There is no song that I could skip!",
     skipped: "Skipped",
-    volumeChanged: "Volume changed! Your new volume will be applied for future songs.",
+    volumeChanged: "Volume changed to ",
     options: { query: "Query/URL" },
   },
   log: {
@@ -128,6 +129,7 @@ export default {
   move: {
     move: "Move",
     moved: " user(s) moved: ",
+    notVoiceChannel: "Not a voice channel.",
   },
   privateRoom: {
     privateRoom: "Private Room",

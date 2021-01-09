@@ -99,7 +99,8 @@ export default {
   },
   disconnect: {
     disconnect: "연결 해제",
-    disconnected: "명의 연결을 끊었습니다. 음성 채널: ",
+    disconnected: "명의 연결을 끊었어요. 음성 채널: ",
+    notVoiceChannel: "입력하신 채널은 음성 채널이 아니에요.",
   },
   log: {
     log: "로그",
@@ -124,12 +125,13 @@ export default {
     repeatToggled: "1곡 반복 재생이 ",
     noSongToSkip: "건너뛸 곡이 없어요!",
     skipped: "건너뛰었어요!",
-    volumeChanged: "음량이 변경됐어요. 새로운 음량은 다음 곡부터 적용돼요.",
+    volumeChanged: "음량이 변경됐어요: ",
     options: { query: "검색할 문자열 또는 URL" },
   },
   move: {
     move: "멤버 이동",
     moved: "명의 멤버가 이동됐어요: ",
+    notVoiceChannel: "입력하신 채널은 음성 채널이 아니에요.",
   },
   privateRoom: {
     privateRoom: "개인방",

@@ -23,7 +23,7 @@ export default () => {
           isLooped: false,
           isRepeated: false,
           isPlaying: false,
-          volume: 2,
+          volume: 1,
           timeout: null,
           afkChannel: new Collection(),
         } as State);
@@ -89,14 +89,19 @@ export default () => {
         if (Object.keys(updatedCommands).length) await commandsDocRef.update(updatedCommands);
       }
 
-      await client.user.setActivity({
-        type: "WATCHING",
-        // name: `${prefix}help`,
-        name: "/help",
-      });
+      // await clien
 
-      await client.user.setStatus("online");
-      // await client.user.setStatus("dnd");
+      await client.user.setPresence(
+        process.env.NODE_ENV === "development"
+          ? {
+              status: "dnd",
+              activity: {
+                type: "WATCHING",
+                name: "Visual Studio Code",
+              },
+            }
+          : { status: "online", activity: { type: "WATCHING", name: "/help" } }
+      );
     } catch (err) {
       Log.e(`Initialize > ${err}`);
     }

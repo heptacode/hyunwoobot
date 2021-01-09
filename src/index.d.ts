@@ -99,6 +99,7 @@ interface Locale {
   disconnect: {
     disconnect: string;
     disconnected: string;
+    notVoiceChannel: string;
   };
   log: {
     log: string;
@@ -129,6 +130,7 @@ interface Locale {
   move: {
     move: string;
     moved: string;
+    notVoiceChannel: string;
   };
   privateRoom: {
     privateRoom: string;
@@ -220,7 +222,6 @@ interface State {
   textChannel: TextChannel;
   voiceChannel: VoiceChannel;
   connection: VoiceConnection;
-  dispatcher: StreamDispatcher;
   queue: {
     title: string;
     channelName: string;

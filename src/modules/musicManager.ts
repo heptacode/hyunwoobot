@@ -11,10 +11,10 @@ import { Interaction, State } from "../";
 
 export const play = async (state: State, interaction: Interaction) => {
   try {
-    await voiceStateCheck(state.locale, interaction);
+    if (await voiceStateCheck(state.locale, interaction)) return;
 
     if (!interaction.data.options && state.queue.length !== 0) {
-      if (!state.isPlaying) return stream(state, interaction);
+      if (!state.isPlaying) return state.connection.dispatcher.resume();
       else
         return sendEmbed(
           { interaction: interaction },
@@ -57,36 +57,33 @@ export const play = async (state: State, interaction: Interaction) => {
         });
         // return message.channel.send(locale.urlInvalid);
       }
-      try {
-        if (state.queue.length === 1) {
-          return stream(state, interaction);
-        } else {
-          const fields: EmbedFieldData[] = [
-            { name: state.locale.music.length, value: getLength(state.queue[state.queue.length - 1].length), inline: true },
-            { name: state.locale.music.position, value: state.queue.length - 1, inline: true },
-            { name: "\u200B", value: "─────────────────────" },
-          ];
-          for (const i in state.queue) {
-            fields.push({ name: `#${i}`, value: state.queue[i].title });
-          }
-          fields.push({ name: "\u200B", value: `${state.isPlaying ? "▶️" : "⏹"}${state.isLooped ? " 🔁" : ""}${state.isRepeated ? " 🔂" : ""}` });
 
-          return sendEmbed(
-            { interaction: interaction },
-            {
-              color: props.color.cyan,
-              author: { name: state.locale.music.enqueued, iconURL: props.icon.enqueue, url: props.bot.website },
-              title: state.queue[state.queue.length - 1].title,
-              url: state.queue[state.queue.length - 1].videoURL,
-              description: state.queue[state.queue.length - 1].channelName,
-              thumbnail: { url: state.queue[state.queue.length - 1].thumbnailURL },
-              fields: fields,
-            },
-            { guild: true }
-          );
+      if (state.queue && state.queue.length === 1) {
+        return stream(state, interaction);
+      } else {
+        const fields: EmbedFieldData[] = [
+          { name: state.locale.music.length, value: getLength(state.queue[state.queue.length - 1].length), inline: true },
+          { name: state.locale.music.position, value: state.queue.length - 1, inline: true },
+          { name: "\u200B", value: "─────────────────────" },
+        ];
+        for (const i in state.queue) {
+          fields.push({ name: `#${i}`, value: state.queue[i].title });
         }
-      } catch (err) {
-        Log.e(`Play > 2 > ${err}`);
+        fields.push({ name: "\u200B", value: `${state.isPlaying ? "▶️" : "⏹"}${state.isLooped ? " 🔁" : ""}${state.isRepeated ? " 🔂" : ""}` });
+
+        return sendEmbed(
+          { interaction: interaction },
+          {
+            color: props.color.cyan,
+            author: { name: state.locale.music.enqueued, iconURL: props.icon.enqueue, url: props.bot.website },
+            title: state.queue[state.queue.length - 1].title,
+            url: state.queue[state.queue.length - 1].videoURL,
+            description: state.queue[state.queue.length - 1].channelName,
+            thumbnail: { url: state.queue[state.queue.length - 1].thumbnailURL },
+            fields: fields,
+          },
+          { guild: true }
+        );
       }
     } else {
       return sendEmbed(
@@ -105,19 +102,20 @@ export const play = async (state: State, interaction: Interaction) => {
 const stream = async (state: State, interaction: Interaction) => {
   try {
     if (!state.connection) await voiceConnect(state, interaction);
-    try {
-      state.dispatcher = state.connection.play(ytdl(state.queue[0].videoURL), {
-        // quality: "highestaudio",
-        highWaterMark: 1 << 25,
-      });
 
-      state.dispatcher.setVolume(state.volume / 5);
+    state.connection.play(ytdl(state.queue[0].videoURL), {
+      // quality: "highestaudio",
+      highWaterMark: 1 << 25,
+    });
 
-      state.dispatcher.on("start", () => {
+    state.connection.dispatcher.setVolume(state.volume / 10);
+
+    state.connection.dispatcher.on("start", async () => {
+      try {
         if (state.timeout) clearTimeout(state.timeout);
         state.isPlaying = true;
 
-        sendEmbed(
+        await sendEmbed(
           { interaction: interaction },
           {
             color: props.color.blue,
@@ -137,42 +135,42 @@ const stream = async (state: State, interaction: Interaction) => {
           },
           { guild: true }
         );
-      });
-      state.dispatcher.on("finish", () => {
-        try {
-          state.isPlaying = false;
-          if (state.queue.length >= 1) {
-            if (state.isRepeated) {
-            } else if (state.isLooped) {
-              state.queue.push(state.queue[0]);
-              state.queue.shift();
-            } else {
-              state.queue.shift();
-            }
-            if (state.queue.length >= 1) {
-              return stream(state, interaction);
-            } else state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 30000);
+      } catch (err) {
+        Log.e(`Stream > DispatcherStart > ${err}`);
+      }
+    });
+    state.connection.dispatcher.on("finish", async () => {
+      try {
+        state.isPlaying = false;
+        if (state.queue && state.queue.length >= 1) {
+          if (state.isRepeated) {
+          } else if (state.queue && state.isLooped) {
+            state.queue.push(state.queue[0]);
+            state.queue.shift();
           } else {
-            state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 30000);
+            state.queue.shift();
           }
-        } catch (err) {
-          Log.e(`Stream > 4 > ${err}`);
+          if (state.queue && state.queue.length >= 1) {
+            return await stream(state, interaction);
+          } else state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 30000);
+        } else {
+          state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 30000);
         }
-      });
-      state.dispatcher.on("error", (err) => {
-        Log.e(`Stream > 3 > ${err}`);
-      });
-    } catch (err) {
-      Log.e(`Stream > 2 > ${err}`);
-    }
+      } catch (err) {
+        Log.e(`Stream > DispatcherFinish > ${err}`);
+      }
+    });
+    state.connection.dispatcher.on("error", (err) => {
+      Log.e(`Stream > DispatcherError > ${err}`);
+    });
   } catch (err) {
-    Log.e(`Stream > 1 > ${err}`);
+    Log.e(`Stream > ${err}`);
   }
 };
 
 export const skip = async (state: State, interaction: Interaction) => {
   try {
-    await voiceStateCheck(state.locale, interaction);
+    if (await voiceStateCheck(state.locale, interaction)) return;
 
     if (state.queue.length === 0)
       return sendEmbed(
@@ -182,11 +180,11 @@ export const skip = async (state: State, interaction: Interaction) => {
           description: `❌ **${state.locale.music.noSongToSkip}**`,
         },
         { guild: true }
-      ).then((_message: Message) => _message.delete({ timeout: 5000 }));
+      ).then((_message: Message) => _message.delete({ timeout: 10000 }));
+
+    state.connection.dispatcher.end();
 
     state.queue.shift();
-
-    state.dispatcher.end();
 
     return sendEmbed(
       { interaction: interaction },
@@ -197,26 +195,15 @@ export const skip = async (state: State, interaction: Interaction) => {
       { guild: true }
     );
   } catch (err) {
-    Log.e(`Skip > 1 > ${err}`);
-  }
-};
-
-export const resume = async (state: State, interaction: Interaction) => {
-  try {
-    await voiceStateCheck(state.locale, interaction);
-
-    state.dispatcher.resume();
-    state.isPlaying = true;
-  } catch (err) {
-    Log.e(`Resume > ${err}`);
+    Log.e(`Skip > ${err}`);
   }
 };
 
 export const pause = async (state: State, interaction: Interaction) => {
   try {
-    await voiceStateCheck(state.locale, interaction);
+    if (await voiceStateCheck(state.locale, interaction)) return;
 
-    state.dispatcher.pause(true);
+    state.connection.dispatcher.pause();
     state.isPlaying = false;
   } catch (err) {
     Log.e(`Pause > ${err}`);
@@ -225,9 +212,9 @@ export const pause = async (state: State, interaction: Interaction) => {
 
 export const stop = async (state: State, interaction: Interaction) => {
   try {
-    await voiceStateCheck(state.locale, interaction);
+    if (await voiceStateCheck(state.locale, interaction)) return;
 
-    state.dispatcher.pause(true);
+    state.connection.dispatcher.pause();
     state.isPlaying = false;
   } catch (err) {
     Log.e(`Stop > ${err}`);
@@ -236,7 +223,7 @@ export const stop = async (state: State, interaction: Interaction) => {
 
 export const toggleLoop = async (state: State, interaction: Interaction) => {
   try {
-    await voiceStateCheck(state.locale, interaction);
+    if (await voiceStateCheck(state.locale, interaction)) return;
 
     state.isLooped = !state.isLooped;
 
@@ -255,7 +242,7 @@ export const toggleLoop = async (state: State, interaction: Interaction) => {
 
 export const toggleRepeat = async (state: State, interaction: Interaction) => {
   try {
-    await voiceStateCheck(state.locale, interaction);
+    if (await voiceStateCheck(state.locale, interaction)) return;
 
     state.isRepeated = !state.isRepeated;
 

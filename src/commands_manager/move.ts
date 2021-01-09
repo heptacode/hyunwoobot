@@ -30,16 +30,24 @@ export default {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, "MOVE_MEMBERS")) return;
 
-      const fromChannel = interaction.data.options[0].value;
-      const targetChannel = interaction.data.options[1].value;
-
       const guild: Guild = client.guilds.cache.get(interaction.guild_id);
-      const channel: GuildChannel = guild.channels.cache.get(fromChannel) as GuildChannel;
+      const fromChannel: GuildChannel = guild.channels.cache.get(interaction.data.options[0].value);
+      const targetChannel: GuildChannel = guild.channels.cache.get(interaction.data.options[1].value);
 
-      const cnt = channel.members.size;
+      if (fromChannel.type !== "voice" || targetChannel.type !== "voice")
+        return sendEmbed(
+          { interaction: interaction },
+          {
+            color: props.color.red,
+            title: `⚙️ ${state.locale.move.move}`,
+            description: `❌ **${state.locale.move.notVoiceChannel}**`,
+          }
+        );
+
+      const cnt = fromChannel.members.size;
       if (cnt <= 0) return;
 
-      for (const [key, member] of channel.members) {
+      for (const [key, member] of fromChannel.members) {
         try {
           await member.voice.setChannel(targetChannel);
         } catch (err) {}
@@ -50,7 +58,7 @@ export default {
         {
           color: props.color.green,
           title: `⚙️ ${state.locale.move.move}`,
-          description: `✅ **${cnt}${state.locale.move.moved}${getChannelName(guild, fromChannel)} ➡️ ${getChannelName(guild, targetChannel)}**`,
+          description: `✅ **${cnt}${state.locale.move.moved}${getChannelName(guild, fromChannel.id)} ➡️ ${getChannelName(guild, targetChannel.id)}**`,
           timestamp: new Date(),
         },
         { guild: true }

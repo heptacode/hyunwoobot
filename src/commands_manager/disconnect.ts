@@ -19,6 +19,16 @@ export default {
 
       const channel: GuildChannel = client.channels.cache.get(interaction.data.options[0].value) as GuildChannel;
 
+      if (channel.type !== "voice")
+        return sendEmbed(
+          { interaction: interaction },
+          {
+            color: props.color.red,
+            title: `⚙️ ${state.locale.disconnect.disconnect}`,
+            description: `❌ **${state.locale.disconnect.notVoiceChannel}**`,
+          }
+        );
+
       const cnt = channel.members.size;
       if (cnt <= 0) return;
 
@@ -32,8 +42,8 @@ export default {
         { interaction: interaction },
         {
           color: props.color.purple,
-          title: state.locale.disconnect.disconnect,
-          description: `**${cnt}${state.locale.disconnect.disconnected}${getChannelName(client.guilds.cache.get(interaction.guild_id), interaction.data.options[0].value)}**`,
+          title: `**⚙️ ${state.locale.disconnect.disconnect}**`,
+          description: `✅ **${cnt}${state.locale.disconnect.disconnected}${getChannelName(client.guilds.cache.get(interaction.guild_id), interaction.data.options[0].value)}**`,
           timestamp: new Date(),
         },
         { guild: true }
