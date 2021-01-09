@@ -1,10 +1,10 @@
 import { TextChannel, VoiceState } from "discord.js";
+import { sendEmbed } from "../modules/embedSender";
 import firestore from "../modules/firestore";
+import Log from "../modules/logger";
 import { client, state } from "../app";
 import props from "../props";
 import { Config, PrivateRoom, VoiceRole } from "../";
-import Log from "../modules/logger";
-import locale from "../commands_manager/locale";
 
 export default () => {
   client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState) => {
@@ -59,15 +59,16 @@ export default () => {
 
           await oldState.member.roles.remove(voiceRole.role);
 
-          Log.p({
-            guild: oldState.guild,
-            embed: {
+          return await sendEmbed(
+            { member: oldState.member },
+            {
               color: props.color.cyan,
-              author: { name: "Role Remove [Voice]", iconURL: oldState.member.user.avatarURL() },
+              author: { name: state.get(oldState.guild.id).locale.voiceRole.roleRemoved, iconURL: oldState.member.user.avatarURL() },
               description: `<@${oldState.member.user.id}> -= <@&${voiceRole.role}>`,
               timestamp: new Date(),
             },
-          });
+            { guild: true, log: true }
+          );
         }
       } catch (err) {
         Log.e(`VoiceStateUpdate > Switch/Leave > ${err}`);
@@ -128,9 +129,15 @@ export default () => {
         } else if (config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.waiting === newState.channelID)) {
           // Waiting Room
           try {
-            return await newState.member.send({
-              embed: { color: props.color.cyan, title: state.get(newState.guild.id).locale.privateRoom.privateRoom, description: state.get(newState.guild.id).locale.privateRoom.waitingForMove },
-            });
+            return await sendEmbed(
+              { member: newState.member },
+              {
+                color: props.color.cyan,
+                title: state.get(newState.guild.id).locale.privateRoom.privateRoom,
+                description: `**${state.get(newState.guild.id).locale.privateRoom.waitingForMove}**`,
+                timestamp: new Date(),
+              }
+            );
           } catch (err) {}
         }
 
@@ -145,28 +152,37 @@ export default () => {
             setTimeout(async () => {
               try {
                 await newState.kick();
-                await Log.p({
-                  guild: newState.guild,
-                  embed: {
+
+                return await sendEmbed(
+                  { member: newState.member },
+                  {
                     color: props.color.cyan,
-                    author: { name: state.get(newState.guild.id).locale.afkTimeout.afkTimeout, iconURL: oldState.member.user.avatarURL() },
-                    description: `<@${newState.member.user.id}>${state.get(newState.guild.id).locale.afkTimeout.disconnected}`,
+                    author: {
+                      name: state.get(newState.guild.id).locale.afkTimeout.afkTimeout,
+                      iconURL: newState.member.user.avatarURL(),
+                    },
+                    description: `**<@${newState.member.user.id}>${state.get(newState.guild.id).locale.afkTimeout.disconnected}**`,
                     timestamp: new Date(),
                   },
-                });
+                  { guild: true, log: true }
+                );
               } catch (err) {}
             }, config.afkTimeout * 3600000)
           );
 
-          Log.p({
-            guild: newState.guild,
-            embed: {
+          return await sendEmbed(
+            { member: newState.member },
+            {
               color: props.color.cyan,
-              author: { name: "Start Countdown [AFKTimeout]", iconURL: oldState.member.user.avatarURL() },
+              author: {
+                name: `${state.get(newState.guild.id).locale.afkTimeout.countdownStarted}(${config.afkTimeout}${state.get(newState.guild.id).locale.minute})`,
+                iconURL: newState.member.user.avatarURL(),
+              },
               description: `<@${newState.member.user.id}>`,
               timestamp: new Date(),
             },
-          });
+            { guild: true, log: true }
+          );
         }
 
         const voiceRole: VoiceRole = config.voiceRole.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === newState.channelID);
@@ -182,15 +198,19 @@ export default () => {
             });
           }
 
-          Log.p({
-            guild: newState.guild,
-            embed: {
+          return await sendEmbed(
+            { member: newState.member },
+            {
               color: props.color.cyan,
-              author: { name: "Role Append [Voice]", iconURL: newState.member.user.avatarURL() },
+              author: {
+                name: state.get(newState.guild.id).locale.voiceRole.roleAppended,
+                iconURL: newState.member.user.avatarURL(),
+              },
               description: `<@${newState.member.user.id}> += <@&${voiceRole.role}>`,
               timestamp: new Date(),
             },
-          });
+            { guild: true, log: true }
+          );
         }
       } catch (err) {
         Log.e(`VoiceStateUpdate > Join/Switch > ${err}`);

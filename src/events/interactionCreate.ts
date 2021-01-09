@@ -1,6 +1,6 @@
 import { client, state, commands, commands_manager } from "../app";
-import { Interaction } from "../";
 import Log from "../modules/logger";
+import { Interaction } from "../";
 
 export default () => {
   (client as any).ws.on("INTERACTION_CREATE", async (interaction: Interaction) => {

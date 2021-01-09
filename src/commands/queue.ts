@@ -1,8 +1,8 @@
 import { EmbedFieldData } from "discord.js";
-import props from "../props";
 import { sendEmbed } from "../modules/embedSender";
-import { Interaction, State } from "../";
 import Log from "../modules/logger";
+import props from "../props";
+import { Interaction, State } from "../";
 
 export default {
   name: "queue",
@@ -37,7 +37,7 @@ export default {
           { interaction: interaction },
           {
             color: props.color.purple,
-            description: `**${state.locale.music.empty}**`,
+            description: `🗑 **${state.locale.music.queueEmpty}**`,
           },
           { guild: true }
         );

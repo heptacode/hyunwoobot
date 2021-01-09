@@ -1,8 +1,8 @@
 import { Collection, Guild, TextChannel } from "discord.js";
 import firestore from "../modules/firestore";
+import Log from "../modules/logger";
 import { client, commands, commands_manager, locales, state } from "../app";
 import { State } from "../";
-import Log from "../modules/logger";
 
 export default () => {
   client.once("ready", async () => {

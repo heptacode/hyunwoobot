@@ -1,8 +1,9 @@
 import { Message } from "discord.js";
 import schedule from "node-schedule";
+import Log from "../modules/logger";
+import { checkPermission } from "../modules/permissionChecker";
 import { alarmDB, activateAlarm, sendAlarm } from "../modules/voiceManager";
 import { AlarmDB, Args, State } from "../";
-import Log from "../modules/logger";
 
 schedule.scheduleJob(
   { minute: 59, second: 51 },
@@ -16,7 +17,8 @@ schedule.scheduleJob(
 
 export default {
   name: "alarm",
-  execute(state: State, message: Message, args: Args) {
+  async execute(state: State, message: Message, args: Args) {
+    if (await checkPermission(state.locale, { message: message }, "ADMINISTRATOR")) return;
     activateAlarm(message, alarmDB);
   },
 };

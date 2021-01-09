@@ -1,32 +1,42 @@
-import { Message } from "discord.js";
-import { client } from "../app";
+import { Guild } from "discord.js";
+import { sendEmbed } from "../modules/embedSender";
 import firestore from "../modules/firestore";
-import { Interaction, State } from "../";
 import Log from "../modules/logger";
+import { checkPermission } from "../modules/permissionChecker";
+import { client } from "../app";
+import props from "../props";
+import { Interaction, State } from "../";
 
 export default {
   name: "privateroom",
   version: 1,
   async execute(state: State, interaction: Interaction) {
     try {
-      const guild = client.guilds.cache.get(interaction.guild_id);
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_CHANNELS")) return;
 
-      if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MANAGE_CHANNELS")) {
-        return (await client.users.cache.get(interaction.member.user.id).createDM())
-          .send(state.locale.insufficientPerms.manage_channels)
-          .then((_message: Message) => _message.delete({ timeout: 5000 }));
-      }
+      const guild: Guild = client.guilds.cache.get(interaction.guild_id);
 
-      const privateRoomID = await (
+      const privateRoomID = (
         await guild.channels.create(state.locale.privateRoom.create, {
           type: "voice",
           userLimit: 1,
         })
       ).id;
 
-      return await firestore.collection(guild.id).doc("config").update({ privateRoom: privateRoomID });
+      await firestore.collection(guild.id).doc("config").update({ privateRoom: privateRoomID });
+
+      return sendEmbed(
+        { interaction: interaction },
+        {
+          color: props.color.green,
+          title: state.locale.privateRoom.privateRoom,
+          description: `✅ **${state.locale.privateRoom.set}**`,
+          timestamp: new Date(),
+        },
+        { guild: true }
+      );
     } catch (err) {
-      Log.e(`ReactionRole > ${err}`);
+      Log.e(`PrivateRoom > ${err}`);
     }
   },
 };

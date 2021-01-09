@@ -1,9 +1,8 @@
-import { Message, TextChannel } from "discord.js";
-import { client } from "../app";
 import { sendEmbed } from "../modules/embedSender";
-import { Interaction, Locale, State } from "../";
+import { voiceStateCheck } from "../modules/voiceManager";
 import Log from "../modules/logger";
 import props from "../props";
+import { Interaction, Locale, State } from "../";
 
 export default {
   name: "volume",
@@ -32,12 +31,7 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      const guild = client.guilds.cache.get(interaction.guild_id);
-      const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
-      const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
-      if (!voiceChannel) {
-        return channel.send(`<@${interaction.member.user.id}>, ${state.locale.music.joinVoiceChannel}`).then((_message: Message) => _message.delete({ timeout: 5000 }));
-      }
+      await voiceStateCheck(state.locale, interaction);
 
       const newVolume = Number(interaction.data.options[0].value);
 
@@ -49,9 +43,7 @@ export default {
         { interaction: interaction },
         {
           color: props.color.purple,
-          title: state.queue[0].title,
-          url: state.queue[0].videoURL,
-          description: state.locale.volume.changed,
+          description: `🔈 **${state.locale.music.volumeChanged}**`,
         },
         { guild: true }
       );

@@ -1,9 +1,11 @@
-import { TextChannel } from "discord.js";
-import { client } from "../app";
+import { GuildChannel } from "discord.js";
 import { getChannelName } from "../modules/converter";
-import { Interaction, Locale, State } from "../";
-import props from "../props";
+import { sendEmbed } from "../modules/embedSender";
 import Log from "../modules/logger";
+import { checkPermission } from "../modules/permissionChecker";
+import { client } from "../app";
+import props from "../props";
+import { Interaction, Locale, State } from "../";
 
 export default {
   name: "disconnect",
@@ -13,30 +15,29 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      const guild = client.guilds.cache.get(interaction.guild_id);
-      const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
+      if (await checkPermission(state.locale, { interaction: interaction }, "MOVE_MEMBERS")) return;
 
-      if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MOVE_MEMBERS"))
-        return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.insufficientPerms.move_members);
+      const channel: GuildChannel = client.channels.cache.get(interaction.data.options[0].value) as GuildChannel;
 
-      const cnt = guild.channels.cache.get(interaction.data.options[0].value).members.size;
+      const cnt = channel.members.size;
       if (cnt <= 0) return;
 
-      for (const [key, member] of guild.channels.cache.get(interaction.data.options[0].value).members) {
+      for (const [key, member] of channel.members) {
         try {
           await member.voice.kick();
         } catch (err) {}
       }
 
-      return channel.send({
-        embed: {
+      return sendEmbed(
+        { interaction: interaction },
+        {
           color: props.color.purple,
-          author: { name: state.locale.disconnect.disconnect },
-          description: `${cnt}${state.locale.disconnect.disconnected}${getChannelName(guild, interaction.data.options[0].value)}`,
-          footer: { text: `${interaction.member.user.username}#${interaction.member.user.discriminator}` },
+          title: state.locale.disconnect.disconnect,
+          description: `**${cnt}${state.locale.disconnect.disconnected}${getChannelName(client.guilds.cache.get(interaction.guild_id), interaction.data.options[0].value)}**`,
           timestamp: new Date(),
         },
-      });
+        { guild: true }
+      );
     } catch (err) {
       Log.e(`Disconnect > ${err}`);
     }

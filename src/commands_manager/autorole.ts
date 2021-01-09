@@ -1,9 +1,10 @@
-import { EmbedFieldData, TextChannel } from "discord.js";
-import { client } from "../app";
+import { EmbedFieldData } from "discord.js";
 import firestore from "../modules/firestore";
+import { sendEmbed } from "../modules/embedSender";
+import Log from "../modules/logger";
+import { checkPermission } from "../modules/permissionChecker";
 import props from "../props";
 import { AutoRole, Interaction, Locale, State } from "../";
-import Log from "../modules/logger";
 
 export default {
   name: "autorole",
@@ -42,38 +43,36 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      const guild = client.guilds.cache.get(interaction.guild_id);
-      const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
-
-      if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MANAGE_ROLES"))
-        return (await client.users.cache.get(interaction.member.user.id).createDM()).send(`<@${interaction.member.user.id}>, ${state.locale.insufficientPerms.manage_roles}`);
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_ROLES")) return;
 
       const method = interaction.data.options[0].name;
 
-      const configDocRef = firestore.collection(guild.id).doc("config");
-      const configDocSnapshot = await configDocRef.get();
+      const configDocRef = firestore.collection(interaction.guild_id).doc("config");
+      const autoRole = (await configDocRef.get()).data().autoRole;
 
-      let autoRoleConfig: AutoRole[] = [];
+      let autoRoleConfig: AutoRole[] = autoRole;
 
       if (method === "view") {
-        autoRoleConfig = configDocSnapshot.data().autoRole as AutoRole[];
       } else if (method === "add") {
-        autoRoleConfig = configDocSnapshot.data().autoRole as AutoRole[];
         autoRoleConfig.push({ type: interaction.data.options[0].options[0].value, role: interaction.data.options[0].options[1].value });
         await configDocRef.update({ autoRole: autoRoleConfig });
       } else if (method === "purge") {
+        autoRoleConfig = [];
         await configDocRef.update({ autoRole: [] });
       }
 
       const fields: EmbedFieldData[] = [];
-      if (autoRoleConfig.length >= 1)
-        autoRoleConfig.forEach((autoRoleConfig: AutoRole) => {
-          fields.push({ name: autoRoleConfig.type, value: `<@&${autoRoleConfig.role}>` });
-        });
+      if (autoRoleConfig.length >= 1) {
+        for (const autoRole of autoRoleConfig) {
+          fields.push({ name: autoRole.type, value: `<@&${autoRole.role}>` });
+        }
+      }
 
-      return channel.send({
-        embed: { title: state.locale.autoRole.autoRole, color: props.color.yellow, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: state.locale.autoRole.empty }] },
-      });
+      return sendEmbed(
+        { interaction: interaction },
+        { color: props.color.yellow, title: `⚙️ ${state.locale.autoRole.autoRole}`, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: state.locale.autoRole.empty }] },
+        { guild: true }
+      );
     } catch (err) {
       Log.e(`AutoRole > ${err}`);
     }

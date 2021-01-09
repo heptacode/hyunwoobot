@@ -1,39 +1,60 @@
-import { Message, MessageEmbedOptions, TextChannel } from "discord.js";
+import { Guild, GuildMember, Message, MessageEmbed, MessageEmbedOptions, TextChannel, User } from "discord.js";
+import firestore from "./firestore";
+import Log from "./logger";
 import { client } from "../app";
 import { Interaction } from "../";
-import Log from "./logger";
 
-export const sendEmbed = async (payload: { interaction?: Interaction; message?: Message }, embed: MessageEmbedOptions, options?: { dm?: boolean; guild?: boolean }): Promise<Message> => {
+export const sendEmbed = async (
+  payload: { interaction?: Interaction; message?: Message; member?: GuildMember },
+  embed: MessageEmbedOptions | MessageEmbed,
+  options?: { dm?: boolean; guild?: boolean; system?: boolean; log?: boolean }
+): Promise<Message> => {
   try {
-    if (payload.interaction) {
+    if (payload.interaction || payload.member) {
+      const user: User = payload.member ? payload.member.user : client.users.cache.get(payload.interaction.member.user.id);
+      const guild: Guild = payload.member ? payload.member.guild : client.guilds.cache.get(payload.interaction.guild_id);
+
+      let channel: TextChannel;
+      if (options.guild && options.system) channel = guild.systemChannel;
+      else if (options.guild && options.log) {
+        const logChannel = (
+          await firestore
+            .collection(payload.member ? payload.member.guild.id : payload.interaction.guild_id)
+            .doc("config")
+            .get()
+        ).data().log;
+        if (!logChannel) return;
+        channel = guild.channels.cache.get(logChannel) as TextChannel;
+      } else channel = guild.channels.cache.get(payload.interaction.channel_id) as TextChannel;
+
       try {
         if (!options || options.dm)
-          return (await client.users.cache.get(payload.interaction.member.user.id).createDM()).send({
+          return (await user.createDM()).send({
             embed: {
               author: {
-                name: client.guilds.cache.get(payload.interaction.guild_id).name,
-                iconURL: client.guilds.cache.get(payload.interaction.guild_id).iconURL(),
+                name: guild.name,
+                iconURL: guild.iconURL(),
               },
               ...embed,
             },
           });
-        else if (options.guild)
-          return ((await client.guilds.cache.get(payload.interaction.guild_id).channels.cache.get(payload.interaction.channel_id)) as TextChannel).send({
+        else if (!options.dm)
+          return channel.send({
             embed: {
               footer: {
-                text: `${payload.interaction.member.user.username}#${payload.interaction.member.user.discriminator}`,
-                iconURL: client.users.cache.get(payload.interaction.member.user.id).avatarURL(),
+                text: user.tag,
+                iconURL: user.avatarURL(),
               },
               ...embed,
             },
           });
       } catch (err) {
         if (!options.dm)
-          return ((await client.guilds.cache.get(payload.interaction.guild_id).channels.cache.get(payload.interaction.channel_id)) as TextChannel).send({
+          return channel.send({
             embed: {
               footer: {
-                text: `${payload.interaction.member.user.username}#${payload.interaction.member.user.discriminator}`,
-                iconURL: client.users.cache.get(payload.interaction.member.user.id).avatarURL(),
+                text: user.tag,
+                iconURL: user.avatarURL(),
               },
               ...embed,
             },

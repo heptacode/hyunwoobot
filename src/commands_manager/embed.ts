@@ -1,21 +1,20 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { getChannelID } from "../modules/converter";
-import { Args, State } from "../";
 import Log from "../modules/logger";
+import { checkPermission } from "../modules/permissionChecker";
+import { Args, State } from "../";
 
 export default {
   name: "embed",
   messageOnly: true,
   async execute(state: State, message: Message, args: Args) {
     try {
-      if (!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send(state.locale.insufficientPerms.manage_messages).then((_message: Message) => _message.delete({ timeout: 5000 }));
+      if (await checkPermission(state.locale, { message: message }, "MANAGE_MESSAGES")) return;
 
-      const textChannel = getChannelID(message.guild, args[0]);
-      args.shift();
       // replace(/\n/g, "\\n")
-      const embed = JSON.parse(args.join(" "));
+      const embed: MessageEmbed = JSON.parse(args.slice(1).join(" "));
 
-      await (message.guild.channels.cache.get(textChannel) as TextChannel).send({ embed: embed as MessageEmbed });
+      await (message.guild.channels.cache.get(getChannelID(message.guild, args[0])) as TextChannel).send({ embed: embed });
       return message.react("✅");
     } catch (err) {
       message.react("❌");

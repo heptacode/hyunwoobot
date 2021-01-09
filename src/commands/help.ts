@@ -1,8 +1,8 @@
 import { EmbedFieldData } from "discord.js";
-import { client, commands, commands_manager, prefix } from "../app";
+import { sendEmbed } from "../modules/embedSender";
+import { commands, commands_manager, prefix } from "../app";
 import props from "../props";
 import { Interaction, Locale, State } from "../";
-import { sendEmbed } from "../modules/embedSender";
 
 export default {
   name: "help",

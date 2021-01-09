@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
+import Log from "../modules/logger";
 import { client, state, commands_hidden, prefix, commands_manager } from "../app";
 import { Command } from "../";
-import Log from "../modules/logger";
 
 export default () => {
   client.on("message", async (message: Message) => {

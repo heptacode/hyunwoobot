@@ -1,11 +1,11 @@
+import { Message } from "discord.js";
+import { sendEmbed } from "../modules/embedSender";
 import firestore from "../modules/firestore";
+import Log from "../modules/logger";
+import { checkPermission } from "../modules/permissionChecker";
 import { client, commands, commands_manager, locales } from "../app";
 import props from "../props";
-import { sendEmbed } from "../modules/embedSender";
 import { Interaction, Locale, State } from "../";
-import Log from "../modules/logger";
-import { config } from "dotenv/types";
-import { Message } from "discord.js";
 
 const choices = [];
 for (const [code, locale] of locales) {
@@ -28,18 +28,16 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      const guild = client.guilds.cache.get(interaction.guild_id);
-      if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MANAGE_GUILD"))
-        return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.insufficientPerms.manage_guild);
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_GUILD")) return;
 
-      const configDocRef = firestore.collection(guild.id).doc("config");
+      const configDocRef = firestore.collection(interaction.guild_id).doc("config");
 
       if ((await configDocRef.get()).data().locale === interaction.data.options[0].value)
         return sendEmbed(
           { interaction: interaction },
           {
             color: props.color.red,
-            description: `**${state.locale.locale.noChange}**`,
+            description: `❌ **${state.locale.locale.noChange}**`,
           },
           { guild: true }
         );
@@ -48,7 +46,7 @@ export default {
         { interaction: interaction },
         {
           color: props.color.orange,
-          description: `**${state.locale.locale.pending}**`,
+          description: `❕ **${state.locale.locale.pending}**`,
         },
         { guild: true }
       );
@@ -64,7 +62,7 @@ export default {
             id: (
               await (client as any).api
                 .applications(process.env.APPLICATION)
-                .guilds(guild.id)
+                .guilds(interaction.guild_id)
                 .commands.post({
                   data: {
                     name: name,
@@ -88,7 +86,7 @@ export default {
             id: (
               await (client as any).api
                 .applications(process.env.APPLICATION)
-                .guilds(guild.id)
+                .guilds(interaction.guild_id)
                 .commands.post({
                   data: {
                     name: name,
@@ -105,14 +103,14 @@ export default {
         }
       }
 
-      await firestore.collection(guild.id).doc("commands").update(payload);
+      await firestore.collection(interaction.guild_id).doc("commands").update(payload);
 
       await _message.delete();
       return sendEmbed(
         { interaction: interaction },
         {
           color: props.color.green,
-          description: `**${state.locale.locale.changed}**`,
+          description: `✅ **${state.locale.locale.changed}**`,
         },
         { guild: true }
       );

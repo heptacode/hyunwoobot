@@ -11,14 +11,15 @@ export default {
   messageID: "메시지 ID",
   embed: "임베드",
   emoji: "이모지",
+  minute: "분",
 
   locale: {
     locale: "언어",
     code: "ko",
     name: "한국어",
-    noChange: "❌ 변경된 사항이 없어요.",
-    pending: "❕ 언어를 변경하는 중이예요. 잠시만 기다려주세요.",
-    changed: "✅ 언어가 변경됐어요.",
+    noChange: "변경된 사항이 없어요.",
+    pending: "언어를 변경하는 중이예요. 잠시만 기다려주세요.",
+    changed: "언어가 변경됐어요.",
   },
   help: {
     help: "도움말",
@@ -65,25 +66,28 @@ export default {
     voicerole: "<view|add|remove|purge> <음성채널> <역할> [채팅채널]",
   },
   insufficientPerms: {
-    manage_guild: "❌ 서버를 관리할 수 있는 권한이 없습니다.",
-    manage_channels: "❌ 채널을 관리할 수 있는 권한이 없습니다.",
-    manage_roles: "❌ 역할을 관리할 수 있는 권한이 없습니다.",
-    manage_messages: "❌ 메시지를 관리할 수 있는 권한이 없습니다.",
-    move_members: "❌ 멤버를 이동할 권한이 없습니다.",
-    connect: "❌ 저에게 다음 권한을 부여해주세요: [연결], [말하기]",
+    administrator: "관리자 권한이 없습니다.",
+    manage_guild: "서버를 관리할 수 있는 권한이 없습니다.",
+    manage_channels: "채널을 관리할 수 있는 권한이 없습니다.",
+    manage_roles: "역할을 관리할 수 있는 권한이 없습니다.",
+    manage_messages: "메시지를 관리할 수 있는 권한이 없습니다.",
+    move_members: "멤버를 이동할 권한이 없습니다.",
+    connect: "저에게 다음 권한을 부여해주세요: [연결], [말하기]",
   },
 
   afkTimeout: {
     afkTimeout: "자리비움 연결 해제",
     set: "자리비움 연결 해제 시간이 업데이트 됐어요: ",
     disconnected: "님께서 일정시간 자리를 비워서 연결 해제되었습니다.",
+    countdownStarted: "자리비움 연결 해제 카운트다운",
     options: {
       minutesToDisconnect: "자동 연결 해제까지 대기 시간(분)",
     },
   },
   autoRole: {
-    autoRole: "⚙️ 자동 역할",
+    autoRole: "자동 역할",
     empty: "설정된 역할이 없어요.",
+    roleAppended: "역할 추가 [자동 역할]",
     options: {
       view: "설정된 자동 역할 보기",
       add: "자동 역할 추가",
@@ -97,32 +101,46 @@ export default {
     disconnect: "연결 해제",
     disconnected: "명의 연결을 끊었습니다. 음성 채널: ",
   },
-  voiceDisconnect: {
-    notInVoiceChannel: "❌ 저는 지금 음성채널에 있지 않아요!",
-  },
-  loop: {
-    toggled: "✅ 반복 재생이 ",
+  log: {
+    log: "로그",
+    set: "로그채널이 변경됐어요: ",
+    guildMemberAdd: "멤버 입장",
+    guildMemberAdded: "님이 새로운 멤버가 되었어요.",
+    guildMemberRemove: "멤버 떠남/퇴출됨",
+    guildMemberRemoved: "님은 더 이상 이 서버의 멤버가 아니에요.",
   },
   music: {
-    joinVoiceChannel: "❌ 이 명령어를 실행하려면 음성 채널에 접속해주세요.",
-    currentlyPlaying: "💿 현재 재생중인 곡이 있어요.",
-    private: "🔒 이 비디오는 비공개예요.",
-    ageRestricted: "🔞 이 비디오는 연령제한이 있어요.",
-    noResult: "❌ 검색 결과가 없어요.",
+    joinVoiceChannel: "이 명령어를 실행하려면 음성 채널에 접속해주세요.",
+    currentlyPlaying: "현재 재생중인 곡이 있어요.",
+    noResult: "검색 결과가 없어요.",
     enqueued: "추가됨",
     nowPlaying: "현재 재생중",
     length: "길이",
-    queue: "대기열",
     remaining: "남은 곡",
     position: "재생까지 남은 곡",
-    empty: "🗑 대기열이 비어있어요.",
+    queue: "대기열",
+    queueEmpty: "대기열이 비어있어요.",
+    loopToggled: "반복 재생이 ",
+    repeatToggled: "1곡 반복 재생이 ",
+    noSongToSkip: "건너뛸 곡이 없어요!",
+    skipped: "건너뛰었어요!",
+    volumeChanged: "음량이 변경됐어요. 새로운 음량은 다음 곡부터 적용돼요.",
     options: { query: "검색할 문자열 또는 URL" },
   },
   move: {
     move: "멤버 이동",
     moved: "명의 멤버가 이동됐어요: ",
   },
+  privateRoom: {
+    privateRoom: "개인방",
+    create: "개인방 만들기",
+    set: "개인방이 설정되었습니다.",
+    waitingRoom: "대기실",
+    waitingForMove: "님이 개인방 대기실에 입장하여 이동을 기다리고 있습니다.",
+  },
   reactionRole: {
+    roleAppended: "역할 추가됨 [이모지 역할]",
+    roleRemoved: "역할 제거됨 [이모지 역할]",
     options: {
       view: "설정된 이모지 역할 보기",
       add: "이모지 역할 추가",
@@ -130,29 +148,14 @@ export default {
       purge: "이모지 역할 초기화",
     },
   },
-  repeat: {
-    toggled: "✅ 1곡 반복 재생이 ",
-  },
-  skip: {
-    noSongToSkip: "❌ 건너뛸 곡이 없어요!",
-    skipped: "⏩ 건너뛰었어요!",
-  },
-  volume: {
-    changed: "🔈 음량이 변경됐어요. 새로운 음량은 다음 곡부터 적용돼요.",
-  },
-  log: {
-    log: "📦 로그",
-    set: "로그채널이 변경됐어요: ",
-  },
-  privateRoom: {
-    privateRoom: "개인방",
-    create: "개인방 만들기",
-    waitingRoom: "대기실",
-    waitingForMove: "님이 개인방 대기실에 입장하여 이동을 기다리고 있습니다.",
+  voiceDisconnect: {
+    notInVoiceChannel: "저는 지금 음성채널에 있지 않아요!",
   },
   voiceRole: {
-    voiceRole: "⚙️ 음성채널 역할",
+    voiceRole: "음성채널 역할",
     empty: "설정된 역할이 없어요.",
+    roleAppended: "역할 추가됨 [음성채널]",
+    roleRemoved: "역할 제거됨 [음성채널]",
     options: {
       view: "설정된 음성채널 역할 보기",
       add: "음성채널 역할 추가",

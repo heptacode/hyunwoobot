@@ -1,10 +1,12 @@
-import { EmbedFieldData, TextChannel } from "discord.js";
-import { client } from "../app";
-import firestore from "../modules/firestore";
+import { EmbedFieldData } from "discord.js";
 import { getChannelName } from "../modules/converter";
+import { sendEmbed } from "../modules/embedSender";
+import firestore from "../modules/firestore";
+import Log from "../modules/logger";
+import { checkPermission } from "../modules/permissionChecker";
+import { client } from "../app";
 import props from "../props";
 import { Interaction, Locale, State, VoiceRole } from "../";
-import Log from "../modules/logger";
 
 export default {
   name: "voicerole",
@@ -63,11 +65,9 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      const guild = client.guilds.cache.get(interaction.guild_id);
-      const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_ROLES")) return;
 
-      if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MANAGE_CHANNELS"))
-        return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.insufficientPerms.manage_channels);
+      const guild = client.guilds.cache.get(interaction.guild_id);
 
       const method = interaction.data.options[0].name;
 
@@ -111,11 +111,18 @@ export default {
           });
         });
 
-      return channel.send({
-        embed: { title: state.locale.voiceRole.voiceRole, color: props.color.yellow, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: state.locale.voiceRole.empty }] },
-      });
+      return sendEmbed(
+        { interaction: interaction },
+        {
+          color: props.color.yellow,
+          title: `⚙️ ${state.locale.voiceRole.voiceRole}`,
+          fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: state.locale.voiceRole.empty }],
+          timestamp: new Date(),
+        },
+        { guild: true }
+      );
     } catch (err) {
-      Log.e(`Voice > ${err}`);
+      Log.e(`VoiceRole > ${err}`);
     }
   },
 };

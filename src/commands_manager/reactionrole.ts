@@ -1,9 +1,10 @@
 import { TextChannel } from "discord.js";
-import { client } from "../app";
-import firestore from "../modules/firestore";
 import { getHexfromEmoji } from "../modules/converter";
-import { Interaction, Locale, ReactionRole, State } from "../";
+import firestore from "../modules/firestore";
 import Log from "../modules/logger";
+import { checkPermission } from "../modules/permissionChecker";
+import { client } from "../app";
+import { Interaction, Locale, ReactionRole, State } from "../";
 
 export default {
   name: "reactionrole",
@@ -63,11 +64,10 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_MESSAGES")) return;
+
       const guild = client.guilds.cache.get(interaction.guild_id);
       const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
-
-      if (!guild.members.cache.get(interaction.member.user.id).hasPermission("MANAGE_MESSAGES"))
-        return (await client.users.cache.get(interaction.member.user.id).createDM()).send(state.locale.insufficientPerms.manage_messages);
 
       const method = interaction.data.options[0].name;
 
@@ -79,7 +79,7 @@ export default {
         channelDocSnapshot = await channelDocRef.get();
       }
 
-      const reactionRoles = channelDocSnapshot.data().reactionRoles;
+      const reactionRoles: ReactionRole[] = channelDocSnapshot.data().reactionRoles;
 
       if (method === "add") {
         try {
@@ -117,10 +117,11 @@ export default {
 
           const _message = await channel.messages.fetch(messageID);
 
-          reactionRoles.forEach(() => {
+          for (const reactionRole of reactionRoles) {
             const idx = reactionRoles.findIndex((reactionRole: ReactionRole) => reactionRole.message === messageID);
             reactionRoles.splice(idx, 1);
-          });
+          }
+
           await channelDocRef.update({ reactionRoles: reactionRoles });
           return await _message.reactions.removeAll();
         } catch (err) {

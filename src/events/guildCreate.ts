@@ -1,8 +1,8 @@
 import { Guild } from "discord.js";
 import firestore from "../modules/firestore";
+import Log from "../modules/logger";
 import { client } from "../app";
 import { Config } from "../";
-import Log from "../modules/logger";
 
 export default () => {
   client.on("guildCreate", async (guild: Guild) => {

@@ -1,16 +1,18 @@
-import { EmbedFieldData, Message, TextChannel } from "discord.js";
-import { client } from "../app";
+import { EmbedFieldData, Message } from "discord.js";
 import ytdl from "ytdl-core";
 import youtube from "scrape-youtube";
 import { getLength } from "./converter";
 import { sendEmbed } from "./embedSender";
-import { voiceConnect, voiceDisconnect } from "./voiceManager";
+import Log from "./logger";
+import { voiceConnect, voiceDisconnect, voiceStateCheck } from "./voiceManager";
+import { client } from "../app";
 import props from "../props";
 import { Interaction, State } from "../";
-import Log from "./logger";
 
 export const play = async (state: State, interaction: Interaction) => {
   try {
+    await voiceStateCheck(state.locale, interaction);
+
     if (!interaction.data.options && state.queue.length !== 0) {
       if (!state.isPlaying) return stream(state, interaction);
       else
@@ -18,7 +20,7 @@ export const play = async (state: State, interaction: Interaction) => {
           { interaction: interaction },
           {
             color: props.color.cyan,
-            description: `**${state.locale.music.currentlyPlaying}**`,
+            description: `💿 **${state.locale.music.currentlyPlaying}**`,
           },
           { guild: true }
         );
@@ -27,7 +29,7 @@ export const play = async (state: State, interaction: Interaction) => {
         { interaction: interaction },
         {
           color: props.color.red,
-          description: `**${state.locale.music.empty}**`,
+          description: `🗑 **${state.locale.music.queueEmpty}**`,
         },
         { guild: true }
       );
@@ -91,7 +93,7 @@ export const play = async (state: State, interaction: Interaction) => {
         { interaction: interaction },
         {
           color: props.color.red,
-          description: `**${state.locale.music.noResult}**`,
+          description: `❌ **${state.locale.music.noResult}**`,
         }
       );
     }
@@ -102,7 +104,6 @@ export const play = async (state: State, interaction: Interaction) => {
 
 const stream = async (state: State, interaction: Interaction) => {
   try {
-    const channel = client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.channel_id) as TextChannel;
     if (!state.connection) await voiceConnect(state, interaction);
     try {
       state.dispatcher = state.connection.play(ytdl(state.queue[0].videoURL), {
@@ -115,17 +116,11 @@ const stream = async (state: State, interaction: Interaction) => {
       state.dispatcher.on("start", () => {
         if (state.timeout) clearTimeout(state.timeout);
         state.isPlaying = true;
+
         sendEmbed(
           { interaction: interaction },
           {
-            color: props.color.red,
-            description: `**${state.locale.music.noResult}**`,
-          }
-        );
-
-        channel.send({
-          embed: {
-            color: "#0099ff",
+            color: props.color.blue,
             author: {
               name: `${state.isLooped ? "🔁 " : ""}${state.isRepeated ? "🔂 " : ""}${state.locale.music.nowPlaying}`,
               iconURL: props.icon.play,
@@ -140,9 +135,10 @@ const stream = async (state: State, interaction: Interaction) => {
             ],
             footer: { text: state.queue[0].requestedBy.tag, iconURL: state.queue[0].requestedBy.avatarURL },
           },
-        });
+          { guild: true }
+        );
       });
-      state.dispatcher.on("finish", async () => {
+      state.dispatcher.on("finish", () => {
         try {
           state.isPlaying = false;
           if (state.queue.length >= 1) {
@@ -176,18 +172,30 @@ const stream = async (state: State, interaction: Interaction) => {
 
 export const skip = async (state: State, interaction: Interaction) => {
   try {
-    const guild = client.guilds.cache.get(interaction.guild_id);
-    const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
-    const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
+    await voiceStateCheck(state.locale, interaction);
 
-    if (!voiceChannel) return channel.send(state.locale.music.joinVoiceChannel).then((_message: Message) => _message.delete({ timeout: 5000 }));
-    else if (state.queue.length === 0) return channel.send(state.locale.skip.noSongToSkip).then((_message: Message) => _message.delete({ timeout: 5000 }));
+    if (state.queue.length === 0)
+      return sendEmbed(
+        { interaction: interaction },
+        {
+          color: props.color.red,
+          description: `❌ **${state.locale.music.noSongToSkip}**`,
+        },
+        { guild: true }
+      ).then((_message: Message) => _message.delete({ timeout: 5000 }));
 
     state.queue.shift();
 
     state.dispatcher.end();
 
-    return channel.send(state.locale.skip.skipped);
+    return sendEmbed(
+      { interaction: interaction },
+      {
+        color: props.color.blue,
+        description: `⏩ **${state.locale.music.skipped}**`,
+      },
+      { guild: true }
+    );
   } catch (err) {
     Log.e(`Skip > 1 > ${err}`);
   }
@@ -195,76 +203,70 @@ export const skip = async (state: State, interaction: Interaction) => {
 
 export const resume = async (state: State, interaction: Interaction) => {
   try {
-    const guild = client.guilds.cache.get(interaction.guild_id);
-    const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
-    const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
-
-    if (!voiceChannel) return channel.send(state.locale.music.joinVoiceChannel).then((_message: Message) => _message.delete({ timeout: 5000 }));
+    await voiceStateCheck(state.locale, interaction);
 
     state.dispatcher.resume();
     state.isPlaying = true;
   } catch (err) {
-    Log.e(`Resume > 1 > ${err}`);
+    Log.e(`Resume > ${err}`);
   }
 };
 
 export const pause = async (state: State, interaction: Interaction) => {
   try {
-    const guild = client.guilds.cache.get(interaction.guild_id);
-    const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
-    const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
-
-    if (!voiceChannel) return channel.send(state.locale.music.joinVoiceChannel).then((_message: Message) => _message.delete({ timeout: 5000 }));
+    await voiceStateCheck(state.locale, interaction);
 
     state.dispatcher.pause(true);
     state.isPlaying = false;
   } catch (err) {
-    Log.e(`Pause > 1 > ${err}`);
+    Log.e(`Pause > ${err}`);
   }
 };
 
-export const stop = (state: State, interaction: Interaction) => {
+export const stop = async (state: State, interaction: Interaction) => {
   try {
-    const guild = client.guilds.cache.get(interaction.guild_id);
-    const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
-    const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
-
-    if (!voiceChannel) return channel.send(state.locale.music.joinVoiceChannel).then((_message: Message) => _message.delete({ timeout: 5000 }));
+    await voiceStateCheck(state.locale, interaction);
 
     state.dispatcher.pause(true);
     state.isPlaying = false;
   } catch (err) {
-    Log.e(`Stop > 1 > ${err}`);
+    Log.e(`Stop > ${err}`);
   }
 };
 
 export const toggleLoop = async (state: State, interaction: Interaction) => {
   try {
-    const guild = client.guilds.cache.get(interaction.guild_id);
-    const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
-    const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
-
-    if (!voiceChannel) return channel.send(state.locale.music.joinVoiceChannel).then((_message: Message) => _message.delete({ timeout: 5000 }));
+    await voiceStateCheck(state.locale, interaction);
 
     state.isLooped = !state.isLooped;
 
-    return channel.send(`${state.locale.loop.toggled}${state.isLooped ? `${state.locale.on}` : `${state.locale.off}`}`);
+    return sendEmbed(
+      { interaction: interaction },
+      {
+        color: props.color.blue,
+        description: `✅ **${state.locale.music.loopToggled}${state.isLooped ? `${state.locale.on}` : `${state.locale.off}`}**`,
+      },
+      { guild: true }
+    );
   } catch (err) {
-    Log.e(`ToggleLoop > 1 > ${err}`);
+    Log.e(`ToggleLoop > ${err}`);
   }
 };
 
 export const toggleRepeat = async (state: State, interaction: Interaction) => {
   try {
-    const guild = client.guilds.cache.get(interaction.guild_id);
-    const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
-    const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
-
-    if (!voiceChannel) return channel.send(state.locale.music.joinVoiceChannel).then((_message: Message) => _message.delete({ timeout: 5000 }));
+    await voiceStateCheck(state.locale, interaction);
 
     state.isRepeated = !state.isRepeated;
 
-    return channel.send(`${state.locale.repeat.toggled}${state.isRepeated ? `${state.locale.on}` : `${state.locale.off}`}`);
+    return sendEmbed(
+      { interaction: interaction },
+      {
+        color: props.color.blue,
+        description: `✅ **${state.locale.music.repeatToggled}${state.isRepeated ? `${state.locale.on}` : `${state.locale.off}`}**`,
+      },
+      { guild: true }
+    );
   } catch (err) {
     Log.e(`ToggleRepeat > ${err}`);
   }

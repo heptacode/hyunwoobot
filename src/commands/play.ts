@@ -1,5 +1,5 @@
-import { Interaction, Locale, State } from "../";
 import { play } from "../modules/musicManager";
+import { Interaction, Locale, State } from "../";
 
 export default {
   name: "play",

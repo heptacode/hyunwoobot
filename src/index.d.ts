@@ -11,6 +11,7 @@ interface Locale {
   messageID: string;
   embed: string;
   emoji: string;
+  minute: string;
 
   locale: {
     locale: string;
@@ -77,6 +78,7 @@ interface Locale {
     afkTimeout: string;
     set: string;
     disconnected: string;
+    countdownStarted: string;
     options: {
       minutesToDisconnect: string;
     };
@@ -84,6 +86,7 @@ interface Locale {
   autoRole: {
     autoRole: string;
     empty: string;
+    roleAppended: string;
     options: {
       view: string;
       add: string;
@@ -97,32 +100,46 @@ interface Locale {
     disconnect: string;
     disconnected: string;
   };
-  voiceDisconnect: {
-    notInVoiceChannel: string;
-  };
-  loop: {
-    toggled: string;
+  log: {
+    log: string;
+    set: string;
+    guildMemberAdd: string;
+    guildMemberAdded: string;
+    guildMemberRemove: string;
+    guildMemberRemoved: string;
   };
   music: {
     joinVoiceChannel: string;
     currentlyPlaying: string;
-    private: string;
-    ageRestricted: string;
     noResult: string;
     enqueued: string;
     nowPlaying: string;
     length: string;
-    queue: string;
     remaining: string;
     position: string;
-    empty: string;
+    queue: string;
+    queueEmpty: string;
+    loopToggled: string;
+    repeatToggled: string;
+    noSongToSkip: string;
+    skipped: string;
+    volumeChanged: string;
     options: { query: string };
   };
   move: {
     move: string;
     moved: string;
   };
+  privateRoom: {
+    privateRoom: string;
+    create: string;
+    set: string;
+    waitingRoom: string;
+    waitingForMove: string;
+  };
   reactionRole: {
+    roleAppended: string;
+    roleRemoved: string;
     options: {
       view: string;
       add: string;
@@ -130,29 +147,14 @@ interface Locale {
       purge: string;
     };
   };
-  repeat: {
-    toggled: string;
-  };
-  skip: {
-    noSongToSkip: string;
-    skipped: string;
-  };
-  volume: {
-    changed: string;
-  };
-  log: {
-    log: string;
-    set: string;
-  };
-  privateRoom: {
-    privateRoom: string;
-    create: string;
-    waitingRoom: string;
-    waitingForMove: string;
+  voiceDisconnect: {
+    notInVoiceChannel: string;
   };
   voiceRole: {
     voiceRole: string;
     empty: string;
+    roleAppended: string;
+    roleRemoved: string;
     options: {
       view: string;
       add: string;
@@ -275,7 +277,7 @@ interface VoiceRole {
   textChannel?: string;
 }
 
-interface LogData {
+interface LogPayload {
   guild: Guild;
   embed?: MessageEmbedOptions;
 }

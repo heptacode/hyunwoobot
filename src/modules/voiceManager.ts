@@ -1,46 +1,63 @@
-import { Message, TextChannel } from "discord.js";
-import { client } from "../app";
-import { AlarmDB, Interaction, State } from "../";
+import { Guild, Message } from "discord.js";
+import { sendEmbed } from "./embedSender";
 import Log from "./logger";
+import { client } from "../app";
+import props from "../props";
+import { AlarmDB, Interaction, Locale, State } from "../";
+
+export const voiceStateCheck = async (locale: Locale, interaction: Interaction) => {
+  if (!client.guilds.cache.get(interaction.guild_id).members.cache.get(interaction.member.user.id).voice.channel)
+    return sendEmbed(
+      { interaction: interaction },
+      {
+        color: props.color.red,
+        author: {
+          name: client.guilds.cache.get(interaction.guild_id).name,
+          iconURL: client.guilds.cache.get(interaction.guild_id).iconURL(),
+        },
+        description: `❌ **${locale.music.joinVoiceChannel}**`,
+      }
+    );
+};
 
 export const voiceConnect = async (state: State, interaction: Interaction) => {
-  const guild = client.guilds.cache.get(interaction.guild_id);
-  const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
-  const voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
+  if (await voiceStateCheck(state.locale, interaction)) return;
 
-  const permissions = voiceChannel.permissionsFor(client.user);
+  const guild: Guild = client.guilds.cache.get(interaction.guild_id);
+  state.voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
+
   try {
-    // Not in voice channel
-    if (!voiceChannel) return channel.send(state.locale.music.joinVoiceChannel);
+    if (guild.members.cache.get(interaction.member.user.id).voice.channel.permissionsFor(client.user).has(["CONNECT", "SPEAK"]))
+      return await sendEmbed({ interaction: interaction }, { description: `❌ **${state.locale.insufficientPerms.connect}**` }, { guild: true });
 
-    // Insufficient perms
-    if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
-      return channel.send(state.locale.insufficientPerms.connect);
-    }
-
-    try {
-      const connection = await voiceChannel.join();
-      state.connection = connection;
-      state.voiceChannel = voiceChannel;
-
+    if (state.voiceChannel) {
+      state.connection = await state.voiceChannel.join();
       Log.d("VoiceConnect");
-    } catch (err) {
-      Log.e(`VoiceConnect > 2 > ${err}`);
     }
   } catch (err) {
-    Log.e(`VoiceConnect > 1 > ${err}`);
+    Log.e(`VoiceConnect > ${err}`);
   }
 };
 
 export const voiceDisconnect = (state: State, interaction: Interaction) => {
-  const channel = client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.channel_id) as TextChannel;
   try {
-    state.isPlaying = false;
-    state.voiceChannel.leave();
-    state.connection = null;
-    state.voiceChannel = null;
+    if (state.voiceChannel) {
+      state.isPlaying = false;
+      state.voiceChannel.leave();
+      state.connection = null;
+      state.voiceChannel = null;
+    } else {
+      return sendEmbed(
+        { interaction: interaction },
+        {
+          color: props.color.red,
+          description: `❌ **${state.locale.voiceDisconnect.notInVoiceChannel}**`,
+        },
+        { guild: true }
+      );
+    }
   } catch (err) {
-    channel.send(state.locale.voiceDisconnect.notInVoiceChannel);
+    Log.e(`VoiceDisconnect > ${err}`);
   }
 };
 

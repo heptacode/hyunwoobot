@@ -1,9 +1,7 @@
 import admin from "firebase-admin";
 
-const serviceAccount = require("../../firebase/hyunwoo-bot-5b9111af24ff.json");
-
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(require("../../firebase/hyunwoo-bot-5b9111af24ff.json")),
 });
 
 export default admin.firestore();

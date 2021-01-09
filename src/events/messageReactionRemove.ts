@@ -1,10 +1,11 @@
 import { MessageReaction, User } from "discord.js";
-import firestore from "../modules/firestore";
-import { client } from "../app";
 import { getHexfromEmoji } from "../modules/converter";
+import { sendEmbed } from "../modules/embedSender";
+import firestore from "../modules/firestore";
+import Log from "../modules/logger";
+import { client, state } from "../app";
 import props from "../props";
 import { ReactionRole } from "../";
-import Log from "../modules/logger";
 
 export default () => {
   client.on("messageReactionRemove", async (reaction: MessageReaction, user: User) => {
@@ -29,15 +30,17 @@ export default () => {
       // Check If User Has Role
       if (!reaction.message.guild.member(user).roles.cache.has(reactionRole.role)) return;
       reaction.message.guild.member(user).roles.remove(reactionRole.role);
-      return await Log.p({
-        guild: reaction.message.guild,
-        embed: {
-          color: props.color.cyan,
-          author: { name: "Role Remove [ReactionRole]", iconURL: user.avatarURL() },
-          description: `<@${user.id}> -= <@&${reactionRole.role}>`,
+
+      return await sendEmbed(
+        { member: reaction.message.member },
+        {
+          color: props.color.red,
+          author: { name: state.get(reaction.message.guild.id).locale.reactionRole.roleRemoved, iconURL: user.avatarURL() },
+          description: `<@${user.id}> += <@&${reactionRole.role}>`,
           timestamp: new Date(),
         },
-      });
+        { guild: true, log: true }
+      );
     } catch (err) {
       Log.e(`MessageReactionRemove > ${err}`);
     }
