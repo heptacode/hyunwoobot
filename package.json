@@ -6,7 +6,7 @@
   "scripts": {
     "serve": "nodemon nodemon.json",
     "tsc": "tsc",
-    "deploy": "git pull && pm2 start pm2.json && pm2 monit"
+    "deploy": "git pull && pm2 start pm2.json --env production && pm2 monit"
   },
   "repository": {
     "type": "git",
