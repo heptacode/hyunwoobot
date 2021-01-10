@@ -33,9 +33,9 @@ export default () => {
         if (config.privateRoom && config.privateRooms.find((privateRoomItem: PrivateRoom) => privateRoomItem.host === oldState.member.id)) {
           const privateRoom: PrivateRoom = config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
           if (privateRoom && oldState.guild.channels.cache.get(privateRoom.room)) {
-            await oldState.guild.channels.cache.get(privateRoom.text).delete();
             await oldState.guild.channels.cache.get(privateRoom.room).delete();
             await oldState.guild.channels.cache.get(privateRoom.waiting).delete();
+            await oldState.guild.channels.cache.get(privateRoom.text).delete();
 
             const idx = config.privateRooms.findIndex((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
             config.privateRooms.splice(idx, 1);
