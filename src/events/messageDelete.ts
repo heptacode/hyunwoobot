@@ -1,5 +1,4 @@
 import { Message, MessageEmbed, PartialMessage, TextChannel } from "discord.js";
-import { sendEmbed } from "../modules/embedSender";
 import firestore from "../modules/firestore";
 import Log from "../modules/logger";
 import { client, state } from "../app";
@@ -17,8 +16,9 @@ export default () => {
           new MessageEmbed()
             .setColor(props.color.yellow)
             .setAuthor(state.get(message.guild.id).locale.log.messageDelete, props.icon.delete)
-            .setThumbnail(message.attachments ? message.attachments.array()[0].proxyURL : null)
-            .setDescription(message.content ? `**${message.content}**` : message.attachments.array()[0].name)
+            .setThumbnail(message.attachments.size ? message.attachments.array()[0].proxyURL : null)
+            .setTitle(`**[${(message.channel as TextChannel).name}]**`)
+            .setDescription(message.content ? `**${message.content}**` : `**${message.attachments.array()[0].name}**`)
             .setFooter(message.author.tag, message.author.avatarURL())
             .setTimestamp(new Date())
             .attachFiles(message.attachments.array())
