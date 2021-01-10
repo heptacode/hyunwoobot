@@ -2,6 +2,8 @@ export default {
   bot: { prefix: "/", name: "HyunwooBot", website: "https://hyunwoo.kim", icon: "https://cdn.discordapp.com/avatars/303202584007671812/9fe36da1c721e959a991d38dcffdbe67.png?size=256" },
   color: { red: "#E88388", magenta: "#D290E4", orange: "#DBAB79", yellow: "#FBDF81", green: "#A8CC8B", cyan: "#66C2CD", blue: "#71BEF2", purple: "#7788D4", white: "#B9BFCA" },
   icon: {
+    delete: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/delete.png?alt=media&token=7c210430-e1f1-4ef2-aa88-4e1d533b5dfe",
+    edit: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/edit.png?alt=media&token=7b613d7f-df99-4950-ab38-85d2814db94b",
     enqueue: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/enqueue.png?alt=media&token=028b7e6a-7a89-413e-abad-c518e26c7cf8",
     in: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/in.png?alt=media&token=9ad76ee2-eee6-48fe-beae-eac909c57298",
     out: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/out.png?alt=media&token=c41b754c-94c9-48af-889e-c28521a2ad5c",

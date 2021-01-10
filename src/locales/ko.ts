@@ -109,6 +109,8 @@ export default {
     guildMemberAdded: "님이 새로운 멤버가 되었어요.",
     guildMemberRemove: "멤버 떠남/퇴출됨",
     guildMemberRemoved: "님은 더 이상 이 서버의 멤버가 아니에요.",
+    messageEdit: "메시지 수정됨",
+    messageDelete: "메시지 삭제됨",
   },
   music: {
     joinVoiceChannel: "이 명령어를 실행하려면 음성 채널에 접속해주세요.",

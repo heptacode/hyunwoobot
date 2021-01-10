@@ -108,6 +108,8 @@ interface Locale {
     guildMemberAdded: string;
     guildMemberRemove: string;
     guildMemberRemoved: string;
+    messageEdit: string;
+    messageDelete: string;
   };
   music: {
     joinVoiceChannel: string;

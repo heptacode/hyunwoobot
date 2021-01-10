@@ -125,6 +125,8 @@ export default {
     guildMemberAdded: " joined the server.",
     guildMemberRemove: "User Leave",
     guildMemberRemoved: " left the server.",
+    messageEdit: "Message Edited",
+    messageDelete: "Message Deleted",
   },
   move: {
     move: "Move",
