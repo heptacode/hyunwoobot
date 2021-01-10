@@ -24,6 +24,7 @@ export default () => {
     if (oldState && newState && !isChannelChange(oldState, newState)) return;
 
     if (oldState.channelID) {
+      if (oldState.member.user.bot) return;
       // User Leave
       try {
         const configDocRef = firestore.collection(newState.guild.id).doc("config");
@@ -32,6 +33,7 @@ export default () => {
         if (config.privateRoom && config.privateRooms.find((privateRoomItem: PrivateRoom) => privateRoomItem.host === oldState.member.id)) {
           const privateRoom: PrivateRoom = config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
           if (privateRoom && oldState.guild.channels.cache.get(privateRoom.room)) {
+            await oldState.guild.channels.cache.get(privateRoom.text).delete();
             await oldState.guild.channels.cache.get(privateRoom.room).delete();
             await oldState.guild.channels.cache.get(privateRoom.waiting).delete();
 
@@ -39,6 +41,17 @@ export default () => {
             config.privateRooms.splice(idx, 1);
             await configDocRef.update({ privateRooms: config.privateRooms });
           }
+        } else if (config.privateRoom && config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID)) {
+          const privateText: TextChannel = oldState.guild.channels.cache.get(config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID).text) as TextChannel;
+
+          await privateText.send({
+            embed: {
+              color: props.color.red,
+              author: { name: oldState.member.user.username, iconURL: oldState.member.user.avatarURL() },
+            },
+          });
+
+          await privateText.updateOverwrite(oldState.member, {});
         }
 
         if (state.get(oldState.guild.id).afkChannel.has(oldState.member.id)) {
@@ -63,7 +76,7 @@ export default () => {
             { member: oldState.member },
             {
               color: props.color.cyan,
-              author: { name: state.get(oldState.guild.id).locale.voiceRole.roleRemoved, iconURL: oldState.member.user.avatarURL() },
+              author: { name: state.get(oldState.guild.id).locale.voiceRole.roleRemoved, iconURL: props.icon.role_remove },
               description: `<@${oldState.member.user.id}> -= <@&${voiceRole.role}>`,
               timestamp: new Date(),
             },
@@ -76,6 +89,7 @@ export default () => {
     }
 
     if (newState.channelID) {
+      if (newState.member.user.bot) return;
       // User Join
       try {
         const configDocRef = firestore.collection(newState.guild.id).doc("config");
@@ -124,21 +138,61 @@ export default () => {
             })
           ).id;
 
-          config.privateRooms.push({ host: newState.member.id, room: _privateRoom.id, waiting: _waitingRoomID });
-          return await configDocRef.update({ privateRooms: config.privateRooms });
-        } else if (config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.waiting === newState.channelID)) {
-          // Waiting Room
-          try {
-            return await sendEmbed(
-              { member: newState.member },
+          const _privateText = await newState.guild.channels.create(`🔒 ${newState.member.displayName}`, {
+            type: "text",
+            permissionOverwrites: [
               {
-                color: props.color.cyan,
-                title: state.get(newState.guild.id).locale.privateRoom.privateRoom,
-                description: `**${state.get(newState.guild.id).locale.privateRoom.waitingForMove}**`,
-                timestamp: new Date(),
-              }
-            );
-          } catch (err) {}
+                type: "member",
+                id: newState.member.id,
+                allow: ["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"],
+              },
+              {
+                type: "member",
+                id: client.user.id,
+                allow: ["VIEW_CHANNEL", "MANAGE_CHANNELS", "READ_MESSAGE_HISTORY"],
+              },
+              { type: "role", id: newState.guild.roles.everyone.id, deny: ["VIEW_CHANNEL", "CREATE_INSTANT_INVITE", "READ_MESSAGE_HISTORY"] },
+            ],
+            parent: newState.guild.channels.cache.get(config.privateRoom).parent,
+          });
+
+          await _privateText.send({
+            embed: {
+              color: props.color.green,
+              description: `✅ **${state.get(newState.guild.id).locale.privateRoom.privateTextCreated}**`,
+              timestamp: new Date(),
+            },
+          });
+
+          config.privateRooms.push({ host: newState.member.id, text: _privateText.id, room: _privateRoom.id, waiting: _waitingRoomID });
+          return await configDocRef.update({ privateRooms: config.privateRooms });
+        } else if (config.privateRoom && config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.waiting === newState.channelID)) {
+          // Waiting Room
+          return await sendEmbed(
+            { member: newState.member },
+            {
+              color: props.color.cyan,
+              title: state.get(newState.guild.id).locale.privateRoom.privateRoom,
+              description: `**${state.get(newState.guild.id).locale.privateRoom.waitingForMove}**`,
+              timestamp: new Date(),
+            },
+            {
+              dm: true,
+            }
+          );
+        } else if (config.privateRoom && config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === newState.channelID)) {
+          const privateText: TextChannel = newState.guild.channels.cache.get(config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === newState.channelID).text) as TextChannel;
+
+          await privateText.updateOverwrite(newState.member, {
+            VIEW_CHANNEL: true,
+          });
+
+          await privateText.send({
+            embed: {
+              color: props.color.cyan,
+              author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },
+            },
+          });
         }
 
         if (state.get(newState.guild.id).afkChannel.has(newState.member.id)) {
@@ -159,7 +213,7 @@ export default () => {
                     color: props.color.cyan,
                     author: {
                       name: state.get(newState.guild.id).locale.afkTimeout.afkTimeout,
-                      iconURL: newState.member.user.avatarURL(),
+                      iconURL: props.icon.call_end,
                     },
                     description: `**<@${newState.member.user.id}>${state.get(newState.guild.id).locale.afkTimeout.disconnected}**`,
                     timestamp: new Date(),
@@ -176,7 +230,7 @@ export default () => {
               color: props.color.cyan,
               author: {
                 name: `${state.get(newState.guild.id).locale.afkTimeout.countdownStarted}(${config.afkTimeout}${state.get(newState.guild.id).locale.minute})`,
-                iconURL: newState.member.user.avatarURL(),
+                iconURL: props.icon.timer,
               },
               description: `<@${newState.member.user.id}>`,
               timestamp: new Date(),
@@ -204,7 +258,7 @@ export default () => {
               color: props.color.cyan,
               author: {
                 name: state.get(newState.guild.id).locale.voiceRole.roleAppended,
-                iconURL: newState.member.user.avatarURL(),
+                iconURL: props.icon.role_append,
               },
               description: `<@${newState.member.user.id}> += <@&${voiceRole.role}>`,
               timestamp: new Date(),

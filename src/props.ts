@@ -2,6 +2,7 @@ export default {
   bot: { prefix: "/", name: "HyunwooBot", website: "https://hyunwoo.kim", icon: "https://cdn.discordapp.com/avatars/303202584007671812/9fe36da1c721e959a991d38dcffdbe67.png?size=256" },
   color: { red: "#E88388", magenta: "#D290E4", orange: "#DBAB79", yellow: "#FBDF81", green: "#A8CC8B", cyan: "#66C2CD", blue: "#71BEF2", purple: "#7788D4", white: "#B9BFCA" },
   icon: {
+    call_end: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/call_end.png?alt=media&token=94663943-12f5-4566-9185-119bb7c4ad21",
     delete: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/delete.png?alt=media&token=7c210430-e1f1-4ef2-aa88-4e1d533b5dfe",
     edit: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/edit.png?alt=media&token=7b613d7f-df99-4950-ab38-85d2814db94b",
     enqueue: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/enqueue.png?alt=media&token=028b7e6a-7a89-413e-abad-c518e26c7cf8",
@@ -11,6 +12,7 @@ export default {
     queue: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/queue.png?alt=media&token=71d7e90d-952e-4185-aaac-fd5dd2dcda46",
     role_append: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/role_append.png?alt=media&token=a6a7a60e-aa93-4bb2-91a1-60a17e40bfe4",
     role_remove: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/role_remove.png?alt=media&token=1dfcdc9b-ab85-494a-909c-49a8f27b7fa2",
+    timer: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/timer.png?alt=media&token=db53fc67-5870-4d93-8f0d-dd4019b7a574",
     volume: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/volume.png?alt=media&token=887c1886-e440-48a4-b52e-15b064f5bc2f",
   },
 };

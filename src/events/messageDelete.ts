@@ -11,17 +11,18 @@ export default () => {
 
       const config = (await firestore.collection(message.guild.id).doc("config").get()).data();
 
+      const messageEmbed: MessageEmbed = new MessageEmbed()
+        .setColor(props.color.red)
+        .setAuthor(state.get(message.guild.id).locale.log.messageDelete, props.icon.delete)
+        .setThumbnail(message.attachments.size ? message.attachments.array()[0].proxyURL : null)
+        .setTitle(`**${(message.channel as TextChannel).name}**`)
+        .setDescription(message.content ? `**${message.content}**` : `**${message.attachments.array()[0].name}**`)
+        .setFooter(message.author.tag, message.author.avatarURL())
+        .setTimestamp(new Date());
+
       if (config.logMessageEvents)
         return await (client.channels.cache.get(config.log) as TextChannel).send(
-          new MessageEmbed()
-            .setColor(props.color.yellow)
-            .setAuthor(state.get(message.guild.id).locale.log.messageDelete, props.icon.delete)
-            .setThumbnail(message.attachments.size ? message.attachments.array()[0].proxyURL : null)
-            .setTitle(`**[${(message.channel as TextChannel).name}]**`)
-            .setDescription(message.content ? `**${message.content}**` : `**${message.attachments.array()[0].name}**`)
-            .setFooter(message.author.tag, message.author.avatarURL())
-            .setTimestamp(new Date())
-            .attachFiles(message.attachments.array())
+          message.attachments.size ? messageEmbed.attachFiles(message.attachments.size ? (message.attachments.array()[0].width ? message.attachments.array() : null) : null) : messageEmbed
         );
     } catch (err) {
       Log.e(`MessageDelete > ${err}`);

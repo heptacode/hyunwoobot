@@ -20,7 +20,7 @@ export default {
         await guild.channels.create(state.locale.privateRoom.create, {
           type: "voice",
           userLimit: 1,
-          permissionOverwrites: [{ type: "role", id: guild.roles.everyone.id, deny: ["SPEAK"] }],
+          permissionOverwrites: [{ type: "role", id: guild.roles.everyone.id, deny: ["CREATE_INSTANT_INVITE", "SPEAK"] }],
         })
       ).id;
 

@@ -139,6 +139,8 @@ export default {
     set: "Private Room has been set.",
     waitingRoom: "Waiting Room",
     waitingForMove: " is Waiting for Move",
+    privateTextCreated:
+      "Private Text Channel has been created.\nThis channel is hidden for the guild members, except moderators.\nOnce new members are accepted for your Private Voice Channel, they will be able to see this channel.\nPlease note that new members can't see older messages.",
   },
   reactionRole: {
     roleAppended: "Role Append [ReactionRole]",

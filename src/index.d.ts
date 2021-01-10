@@ -140,6 +140,7 @@ interface Locale {
     set: string;
     waitingRoom: string;
     waitingForMove: string;
+    privateTextCreated: string;
   };
   reactionRole: {
     roleAppended: string;
@@ -252,6 +253,7 @@ interface Config {
 
 interface PrivateRoom {
   host: string;
+  text: string;
   room: string;
   waiting: string;
 }

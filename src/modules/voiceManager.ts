@@ -1,4 +1,4 @@
-import { Guild, Message } from "discord.js";
+import { Guild, Message, StreamDispatcher, VoiceBroadcast } from "discord.js";
 import { sendEmbed } from "./embedSender";
 import Log from "./logger";
 import { client } from "../app";
@@ -66,14 +66,14 @@ export const alarmDB: AlarmDB = { voiceChannel: null, connection: null };
 
 export const activateAlarm = async (message: Message, alarmDB: AlarmDB): Promise<Message | void> => {
   try {
-    //     const broadcast = client.voice.createBroadcast();
+    // const broadcast: VoiceBroadcast = client.voice.createBroadcast();
 
-    // broadcast.on('subscribe', dispatcher => {
-    //   console.log('New broadcast subscriber!');
+    // broadcast.on("subscribe", (dispatcher: StreamDispatcher) => {
+    //   console.log("New broadcast subscriber!");
     // });
 
-    // broadcast.on('unsubscribe', dispatcher => {
-    //   console.log('Channel unsubscribed from broadcast :(');
+    // broadcast.on("unsubscribe", (dispatcher: StreamDispatcher) => {
+    //   console.log("Channel unsubscribed from broadcast :(");
     // });
 
     alarmDB.voiceChannel = message.member.voice.channel;

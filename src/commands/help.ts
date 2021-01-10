@@ -1,5 +1,6 @@
 import { EmbedFieldData } from "discord.js";
 import { sendEmbed } from "../modules/embedSender";
+import Log from "../modules/logger";
 import { commands, commands_manager, prefix } from "../app";
 import props from "../props";
 import { Interaction, Locale, State } from "../";
@@ -19,28 +20,32 @@ export default {
     ];
   },
   async execute(state: State, interaction: Interaction) {
-    const isManager: boolean = interaction.data.options && interaction.data.options[0].value === "manager" ? true : false;
-    const fields: EmbedFieldData[] = [];
+    try {
+      const isManager: boolean = interaction.data.options && interaction.data.options[0].value === "manager" ? true : false;
+      const fields: EmbedFieldData[] = [];
 
-    for (const [name, command] of !isManager ? commands : commands_manager) {
-      fields.push({
-        name: `${command.messageOnly ? prefix : "/"}${name}${state.locale.usage[name] ? ` ${state.locale.usage[name]}` : ""}`,
-        value: state.locale.help[name],
-        inline: true,
-      });
+      for (const [name, command] of !isManager ? commands : commands_manager) {
+        fields.push({
+          name: `${command.messageOnly ? prefix : "/"}${name}${state.locale.usage[name] ? ` ${state.locale.usage[name]}` : ""}`,
+          value: state.locale.help[name],
+          inline: true,
+        });
+      }
+
+      return await sendEmbed(
+        { interaction: interaction },
+        {
+          color: props.color.purple,
+          title: `${props.bot.name} ${!isManager ? state.locale.help.help : `${state.locale.help.help} ${state.locale.manager}`}`,
+          url: props.bot.website,
+          description: !isManager ? state.locale.help.description : state.locale.help.description_manager,
+          thumbnail: { url: props.bot.icon },
+          fields: fields,
+        },
+        { dm: true }
+      );
+    } catch (err) {
+      Log.e(`Help > ${err}`);
     }
-
-    return sendEmbed(
-      { interaction: interaction },
-      {
-        color: props.color.purple,
-        title: `${props.bot.name} ${!isManager ? state.locale.help.help : `${state.locale.help.help} ${state.locale.manager}`}`,
-        url: props.bot.website,
-        description: !isManager ? state.locale.help.description : state.locale.help.description_manager,
-        thumbnail: { url: props.bot.icon },
-        fields: fields,
-      },
-      { dm: true }
-    );
   },
 };
