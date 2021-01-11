@@ -36,7 +36,7 @@ export default () => {
         {
           color: props.color.red,
           author: { name: state.get(reaction.message.guild.id).locale.reactionRole.roleRemoved, iconURL: user.avatarURL() },
-          description: `<@${user.id}> += <@&${reactionRole.role}>`,
+          description: `<@${user.id}> -= <@&${reactionRole.role}>`,
           timestamp: new Date(),
         },
         { guild: true, log: true }
