@@ -24,7 +24,7 @@ export default () => {
 
       if (config.logMessageEvents)
         return await (client.channels.cache.get(config.log) as TextChannel).send(
-          oldMessage.attachments.size ? messageEmbed.attachFiles(oldMessage.attachments.size ? (oldMessage.attachments.array()[0].width ? null : oldMessage.attachments.array()) : null) : messageEmbed
+          oldMessage.attachments.size && oldMessage.attachments.array()[0].width ? messageEmbed : messageEmbed.attachFiles(oldMessage.attachments.array())
         );
     } catch (err) {
       Log.e(`MessageUpdate > ${err}`);

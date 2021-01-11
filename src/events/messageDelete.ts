@@ -9,6 +9,8 @@ export default () => {
     try {
       if (message.author.bot) return;
 
+      console.dir(message.attachments.array()[0].proxyURL);
+
       const config = (await firestore.collection(message.guild.id).doc("config").get()).data();
 
       const messageEmbed: MessageEmbed = new MessageEmbed()
@@ -22,7 +24,7 @@ export default () => {
 
       if (config.logMessageEvents)
         return await (client.channels.cache.get(config.log) as TextChannel).send(
-          message.attachments.size ? messageEmbed.attachFiles(message.attachments.size ? (message.attachments.array()[0].width ? null : message.attachments.array()) : null) : messageEmbed
+          message.attachments.size && message.attachments.array()[0].width ? messageEmbed : messageEmbed.attachFiles(message.attachments.array())
         );
     } catch (err) {
       Log.e(`MessageDelete > ${err}`);
