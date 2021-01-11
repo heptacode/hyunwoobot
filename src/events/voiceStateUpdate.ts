@@ -166,33 +166,31 @@ export default () => {
 
           config.privateRooms.push({ host: newState.member.id, text: _privateText.id, room: _privateRoom.id, waiting: _waitingRoomID });
           return await configDocRef.update({ privateRooms: config.privateRooms });
-        } else if (config.privateRoom && config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.waiting === newState.channelID)) {
-          // Waiting Room
-          return await sendEmbed(
-            { member: newState.member },
-            {
-              color: props.color.cyan,
-              title: state.get(newState.guild.id).locale.privateRoom.privateRoom,
-              description: `**${state.get(newState.guild.id).locale.privateRoom.waitingForMove}**`,
-              timestamp: new Date(),
-            },
-            {
-              dm: true,
-            }
-          );
-        } else if (config.privateRoom && config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === newState.channelID)) {
-          const privateText: TextChannel = newState.guild.channels.cache.get(config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === newState.channelID).text) as TextChannel;
+        } else if (config.privateRoom && config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.waiting === newState.channelID || privateRoom.room === newState.channelID)) {
+          const _privateRoom: PrivateRoom = config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === newState.channelID);
+          const _privateText: TextChannel = newState.guild.channels.cache.get(_privateRoom.text) as TextChannel;
 
-          await privateText.updateOverwrite(newState.member, {
-            VIEW_CHANNEL: true,
-          });
+          if (_privateRoom.waiting === newState.channelID) {
+            await _privateText.send({
+              embed: {
+                color: props.color.cyan,
+                title: state.get(newState.guild.id).locale.privateRoom.privateRoom,
+                description: `**${newState.member.user.username}${state.get(newState.guild.id).locale.privateRoom.waitingForMove}**`,
+                timestamp: new Date(),
+              },
+            });
+          } else if (_privateRoom.room === newState.channelID) {
+            await _privateText.updateOverwrite(newState.member, {
+              VIEW_CHANNEL: true,
+            });
 
-          await privateText.send({
-            embed: {
-              color: props.color.cyan,
-              author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },
-            },
-          });
+            await _privateText.send({
+              embed: {
+                color: props.color.cyan,
+                author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },
+              },
+            });
+          }
         }
 
         if (state.get(newState.guild.id).afkChannel.has(newState.member.id)) {
