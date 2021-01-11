@@ -72,7 +72,7 @@ export default () => {
 
           await oldState.member.roles.remove(voiceRole.role);
 
-          return await sendEmbed(
+          await sendEmbed(
             { member: oldState.member },
             {
               color: props.color.cyan,
