@@ -171,7 +171,7 @@ export default () => {
           const _privateText: TextChannel = newState.guild.channels.cache.get(_privateRoom.text) as TextChannel;
 
           if (_privateRoom.waiting === newState.channelID) {
-            await _privateText.send({
+            return await _privateText.send({
               embed: {
                 color: props.color.cyan,
                 title: state.get(newState.guild.id).locale.privateRoom.privateRoom,
@@ -184,7 +184,7 @@ export default () => {
               VIEW_CHANNEL: true,
             });
 
-            await _privateText.send({
+            return await _privateText.send({
               embed: {
                 color: props.color.cyan,
                 author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },
