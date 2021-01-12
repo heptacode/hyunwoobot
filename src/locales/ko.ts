@@ -51,6 +51,7 @@ export default {
   },
   usage: {
     help: "[manager]",
+    play: "[query|URL]",
     volume: "<1~10>",
     //
     autorole: "<view|add|purge> [user|bot] [역할]",

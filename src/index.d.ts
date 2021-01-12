@@ -51,6 +51,7 @@ interface Locale {
   };
   usage: {
     help: string;
+    play: string;
     volume: string;
     //
     autorole: string;

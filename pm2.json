@@ -4,7 +4,7 @@
       "name": "discordbot",
       "script": "./src/app.ts",
       "watch": false,
-      "max_memory_restart": "1G",
+      "max_memory_restart": "2G",
       "env": {
         "NODE_ENV": "development"
       },
