@@ -1,6 +1,12 @@
 import path from "path";
 import fs from "fs";
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import compression from "compression";
 import { Client, Collection } from "discord.js";
+import Log from "./modules/logger";
 import props from "./props";
 import "dotenv/config";
 import { Command, Locale, State } from "./";
@@ -38,3 +44,27 @@ for (const file of fs.readdirSync(path.resolve(__dirname, "../src/events")).filt
 }
 
 client.login(process.env.TOKEN);
+
+const app: express.Application = express();
+
+app.use(
+  cors({
+    origin: "http://example.com",
+    optionsSuccessStatus: 200,
+  })
+);
+app.use(helmet());
+app.use(morgan("dev"));
+app.use(compression());
+
+app.set("trust proxy", true);
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(express.json({ limit: "50mb" }));
+
+app.get("/guild/:guild", (req, res) => {
+  res.json(client.guilds.cache.get(req.params.guild).roles);
+});
+
+app.listen(80, () => {
+  Log.i(`Listening on http://localhost`);
+});
