@@ -249,7 +249,14 @@ interface Config {
   log?: string;
   privateRoom?: string;
   privateRooms?: PrivateRoom[];
+  userRoles?: UserRole[];
   voiceRole?: VoiceRole[];
+}
+
+interface UserRole {
+  id: string;
+  name: string;
+  color: string | null;
 }
 
 interface PrivateRoom {
@@ -286,4 +293,24 @@ interface VoiceRole {
 interface LogPayload {
   guild: Guild;
   embed?: MessageEmbedOptions;
+}
+
+interface DiscordGuild {
+  id: string;
+  name: string;
+  icon: string;
+  owner: boolean;
+  permissions: number;
+  features: string[];
+}
+
+interface DiscordUser {
+  id: string;
+  username: string;
+  avatar: string;
+  discriminator: number;
+  public_flags: number;
+  flags: number;
+  locale: string;
+  mfa_enabled: boolean;
 }

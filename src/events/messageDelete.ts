@@ -9,8 +9,6 @@ export default () => {
     try {
       if (message.author.bot) return;
 
-      console.dir(message.attachments.array()[0].proxyURL);
-
       const config = (await firestore.collection(message.guild.id).doc("config").get()).data();
 
       const messageEmbed: MessageEmbed = new MessageEmbed()
