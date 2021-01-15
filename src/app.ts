@@ -118,6 +118,6 @@ app.patch("/guild/:guild/member/:member/roles", async (req, res) => {
   }
 });
 
-app.listen(15001, () => {
-  Log.i(`Listening on http://localhost:14003`);
+app.listen(process.env.HTTP_PORT || 14003, () => {
+  Log.i(`Listening on http://${process.env.HTTP_HOST || "localhost"}:${process.env.HTTP_PORT || 14003}`);
 });
