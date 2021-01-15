@@ -51,20 +51,20 @@ const app: express.Application = express();
 
 app.use(cors());
 app.use(helmet());
-app.use(morgan("dev"));
+app.use(morgan("short"));
 app.use(compression());
 
 app.set("trust proxy", true);
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.json({ limit: "50mb" }));
 
-app.get("/", async (req, res) => {
+app.post("/", async (req, res) => {
   try {
     const payload = {
-      user: (await axios.get("https://discord.com/api/v8/users/@me", { headers: { Authorization: `Bearer ${req.headers.access_token}` } })).data,
+      user: (await axios.get("https://discord.com/api/v8/users/@me", { headers: { Authorization: `Bearer ${req.body.access_token}` } })).data,
       guilds: [],
     };
-    const guilds: DiscordGuild[] = (await axios.get("https://discord.com/api/v8/users/@me/guilds", { headers: { Authorization: `Bearer ${req.headers.access_token}` } })).data;
+    const guilds: DiscordGuild[] = (await axios.get("https://discord.com/api/v8/users/@me/guilds", { headers: { Authorization: `Bearer ${req.body.access_token}` } })).data;
     for (const collection of await firestore.listCollections()) {
       const guild: DiscordGuild = guilds.find((guild: DiscordGuild) => guild.id === collection.id);
       if (!guild) continue;
