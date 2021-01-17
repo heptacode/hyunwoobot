@@ -290,12 +290,7 @@ interface VoiceRole {
   textChannel?: string;
 }
 
-interface LogPayload {
-  guild: Guild;
-  embed?: MessageEmbedOptions;
-}
-
-interface DiscordGuild {
+interface APIGuild {
   id: string;
   name: string;
   icon: string;
@@ -304,7 +299,7 @@ interface DiscordGuild {
   features: string[];
 }
 
-interface DiscordUser {
+interface APIUser {
   id: string;
   username: string;
   avatar: string;

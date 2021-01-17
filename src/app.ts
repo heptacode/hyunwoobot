@@ -10,7 +10,7 @@ import { Client, Collection } from "discord.js";
 import Log from "./modules/logger";
 import props from "./props";
 import "dotenv/config";
-import { Command, DiscordGuild, Locale, State, UserRole } from "./";
+import { APIGuild, Command, Locale, State, UserRole } from "./";
 import firestore from "./modules/firestore";
 
 export const prefix: string = process.env.PREFIX || props.bot.prefix;
@@ -64,9 +64,9 @@ app.post("/", async (req, res) => {
       user: (await axios.get("https://discord.com/api/v8/users/@me", { headers: { Authorization: `Bearer ${req.body.access_token}` } })).data,
       guilds: [],
     };
-    const guilds: DiscordGuild[] = (await axios.get("https://discord.com/api/v8/users/@me/guilds", { headers: { Authorization: `Bearer ${req.body.access_token}` } })).data;
+    const guilds: APIGuild[] = (await axios.get("https://discord.com/api/v8/users/@me/guilds", { headers: { Authorization: `Bearer ${req.body.access_token}` } })).data;
     for (const collection of await firestore.listCollections()) {
-      const guild: DiscordGuild = guilds.find((guild: DiscordGuild) => guild.id === collection.id);
+      const guild: APIGuild = guilds.find((guild: APIGuild) => guild.id === collection.id);
       if (!guild) continue;
       payload.guilds.push(guild);
     }
@@ -80,9 +80,10 @@ app.post("/", async (req, res) => {
 app.get("/guild/:guild/member/:member/roles", async (req, res) => {
   try {
     const payload = [];
-    const memberRolesCache = client.guilds.cache.get(req.params.guild).members.cache.get(req.params.member).roles.cache;
+    const member = client.guilds.cache.get(req.params.guild).members.cache.get(req.params.member);
+    const memberRolesCache = member.roles.cache;
     const userRoles: UserRole[] = (await firestore.collection(req.params.guild).doc("config").get()).data().userRoles;
-    if (!userRoles) return res.sendStatus(400);
+    if (!member || !userRoles) return res.sendStatus(400);
 
     for (const userRole of userRoles) {
       if (memberRolesCache.has(userRole.id)) payload.push(userRole.id);
@@ -96,13 +97,16 @@ app.get("/guild/:guild/member/:member/roles", async (req, res) => {
 
 app.patch("/guild/:guild/member/:member/roles", async (req, res) => {
   try {
+    const member = client.guilds.cache.get(req.params.guild).members.cache.get(req.params.member);
+    if (!member) return res.sendStatus(400);
+
     // Roles Validate
     if (req.body.roles)
       for (const roleID of req.body.roles) {
         if (!client.guilds.cache.get(req.params.guild).roles.cache.has(roleID)) return res.sendStatus(400);
       }
 
-    const memberRole = client.guilds.cache.get(req.params.guild).members.cache.get(req.params.member).roles;
+    const memberRole = member.roles;
     for (const userRole of (await firestore.collection(req.params.guild).doc("config").get()).data().userRoles) {
       const idx = req.body.roles.findIndex((roleID) => roleID === userRole.id);
       if (idx !== -1) {
