@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "target": "es6",
     "moduleResolution": "node",
     "outDir": "dist",
     "removeComments": true,
-    "target": "es6",
     "esModuleInterop": true
   },
   "include": ["src/**/*"],

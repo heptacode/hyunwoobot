@@ -10,7 +10,7 @@ import { Client, Collection } from "discord.js";
 import Log from "./modules/logger";
 import props from "./props";
 import "dotenv/config";
-import { APIGuild, Command, Locale, State, UserRole } from "./";
+import { APIGuild, APIUserRole, Command, Locale, State, UserRole } from "./";
 import firestore from "./modules/firestore";
 
 export const prefix: string = process.env.PREFIX || props.bot.prefix;
@@ -83,7 +83,7 @@ app.post("/roles", async (req, res) => {
     const member = client.guilds.cache.get(req.body.guild).members.cache.get(req.body.member);
     const memberRolesCache = member.roles.cache;
     const userRoles: UserRole[] = (await firestore.collection(req.body.guild).doc("config").get()).data().userRoles;
-    if (!member || !userRoles) return res.sendStatus(400);
+    if (!member || !userRoles) return res.sendStatus(404);
 
     for (const userRole of userRoles) {
       if (memberRolesCache.has(userRole.id)) payload.push(userRole.id);
@@ -98,16 +98,17 @@ app.post("/roles", async (req, res) => {
 app.put("/roles", async (req, res) => {
   try {
     const member = client.guilds.cache.get(req.body.guild).members.cache.get(req.body.member);
-    if (!member) return res.sendStatus(400);
-
-    // Roles Validate
-    if (req.body.roles)
-      for (const roleID of req.body.roles) {
-        if (!client.guilds.cache.get(req.body.guild).roles.cache.has(roleID)) return res.sendStatus(400);
-      }
-
     const memberRole = member.roles;
-    for (const userRole of (await firestore.collection(req.body.guild).doc("config").get()).data().userRoles) {
+
+    if (!member || !req.body.roles) return res.sendStatus(404);
+
+    const userRoles: APIUserRole[] = (await firestore.collection(req.body.guild).doc("config").get()).data().userRoles;
+
+    for (const roleID of req.body.roles) {
+      if (!client.guilds.cache.get(req.body.guild).roles.cache.has(roleID) || !userRoles.includes(roleID)) return res.sendStatus(404);
+    }
+
+    for (const userRole of userRoles) {
       const idx = req.body.roles.findIndex((roleID) => roleID === userRole.id);
       if (idx !== -1) {
         if (!memberRole.cache.has(userRole.id)) await memberRole.add(userRole.id);

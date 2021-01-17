@@ -309,3 +309,9 @@ interface APIUser {
   locale: string;
   mfa_enabled: boolean;
 }
+
+interface APIUserRole {
+  id: string;
+  name: string;
+  color: string | null;
+}
