@@ -1,5 +1,5 @@
 {
   "watch": ["src", "package.json", "tsconfig.json", ".env"],
-  "exec": "ts-node src/app.ts",
+  "exec": "ts-node src/app",
   "ext": "ts"
 }

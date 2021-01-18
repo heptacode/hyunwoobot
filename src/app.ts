@@ -105,7 +105,7 @@ app.put("/roles", async (req, res) => {
     const userRoles: APIUserRole[] = (await firestore.collection(req.body.guild).doc("config").get()).data().userRoles;
 
     for (const roleID of req.body.roles) {
-      if (!client.guilds.cache.get(req.body.guild).roles.cache.has(roleID) || !userRoles.includes(roleID)) return res.sendStatus(404);
+      if (!client.guilds.cache.get(req.body.guild).roles.cache.has(roleID) || userRoles.findIndex((userRole: APIUserRole) => userRole.id === roleID) === -1) return res.sendStatus(404);
     }
 
     for (const userRole of userRoles) {
@@ -123,6 +123,6 @@ app.put("/roles", async (req, res) => {
   }
 });
 
-app.listen(process.env.HTTP_PORT || 14003, () => {
-  Log.i(`Listening on http://${process.env.HTTP_HOST || "localhost"}:${process.env.HTTP_PORT || 14003}`);
+app.listen(process.env.HTTP_PORT || 20002, () => {
+  Log.i(`Listening on http://${process.env.HTTP_HOST || "localhost"}:${process.env.HTTP_PORT || 20002}`);
 });
