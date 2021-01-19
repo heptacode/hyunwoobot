@@ -96,7 +96,7 @@ export default () => {
         const config = (await configDocRef.get()).data() as Config;
 
         if (config.privateRoom === newState.channelID) {
-          const _privateRoom = await newState.guild.channels.create(`🔒 ${newState.member.displayName}`, {
+          const _privateRoom = await newState.guild.channels.create(`🔒 ${newState.member.user.username}`, {
             type: "voice",
             permissionOverwrites: [
               {
@@ -118,7 +118,7 @@ export default () => {
           await newState.member.voice.setChannel(_privateRoom);
 
           const _waitingRoomID = await (
-            await newState.guild.channels.create(`🚪 ${newState.member.displayName} ${state.get(newState.guild.id).locale.privateRoom.waitingRoom}`, {
+            await newState.guild.channels.create(`🚪 ${newState.member.user.username} ${state.get(newState.guild.id).locale.privateRoom.waitingRoom}`, {
               type: "voice",
               permissionOverwrites: [
                 {
@@ -137,7 +137,7 @@ export default () => {
             })
           ).id;
 
-          const _privateText = await newState.guild.channels.create(`🔒 ${newState.member.displayName}`, {
+          const _privateText = await newState.guild.channels.create(`🔒 ${newState.member.user.username}`, {
             type: "text",
             permissionOverwrites: [
               {
@@ -173,9 +173,9 @@ export default () => {
           if (_privateRoom.waiting === newState.channelID) {
             return await _privateText.send({
               embed: {
-                color: props.color.cyan,
+                color: props.color.yellow,
                 title: `🚪 ${state.get(newState.guild.id).locale.privateRoom.privateRoom}`,
-                description: `**${newState.member.user.username}${state.get(newState.guild.id).locale.privateRoom.waitingForMove}**`,
+                description: `**<@${newState.member.user.id}>${state.get(newState.guild.id).locale.privateRoom.waitingForMove}**`,
                 timestamp: new Date(),
               },
             });
