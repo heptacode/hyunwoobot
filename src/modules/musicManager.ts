@@ -230,7 +230,7 @@ export const toggleLoop = async (state: State, interaction: Interaction) => {
     return sendEmbed(
       { interaction: interaction },
       {
-        color: props.color.blue,
+        color: props.color.green,
         description: `✅ **${state.locale.music.loopToggled}${state.isLooped ? `${state.locale.on}` : `${state.locale.off}`}**`,
       },
       { guild: true }
@@ -249,7 +249,7 @@ export const toggleRepeat = async (state: State, interaction: Interaction) => {
     return sendEmbed(
       { interaction: interaction },
       {
-        color: props.color.blue,
+        color: props.color.green,
         description: `✅ **${state.locale.music.repeatToggled}${state.isRepeated ? `${state.locale.on}` : `${state.locale.off}`}**`,
       },
       { guild: true }
