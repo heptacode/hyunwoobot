@@ -1,5 +1,5 @@
 export default {
-  bot: { prefix: "/", name: "HyunwooBot", website: "https://hyunwoo.kim", icon: "https://cdn.discordapp.com/avatars/303202584007671812/9fe36da1c721e959a991d38dcffdbe67.png?size=256" },
+  bot: { prefix: "/", name: "HyunwooBot", website: "https://bot.hyunwoo.dev", icon: "https://cdn.discordapp.com/avatars/303202584007671812/9fe36da1c721e959a991d38dcffdbe67.png?size=256" },
   color: { red: "#E88388", magenta: "#D290E4", orange: "#DBAB79", yellow: "#FBDF81", green: "#A8CC8B", cyan: "#66C2CD", blue: "#71BEF2", purple: "#7788D4", white: "#B9BFCA" },
   icon: {
     call_end: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/call_end.png?alt=media&token=94663943-12f5-4566-9185-119bb7c4ad21",
