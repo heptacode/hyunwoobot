@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "name": "discordbot",
+      "name": "hyunwoobot",
       "script": "./src/app.ts",
       "watch": false,
       "max_memory_restart": "2G",
