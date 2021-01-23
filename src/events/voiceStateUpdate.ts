@@ -201,7 +201,9 @@ export default () => {
             newState.member.id,
             setTimeout(async () => {
               try {
-                await newState.kick();
+                if (!newState.guild.afkChannel.members.has(newState.member.id)) return;
+
+                await newState.guild.afkChannel.members.get(newState.member.id).kick("[AFKTimeout] Disconnected due to inactivity");
 
                 return await sendEmbed(
                   { member: newState.member },
@@ -217,7 +219,7 @@ export default () => {
                   { guild: true, log: true }
                 );
               } catch (err) {}
-            }, config.afkTimeout * 3600000)
+            }, config.afkTimeout * 60000)
           );
 
           return await sendEmbed(
