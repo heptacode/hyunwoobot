@@ -42,7 +42,7 @@ for (const file of fs.readdirSync(path.resolve(__dirname, "../src/commands_hidde
 }
 
 for (const file of fs.readdirSync(path.resolve(__dirname, "../src/events")).filter((file) => file.match(/(.js|.ts)$/))) {
-  require(path.resolve(__dirname, `../src/events/${file}`)).default();
+  require(path.resolve(__dirname, `../src/events/${file}`));
 }
 
 client.login(process.env.TOKEN);
