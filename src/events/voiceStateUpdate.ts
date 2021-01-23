@@ -29,10 +29,10 @@ export default () => {
       try {
         const configDocRef = firestore.collection(newState.guild.id).doc("config");
         const config = (await configDocRef.get()).data() as Config;
-        // Check If Member Is Host
+
         if (config.privateRoom && config.privateRooms.find((privateRoomItem: PrivateRoom) => privateRoomItem.host === oldState.member.id)) {
           const _privateRoom: PrivateRoom = config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
-          if (_privateRoom && oldState.guild.channels.cache.get(_privateRoom.room)) {
+          if (_privateRoom && oldState.guild.channels.cache.has(_privateRoom.room) && oldState.channelID !== newState.channelID) {
             await oldState.guild.channels.cache.get(_privateRoom.room).delete();
             await oldState.guild.channels.cache.get(_privateRoom.waiting).delete();
             await oldState.guild.channels.cache.get(_privateRoom.text).delete();
@@ -51,7 +51,7 @@ export default () => {
             },
           });
 
-          await _privateText.updateOverwrite(oldState.member, { VIEW_CHANNEL: false });
+          await _privateText.permissionOverwrites.get(oldState.member.id).delete();
         }
 
         if (state.get(oldState.guild.id).afkChannel.has(oldState.member.id)) {
@@ -124,7 +124,7 @@ export default () => {
                 {
                   type: "member",
                   id: newState.member.id,
-                  allow: ["MOVE_MEMBERS"],
+                  allow: "MOVE_MEMBERS",
                 },
                 {
                   type: "member",
