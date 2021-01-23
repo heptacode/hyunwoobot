@@ -12,11 +12,11 @@ class log {
   }
   // Warning
   public w(str: any): void {
-    console.log(`[${this.getTsp()}] ${chalk.yellow(str)}`);
+    console.warn(`[${this.getTsp()}] ${chalk.yellow(str)}`);
   }
   // Info
   public i(str: any): void {
-    console.log(`[${this.getTsp()}] ${chalk.cyan(str)}`);
+    console.info(`[${this.getTsp()}] ${chalk.cyan(str)}`);
   }
   // Success
   public s(str: any): void {
@@ -28,7 +28,7 @@ class log {
   }
   // Debug
   public d(str: any): void {
-    console.log(`[${this.getTsp()}] ${chalk.blue(str)}`);
+    console.debug(`[${this.getTsp()}] ${chalk.blue(str)}`);
   }
 }
 
