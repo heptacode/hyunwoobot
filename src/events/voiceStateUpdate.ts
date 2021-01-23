@@ -31,27 +31,27 @@ export default () => {
         const config = (await configDocRef.get()).data() as Config;
         // Check If Member Is Host
         if (config.privateRoom && config.privateRooms.find((privateRoomItem: PrivateRoom) => privateRoomItem.host === oldState.member.id)) {
-          const privateRoom: PrivateRoom = config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
-          if (privateRoom && oldState.guild.channels.cache.get(privateRoom.room)) {
-            await oldState.guild.channels.cache.get(privateRoom.room).delete();
-            await oldState.guild.channels.cache.get(privateRoom.waiting).delete();
-            await oldState.guild.channels.cache.get(privateRoom.text).delete();
+          const _privateRoom: PrivateRoom = config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
+          if (_privateRoom && oldState.guild.channels.cache.get(_privateRoom.room)) {
+            await oldState.guild.channels.cache.get(_privateRoom.room).delete();
+            await oldState.guild.channels.cache.get(_privateRoom.waiting).delete();
+            await oldState.guild.channels.cache.get(_privateRoom.text).delete();
 
             const idx = config.privateRooms.findIndex((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
             config.privateRooms.splice(idx, 1);
             await configDocRef.update({ privateRooms: config.privateRooms });
           }
         } else if (config.privateRoom && config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID)) {
-          const privateText: TextChannel = oldState.guild.channels.cache.get(config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID).text) as TextChannel;
+          const _privateText: TextChannel = oldState.guild.channels.cache.get(config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID).text) as TextChannel;
 
-          await privateText.send({
+          await _privateText.send({
             embed: {
               color: props.color.red,
               author: { name: oldState.member.user.username, iconURL: oldState.member.user.avatarURL() },
             },
           });
 
-          await privateText.updateOverwrite(oldState.member, { VIEW_CHANNEL: false });
+          await _privateText.updateOverwrite(oldState.member, { VIEW_CHANNEL: false });
         }
 
         if (state.get(oldState.guild.id).afkChannel.has(oldState.member.id)) {
