@@ -171,17 +171,34 @@ interface Locale {
   };
 }
 
-type InteractionType = 1 | 2;
+type InteractionType = /* Ping */ 1 | /* ApplicationCommand */ 2;
 
 interface Interaction {
-  id: string;
+  version: number;
   type: InteractionType;
-  data?: CommandInteractionData;
+  token: string;
+  id: string;
   guild_id: string;
   channel_id: string;
-  member: GuildMember;
-  token: string;
-  version: number;
+  member: {
+    user: {
+      username: string;
+      public_flags: number;
+      id: string;
+      discriminator: string;
+      avatar: string | null;
+    };
+    roles: string[];
+    premium_since: Date | null;
+    permissions: number;
+    pending: boolean;
+    nick: null;
+    mute: boolean;
+    joined_at: Date;
+    is_pending: boolean;
+    deaf: boolean;
+  };
+  data?: CommandInteractionData;
 }
 
 interface CommandInteractionData {
