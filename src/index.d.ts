@@ -1,4 +1,4 @@
-import { Collection, Guild, GuildMember, MessageEmbedOptions, StreamDispatcher, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
+import { Collection, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
 
 interface Locale {
   on: string;
@@ -79,6 +79,7 @@ interface Locale {
     afkTimeout: string;
     set: string;
     disconnected: string;
+    disconnected_dm: string;
     countdownStarted: string;
     options: {
       minutesToDisconnect: string;

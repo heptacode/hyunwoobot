@@ -204,6 +204,15 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
 
               await newState.kick("[AFKTimeout] Disconnected due to inactivity");
 
+              await sendEmbed(
+                { member: newState.member },
+                {
+                  color: props.color.purple,
+                  description: `**${state.get(newState.guild.id).locale.afkTimeout.disconnected_dm}**`,
+                },
+                { dm: true }
+              );
+
               return await sendEmbed(
                 { member: newState.member },
                 {

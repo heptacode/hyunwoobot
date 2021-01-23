@@ -67,19 +67,20 @@ export default {
     voicerole: "<view|add|remove|purge> <음성채널> <역할> [채팅채널]",
   },
   insufficientPerms: {
-    administrator: "관리자 권한이 없습니다.",
-    manage_guild: "서버를 관리할 수 있는 권한이 없습니다.",
-    manage_channels: "채널을 관리할 수 있는 권한이 없습니다.",
-    manage_roles: "역할을 관리할 수 있는 권한이 없습니다.",
-    manage_messages: "메시지를 관리할 수 있는 권한이 없습니다.",
-    move_members: "멤버를 이동할 권한이 없습니다.",
-    connect: "저에게 다음 권한을 부여해주세요: [연결], [말하기]",
+    administrator: "이 명령어를 실행하려면 관리자 권한이 필요해요.",
+    manage_guild: "이 명령어를 실행하려면 서버를 관리할 수 있는 권한이 필요해요.",
+    manage_channels: "이 명령어를 실행하려면 채널을 관리할 수 있는 권한이 필요해요.",
+    manage_roles: "이 명령어를 실행하려면 역할을 관리할 수 있는 권한이 필요해요.",
+    manage_messages: "이 명령어를 실행하려면 메시지를 관리할 수 있는 권한이 필요해요.",
+    move_members: "이 명령어를 실행하려면 멤버를 이동할 권한이 필요해요.",
+    connect: "이 명령어를 실행하려면 저에게 [연결], [말하기] 권한을 부여해주세요.",
   },
 
   afkTimeout: {
     afkTimeout: "자리비움 연결 해제",
     set: "자리비움 연결 해제 시간이 업데이트 됐어요: ",
-    disconnected: "님께서 일정시간 자리를 비워서 연결 해제되었습니다.",
+    disconnected: "님께서 일정시간 자리를 비워서 연결 해제됐어요.",
+    disconnected_dm: "일정시간 자리를 비우셨기에 음성 채널에서 연결 해제됐어요.",
     countdownStarted: "자리비움 연결 해제 카운트다운",
     options: {
       minutesToDisconnect: "자동 연결 해제까지 대기 시간(분)",

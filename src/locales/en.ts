@@ -72,13 +72,14 @@ export default {
     manage_roles: "You don't have permission to manage roles.",
     manage_messages: "You don't have permission to manage messages.",
     move_members: "You don't have permission to move members.",
-    connect: "Insufficient permissions: [Connect], [Speak]",
+    connect: "I don't have permissions to Connect and Speak.",
   },
 
   afkTimeout: {
     afkTimeout: "AFK Timeout",
     set: "AFK Timeout was set to: ",
     disconnected: " was disconnected due to inactivity.",
+    disconnected_dm: "You've been disconnected due to inactivity.",
     countdownStarted: "AFK Timeout Countdown Started",
     options: {
       minutesToDisconnect: "Minutes to Timeout",

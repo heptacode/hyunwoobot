@@ -25,7 +25,7 @@ export const sendEmbed = async (
         ).data().log;
         if (!logChannel) return;
         channel = guild.channels.cache.get(logChannel) as TextChannel;
-      } else channel = guild.channels.cache.get(payload.interaction.channel_id) as TextChannel;
+      } else if (payload.interaction) channel = guild.channels.cache.get(payload.interaction.channel_id) as TextChannel;
 
       try {
         if (!options || options.dm)
