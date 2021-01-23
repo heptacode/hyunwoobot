@@ -29,7 +29,7 @@ export default () => {
       if (!reactionRole || !reaction.message.guild.roles.cache.has(reactionRole.role)) return;
       // Check If User Has Role
       if (!reaction.message.guild.member(user).roles.cache.has(reactionRole.role)) return;
-      reaction.message.guild.member(user).roles.remove(reactionRole.role);
+      reaction.message.guild.member(user).roles.remove(reactionRole.role, "[ReactionRole] MessageReactionRemove");
 
       return await sendEmbed(
         { member: reaction.message.member },

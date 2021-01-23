@@ -81,7 +81,7 @@ export default {
       } else if (method === "add") {
         const voiceChannel = interaction.data.options[0].options[0].value;
         const role = interaction.data.options[0].options[1].value;
-        const textChannel = interaction.data.options[0].options[2].value;
+        const textChannel = interaction.data.options[0].options.length >= 3 ? interaction.data.options[0].options[2].value : null;
 
         voiceRole = configDocSnapshot.data().voiceRole as VoiceRole[];
 

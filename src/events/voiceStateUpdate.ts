@@ -33,9 +33,9 @@ export default () => {
         if (config.privateRoom && config.privateRooms.find((privateRoomItem: PrivateRoom) => privateRoomItem.host === oldState.member.id)) {
           const _privateRoom: PrivateRoom = config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
           if (_privateRoom && oldState.guild.channels.cache.has(_privateRoom.room) && oldState.channelID !== newState.channelID) {
-            await oldState.guild.channels.cache.get(_privateRoom.room).delete();
-            await oldState.guild.channels.cache.get(_privateRoom.waiting).delete();
-            await oldState.guild.channels.cache.get(_privateRoom.text).delete();
+            await oldState.guild.channels.cache.get(_privateRoom.room).delete("[PrivateRoom] Deletion");
+            await oldState.guild.channels.cache.get(_privateRoom.waiting).delete("[PrivateRoom] Deletion");
+            await oldState.guild.channels.cache.get(_privateRoom.text).delete("[PrivateRoom] Deletion");
 
             const idx = config.privateRooms.findIndex((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
             config.privateRooms.splice(idx, 1);
@@ -51,7 +51,7 @@ export default () => {
             },
           });
 
-          await _privateText.permissionOverwrites.get(oldState.member.id).delete();
+          await _privateText.updateOverwrite(oldState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Switch/Leave");
         }
 
         if (state.get(oldState.guild.id).afkChannel.has(oldState.member.id)) {
@@ -70,7 +70,7 @@ export default () => {
             });
           }
 
-          await oldState.member.roles.remove(voiceRole.role);
+          await oldState.member.roles.remove(voiceRole.role, "[VoiceRole] Switch/Leave Voice");
 
           await sendEmbed(
             { member: oldState.member },
@@ -115,7 +115,7 @@ export default () => {
           });
 
           // Move Host to Created Room
-          await newState.member.voice.setChannel(_privateRoom);
+          await newState.member.voice.setChannel(_privateRoom, `[PrivateRoom] Creation`);
 
           const _waitingRoomID = await (
             await newState.guild.channels.create(`🚪 ${newState.member.user.username} ${state.get(newState.guild.id).locale.privateRoom.waitingRoom}`, {
@@ -179,8 +179,8 @@ export default () => {
                 timestamp: new Date(),
               },
             });
-          } else if (_privateRoom.room === newState.channelID) {
-            await _privateText.updateOverwrite(newState.member, { VIEW_CHANNEL: true });
+          } else if (_privateRoom.room === newState.channelID && _privateRoom.host !== newState.member.id) {
+            await _privateText.updateOverwrite(newState.member, { VIEW_CHANNEL: true }, "[PrivateRoom] Accepted");
 
             return await _privateText.send({
               embed: {
@@ -237,7 +237,7 @@ export default () => {
 
         const voiceRole: VoiceRole = config.voiceRole.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === newState.channelID);
         if (voiceRole && !newState.member.roles.cache.has(voiceRole.role)) {
-          await newState.member.roles.add(voiceRole.role);
+          await newState.member.roles.add(voiceRole.role, "[VoiceRole] Join Voice");
 
           if (voiceRole.textChannel) {
             (newState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({

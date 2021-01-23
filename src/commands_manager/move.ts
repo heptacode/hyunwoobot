@@ -49,7 +49,7 @@ export default {
 
       for (const [key, member] of fromChannel.members) {
         try {
-          await member.voice.setChannel(targetChannel);
+          await member.voice.setChannel(targetChannel, `[Move] Executed by ${interaction.member.user.username}#${interaction.member.user.discriminator}`);
         } catch (err) {}
       }
 

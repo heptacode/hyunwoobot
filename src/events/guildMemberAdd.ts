@@ -25,7 +25,7 @@ export default () => {
       for (const autoRole of (await firestore.collection(member.guild.id).doc("config").get()).data().autoRole) {
         if (!((autoRole.type === "user" && !member.user.bot) || (autoRole.type === "bot" && member.user.bot))) continue;
 
-        await member.roles.add(autoRole.role);
+        await member.roles.add(autoRole.role, "[AutoRole] GuildMemberAdd");
 
         await sendEmbed(
           { member: member },

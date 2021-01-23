@@ -111,9 +111,9 @@ app.put("/roles", async (req, res) => {
     for (const userRole of userRoles) {
       const idx = req.body.roles.findIndex((roleID) => roleID === userRole.id);
       if (idx !== -1) {
-        if (!memberRole.cache.has(userRole.id)) await memberRole.add(userRole.id);
+        if (!memberRole.cache.has(userRole.id)) await memberRole.add(userRole.id, "[Dashboard] Role Update");
       } else {
-        if (memberRole.cache.has(userRole.id)) await memberRole.remove(userRole.id);
+        if (memberRole.cache.has(userRole.id)) await memberRole.remove(userRole.id, "[Dashboard] Role Update");
       }
     }
     res.sendStatus(200);

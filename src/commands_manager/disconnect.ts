@@ -34,7 +34,7 @@ export default {
 
       for (const [key, member] of channel.members) {
         try {
-          await member.voice.kick();
+          await member.voice.kick(`[Disconnect] Executed by ${interaction.member.user.username}#${interaction.member.user.discriminator}}`);
         } catch (err) {}
       }
 
