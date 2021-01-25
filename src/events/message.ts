@@ -13,10 +13,12 @@ client.on("message", async (message: Message) => {
         embed: {
           color: props.color.red,
           title: "❌ Error",
-          description: "**This channel is read-only.\n이 채널은 읽기 전용이에요.**",
+          description: "**This channel is read-only.\n이 채널은 읽기 전용이예요.**",
         },
       });
-    } else if (!message.content.startsWith(prefix)) return;
+    } else if ((/현우|hyunwoo/i.test(message.content) || message.mentions.has(client.user)) && !message.mentions.everyone && !message.content.startsWith(prefix))
+      await message.channel.send("<@303202584007671812>");
+    else if (!message.content.startsWith(prefix)) return;
 
     const args: string[] = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName: string = args.shift().toLowerCase();
