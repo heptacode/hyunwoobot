@@ -1,4 +1,4 @@
-import { client, state, commands, commands_manager } from "../app";
+import { client, states, commands, commands_manager } from "../app";
 import Log from "../modules/logger";
 import { Interaction } from "../";
 
@@ -7,7 +7,7 @@ import { Interaction } from "../";
     const command = commands.get(interaction.data.name) || commands_manager.find((cmd) => cmd.name === interaction.data.name && !cmd.messageOnly);
     if (!command) return;
 
-    command.execute(state.get(interaction.guild_id), interaction);
+    command.execute(states.get(interaction.guild_id), interaction);
   } catch (err) {
     Log.e(`InteractionCreate > ${err}`);
   }

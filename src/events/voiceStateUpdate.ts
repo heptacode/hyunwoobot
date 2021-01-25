@@ -2,7 +2,7 @@ import { TextChannel, VoiceState } from "discord.js";
 import { sendEmbed } from "../modules/embedSender";
 import firestore from "../modules/firestore";
 import Log from "../modules/logger";
-import { client, state } from "../app";
+import { client, states } from "../app";
 import props from "../props";
 import { Config, PrivateRoom, VoiceRole } from "../";
 
@@ -53,9 +53,9 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         await _privateText.updateOverwrite(oldState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Switch/Leave");
       }
 
-      if (state.get(oldState.guild.id).afkChannel.has(oldState.member.id)) {
-        clearTimeout(state.get(oldState.guild.id).afkChannel.get(oldState.member.id));
-        state.get(oldState.guild.id).afkChannel.delete(oldState.member.id);
+      if (states.get(oldState.guild.id).afkChannel.has(oldState.member.id)) {
+        clearTimeout(states.get(oldState.guild.id).afkChannel.get(oldState.member.id));
+        states.get(oldState.guild.id).afkChannel.delete(oldState.member.id);
       }
 
       const voiceRole: VoiceRole = config.voiceRole.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === oldState.channelID);
@@ -75,7 +75,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           { member: oldState.member },
           {
             color: props.color.cyan,
-            author: { name: state.get(oldState.guild.id).locale.voiceRole.roleRemoved, iconURL: props.icon.role_remove },
+            author: { name: states.get(oldState.guild.id).locale.voiceRole.roleRemoved, iconURL: props.icon.role_remove },
             description: `<@${oldState.member.user.id}> -= <@&${voiceRole.role}>`,
             timestamp: new Date(),
           },
@@ -117,7 +117,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         await newState.member.voice.setChannel(_privateRoom, `[PrivateRoom] Creation`);
 
         const _waitingRoomID = await (
-          await newState.guild.channels.create(`🚪 ${newState.member.user.username} ${state.get(newState.guild.id).locale.privateRoom.waitingRoom}`, {
+          await newState.guild.channels.create(`🚪 ${newState.member.user.username} ${states.get(newState.guild.id).locale.privateRoom.waitingRoom}`, {
             type: "voice",
             permissionOverwrites: [
               {
@@ -157,8 +157,8 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         await _privateText.send({
           embed: {
             color: props.color.green,
-            title: `🚪 ${state.get(newState.guild.id).locale.privateRoom.privateRoom}`,
-            description: `✅ **${state.get(newState.guild.id).locale.privateRoom.privateTextCreated}**`,
+            title: `🚪 ${states.get(newState.guild.id).locale.privateRoom.privateRoom}`,
+            description: `✅ **${states.get(newState.guild.id).locale.privateRoom.privateTextCreated}**`,
             timestamp: new Date(),
           },
         });
@@ -173,8 +173,8 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           return await _privateText.send({
             embed: {
               color: props.color.yellow,
-              title: `🚪 ${state.get(newState.guild.id).locale.privateRoom.privateRoom}`,
-              description: `**<@${newState.member.user.id}>${state.get(newState.guild.id).locale.privateRoom.waitingForMove}**`,
+              title: `🚪 ${states.get(newState.guild.id).locale.privateRoom.privateRoom}`,
+              description: `**<@${newState.member.user.id}>${states.get(newState.guild.id).locale.privateRoom.waitingForMove}**`,
               timestamp: new Date(),
             },
           });
@@ -190,13 +190,13 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         }
       }
 
-      if (state.get(newState.guild.id).afkChannel.has(newState.member.id)) {
-        clearTimeout(state.get(newState.guild.id).afkChannel.get(newState.member.id));
-        state.get(newState.guild.id).afkChannel.delete(newState.member.id);
+      if (states.get(newState.guild.id).afkChannel.has(newState.member.id)) {
+        clearTimeout(states.get(newState.guild.id).afkChannel.get(newState.member.id));
+        states.get(newState.guild.id).afkChannel.delete(newState.member.id);
       }
 
       if (config.afkTimeout > 0 && newState.channelID === newState.guild.afkChannelID) {
-        state.get(newState.guild.id).afkChannel.set(
+        states.get(newState.guild.id).afkChannel.set(
           newState.member.id,
           setTimeout(async () => {
             try {
@@ -208,7 +208,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
                 { member: newState.member },
                 {
                   color: props.color.purple,
-                  description: `**${state.get(newState.guild.id).locale.afkTimeout.disconnected_dm}**`,
+                  description: `**${states.get(newState.guild.id).locale.afkTimeout.disconnected_dm}**`,
                 },
                 { dm: true }
               );
@@ -218,10 +218,10 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
                 {
                   color: props.color.cyan,
                   author: {
-                    name: state.get(newState.guild.id).locale.afkTimeout.afkTimeout,
+                    name: states.get(newState.guild.id).locale.afkTimeout.afkTimeout,
                     iconURL: props.icon.call_end,
                   },
-                  description: `**<@${newState.member.user.id}>${state.get(newState.guild.id).locale.afkTimeout.disconnected}**`,
+                  description: `**<@${newState.member.user.id}>${states.get(newState.guild.id).locale.afkTimeout.disconnected}**`,
                   timestamp: new Date(),
                 },
                 { guild: true, log: true }
@@ -235,7 +235,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           {
             color: props.color.cyan,
             author: {
-              name: `${state.get(newState.guild.id).locale.afkTimeout.countdownStarted}(${config.afkTimeout}${state.get(newState.guild.id).locale.minute})`,
+              name: `${states.get(newState.guild.id).locale.afkTimeout.countdownStarted}(${config.afkTimeout}${states.get(newState.guild.id).locale.minute})`,
               iconURL: props.icon.timer,
             },
             description: `<@${newState.member.user.id}>`,
@@ -263,7 +263,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           {
             color: props.color.cyan,
             author: {
-              name: state.get(newState.guild.id).locale.voiceRole.roleAppended,
+              name: states.get(newState.guild.id).locale.voiceRole.roleAppended,
               iconURL: props.icon.role_append,
             },
             description: `<@${newState.member.user.id}> += <@&${voiceRole.role}>`,

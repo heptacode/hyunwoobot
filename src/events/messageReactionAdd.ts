@@ -3,7 +3,7 @@ import { getHexfromEmoji } from "../modules/converter";
 import { sendEmbed } from "../modules/embedSender";
 import firestore from "../modules/firestore";
 import Log from "../modules/logger";
-import { client, state } from "../app";
+import { client, states } from "../app";
 import props from "../props";
 import { ReactionRole } from "../";
 
@@ -34,7 +34,7 @@ client.on("messageReactionAdd", async (reaction: MessageReaction, user: User) =>
       { member: reaction.message.member },
       {
         color: props.color.cyan,
-        author: { name: state.get(reaction.message.guild.id).locale.reactionRole.roleAppended, iconURL: user.avatarURL() },
+        author: { name: states.get(reaction.message.guild.id).locale.reactionRole.roleAppended, iconURL: user.avatarURL() },
         description: `<@${user.id}> += <@&${reactionRole.role}>`,
         timestamp: new Date(),
       },

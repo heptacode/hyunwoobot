@@ -1,8 +1,8 @@
 import { Collection, Guild, TextChannel } from "discord.js";
 import firestore from "../modules/firestore";
 import Log from "../modules/logger";
-import { client, commands, commands_manager, locales, state } from "../app";
-import { State } from "../";
+import { client, commands, commands_manager, locales, states } from "../app";
+import { Config, State } from "../";
 
 client.once("ready", async () => {
   try {
@@ -13,8 +13,12 @@ client.once("ready", async () => {
         continue;
       }
 
-      state.set(guild.id, {
-        locale: locales.get(await (await collection.doc("config").get()).data().locale),
+      const config: Config = (await collection.doc("config").get()).data() as Config;
+
+      states.set(guild.id, {
+        afkChannel: new Collection(),
+        alarmChannel: config.alarmChannel,
+        locale: locales.get(config.locale),
         textChannel: null,
         voiceChannel: null,
         connection: null,
@@ -24,7 +28,6 @@ client.once("ready", async () => {
         isPlaying: false,
         volume: 1,
         timeout: null,
-        afkChannel: new Collection(),
       } as State);
 
       Log.d(`LocalDB Initialize for guild [ ${guild.name} | ${guild.id} ]`);
@@ -48,8 +51,8 @@ client.once("ready", async () => {
                 .commands.post({
                   data: {
                     name: name,
-                    description: state.get(guild.id).locale.help[name],
-                    options: command.options ? command.options(state.get(guild.id).locale) : [],
+                    description: states.get(guild.id).locale.help[name],
+                    options: command.options ? command.options(states.get(guild.id).locale) : [],
                   },
                 })
             ).id,
@@ -72,8 +75,8 @@ client.once("ready", async () => {
                 .commands.post({
                   data: {
                     name: name,
-                    description: `${state.get(guild.id).locale.manager} ${state.get(guild.id).locale.help[name]}`,
-                    options: command.options ? command.options(state.get(guild.id).locale) : [],
+                    description: `${states.get(guild.id).locale.manager} ${states.get(guild.id).locale.help[name]}`,
+                    options: command.options ? command.options(states.get(guild.id).locale) : [],
                   },
                 })
             ).id,

@@ -17,7 +17,18 @@ client.on("guildCreate", async (guild: Guild) => {
 
   if (!configDocSnapshot.exists) {
     try {
-      await configDocRef.set({ afkTimeout: -1, autorole: [], locale: "ko", log: "", logMessageEvents: false, privateRoom: "", privateRooms: [], userRoles: [], voiceRole: [] } as Config);
+      await configDocRef.set({
+        afkTimeout: -1,
+        alarmChannel: null,
+        autorole: [],
+        locale: "ko",
+        log: "",
+        logMessageEvents: false,
+        privateRoom: "",
+        privateRooms: [],
+        userRoles: [],
+        voiceRole: [],
+      } as Config);
       Log.d(`Firestore Initialize for guild [ ${guild.name} | ${guild.id} ]`);
     } catch (err) {
       Log.e(`Firestore Initialize > ${err}`);

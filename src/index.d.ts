@@ -85,6 +85,13 @@ interface Locale {
       minutesToDisconnect: string;
     };
   };
+  alarm: {
+    options: {
+      subscribe: string;
+      unsubscribe: string;
+      test: string;
+    };
+  };
   autoRole: {
     autoRole: string;
     empty: string;
@@ -240,6 +247,8 @@ interface CommandOptionChoice {
 }
 
 interface State {
+  afkChannel: Collection<string, NodeJS.Timeout>;
+  alarmChannel: string | null;
   locale: Locale;
   textChannel: TextChannel;
   voiceChannel: VoiceChannel;
@@ -256,12 +265,12 @@ interface State {
   isRepeated: boolean;
   isPlaying: boolean;
   volume: number;
-  timeout: NodeJS.Timeout;
-  afkChannel: Collection<string, NodeJS.Timeout>;
+  timeout: NodeJS.Timeout | null;
 }
 
 interface Config {
   afkTimeout: number;
+  alarmChannel: string | null;
   autorole?: AutoRole[];
   locale: string;
   log?: string;
@@ -285,11 +294,6 @@ interface PrivateRoom {
 }
 
 type Args = Array<string>;
-
-interface AlarmDB {
-  voiceChannel?: VoiceChannel;
-  connection?: VoiceConnection;
-}
 
 interface AutoRole {
   type: string;

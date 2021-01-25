@@ -31,7 +31,7 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if ((await voiceStateCheck(state.locale, interaction)) || !state.connection.dispatcher) return;
+      if ((await voiceStateCheck(state.locale, { interaction: interaction })) || !state.connection.dispatcher) return;
 
       const newVolume = Number(interaction.data.options[0].value);
 

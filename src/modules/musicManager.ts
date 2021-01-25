@@ -11,7 +11,7 @@ import { Interaction, State } from "../";
 
 export const play = async (state: State, interaction: Interaction) => {
   try {
-    if (await voiceStateCheck(state.locale, interaction)) return;
+    if (await voiceStateCheck(state.locale, { interaction: interaction })) return;
 
     if (!interaction.data.options && state.queue.length !== 0) {
       if (!state.isPlaying) return state.connection.dispatcher.resume();
@@ -170,7 +170,7 @@ const stream = async (state: State, interaction: Interaction) => {
 
 export const skip = async (state: State, interaction: Interaction) => {
   try {
-    if (await voiceStateCheck(state.locale, interaction)) return;
+    if (await voiceStateCheck(state.locale, { interaction: interaction })) return;
 
     if (state.queue.length === 0)
       return sendEmbed(
@@ -201,7 +201,7 @@ export const skip = async (state: State, interaction: Interaction) => {
 
 export const pause = async (state: State, interaction: Interaction) => {
   try {
-    if (await voiceStateCheck(state.locale, interaction)) return;
+    if (await voiceStateCheck(state.locale, { interaction: interaction })) return;
 
     state.connection.dispatcher.pause();
     state.isPlaying = false;
@@ -212,7 +212,7 @@ export const pause = async (state: State, interaction: Interaction) => {
 
 export const stop = async (state: State, interaction: Interaction) => {
   try {
-    if (await voiceStateCheck(state.locale, interaction)) return;
+    if (await voiceStateCheck(state.locale, { interaction: interaction })) return;
 
     state.connection.dispatcher.pause();
     state.isPlaying = false;
@@ -223,7 +223,7 @@ export const stop = async (state: State, interaction: Interaction) => {
 
 export const toggleLoop = async (state: State, interaction: Interaction) => {
   try {
-    if (await voiceStateCheck(state.locale, interaction)) return;
+    if (await voiceStateCheck(state.locale, { interaction: interaction })) return;
 
     state.isLooped = !state.isLooped;
 
@@ -242,7 +242,7 @@ export const toggleLoop = async (state: State, interaction: Interaction) => {
 
 export const toggleRepeat = async (state: State, interaction: Interaction) => {
   try {
-    if (await voiceStateCheck(state.locale, interaction)) return;
+    if (await voiceStateCheck(state.locale, { interaction: interaction })) return;
 
     state.isRepeated = !state.isRepeated;
 

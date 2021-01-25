@@ -1,7 +1,7 @@
 import { Message, MessageEmbed, PartialMessage, TextChannel } from "discord.js";
 import firestore from "../modules/firestore";
 import Log from "../modules/logger";
-import { client, state } from "../app";
+import { client, states } from "../app";
 import props from "../props";
 
 client.on("messageUpdate", async (oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage) => {
@@ -12,7 +12,7 @@ client.on("messageUpdate", async (oldMessage: Message | PartialMessage, newMessa
 
     const messageEmbed: MessageEmbed = new MessageEmbed()
       .setColor(props.color.yellow)
-      .setAuthor(state.get(oldMessage.guild.id).locale.log.messageEdit, props.icon.edit)
+      .setAuthor(states.get(oldMessage.guild.id).locale.log.messageEdit, props.icon.edit)
       .setThumbnail(oldMessage.attachments.size ? oldMessage.attachments.array()[0].proxyURL : null)
       .setTitle(`**${(oldMessage.channel as TextChannel).name}**`)
       .setDescription(

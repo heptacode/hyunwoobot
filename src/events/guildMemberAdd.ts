@@ -2,13 +2,13 @@ import { GuildMember } from "discord.js";
 import { sendEmbed } from "../modules/embedSender";
 import firestore from "../modules/firestore";
 import Log from "../modules/logger";
-import { client, state } from "../app";
+import { client, states } from "../app";
 import props from "../props";
 import { Locale } from "../";
 
 client.on("guildMemberAdd", async (member: GuildMember) => {
   try {
-    const locale: Locale = state.get(member.guild.id).locale;
+    const locale: Locale = states.get(member.guild.id).locale;
 
     await sendEmbed(
       { member: member },

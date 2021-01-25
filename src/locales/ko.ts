@@ -86,6 +86,13 @@ export default {
       minutesToDisconnect: "자동 연결 해제까지 대기 시간(분)",
     },
   },
+  alarm: {
+    options: {
+      subscribe: "알람 구독",
+      unsubscribe: "알람 구독취소",
+      test: "알람 테스트",
+    },
+  },
   autoRole: {
     autoRole: "자동 역할",
     empty: "설정된 역할이 없어요.",

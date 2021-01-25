@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import Log from "../modules/logger";
-import { client, state, commands_hidden, prefix, commands_manager } from "../app";
+import { client, states, commands_hidden, prefix, commands_manager } from "../app";
 import props from "../props";
 import { Command } from "../";
 
@@ -25,7 +25,7 @@ client.on("message", async (message: Message) => {
     const command: Command = commands_manager.find((cmd) => cmd.name === commandName && cmd.messageOnly) || commands_hidden.get(commandName);
     if (!command) return;
 
-    await command.execute(state.get(message.guild.id), message, args);
+    await command.execute(states.get(message.guild.id), message, args);
   } catch (err) {
     await message.react("❌");
     Log.e(`Main > ${JSON.stringify(message.content)} > ${err}`);

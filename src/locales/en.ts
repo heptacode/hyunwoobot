@@ -85,6 +85,13 @@ export default {
       minutesToDisconnect: "Minutes to Timeout",
     },
   },
+  alarm: {
+    options: {
+      subscribe: "Subscribe to hourly alarm",
+      unsubscribe: "Unsubscribe to hourly alarm",
+      test: "Test hourly alarm",
+    },
+  },
   autoRole: {
     autoRole: "Auto Roles",
     empty: "No roles have been set.",

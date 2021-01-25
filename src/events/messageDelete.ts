@@ -1,7 +1,7 @@
 import { Message, MessageEmbed, PartialMessage, TextChannel } from "discord.js";
 import firestore from "../modules/firestore";
 import Log from "../modules/logger";
-import { client, state } from "../app";
+import { client, states } from "../app";
 import props from "../props";
 
 client.on("messageDelete", async (message: Message | PartialMessage) => {
@@ -12,7 +12,7 @@ client.on("messageDelete", async (message: Message | PartialMessage) => {
 
     const messageEmbed: MessageEmbed = new MessageEmbed()
       .setColor(props.color.red)
-      .setAuthor(state.get(message.guild.id).locale.log.messageDelete, props.icon.delete)
+      .setAuthor(states.get(message.guild.id).locale.log.messageDelete, props.icon.delete)
       .setThumbnail(message.attachments.size ? message.attachments.array()[0].proxyURL : null)
       .setTitle(`**${(message.channel as TextChannel).name}**`)
       .setDescription(message.content ? `**${message.content}**` : `**${message.attachments.array()[0].name}**`)
