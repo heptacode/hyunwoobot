@@ -271,13 +271,13 @@ interface State {
 interface Config {
   afkTimeout: number;
   alarmChannel: string | null;
-  autorole?: AutoRole[];
+  autorole: AutoRole[];
   locale: string;
-  log?: string;
-  privateRoom?: string;
-  privateRooms?: PrivateRoom[];
-  userRoles?: UserRole[];
-  voiceRole?: VoiceRole[];
+  log: string | null;
+  privateRoom: string | null;
+  privateRooms: PrivateRoom[];
+  userRoles: UserRole[];
+  voiceRole: VoiceRole[];
 }
 
 interface UserRole {
