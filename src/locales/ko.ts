@@ -108,7 +108,7 @@ export default {
   },
   disconnect: {
     disconnect: "연결 해제",
-    disconnected: "명의 연결을 끊었어요. 음성 채널: ",
+    disconnected: "{voiceChannel}에서 {cnt}명의 연결을 끊었어요.",
     notVoiceChannel: "입력하신 채널은 음성 채널이 아니에요.",
   },
   log: {

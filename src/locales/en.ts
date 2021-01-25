@@ -103,7 +103,7 @@ export default {
   },
   disconnect: {
     disconnect: "Disconnect",
-    disconnected: " user(s) have been disconnected from ",
+    disconnected: "Disconnected {cnt}user(s) from {voiceChannel}",
     notVoiceChannel: "Not a voice channel.",
   },
   voiceDisconnect: {

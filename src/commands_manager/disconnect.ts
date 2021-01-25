@@ -43,7 +43,9 @@ export default {
         {
           color: props.color.purple,
           title: `**⚙️ ${state.locale.disconnect.disconnect}**`,
-          description: `✅ **${cnt}${state.locale.disconnect.disconnected}${getChannelName(client.guilds.cache.get(interaction.guild_id), interaction.data.options[0].value)}**`,
+          description: `✅ **${state.locale.disconnect.disconnected
+            .replace("{voiceChannel}", getChannelName(client.guilds.cache.get(interaction.guild_id), interaction.data.options[0].value))
+            .replace("{cnt}", String(cnt))}**`,
           timestamp: new Date(),
         },
         { guild: true }
