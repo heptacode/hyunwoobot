@@ -1,4 +1,3 @@
-import fs from "fs";
 import path from "path";
 import { VoiceBroadcast, VoiceChannel, VoiceState } from "discord.js";
 import { sendEmbed } from "../modules/embedSender";
@@ -16,7 +15,7 @@ const broadcast: VoiceBroadcast = client.voice.createBroadcast();
 
 const sendAlarm = async () => {
   try {
-    const dispatcher = broadcast.play(fs.createReadStream(path.resolve(__dirname, "../assets/alarm.mp3")));
+    const dispatcher = broadcast.play(path.resolve(__dirname, "../assets/alarm.mp3"));
     dispatcher.setVolume(0.2);
 
     for (const [guildID, state] of states) {

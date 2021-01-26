@@ -36,6 +36,7 @@ interface Locale {
     stop: string;
     volume: string;
     //
+    alarm: string;
     autorole: string;
     delete: string;
     disconnect: string;
@@ -54,6 +55,7 @@ interface Locale {
     play: string;
     volume: string;
     //
+    alarm: string;
     autorole: string;
     delete: string;
     disconnect: string;

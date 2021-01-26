@@ -36,6 +36,7 @@ export default {
     stop: "Stop the music",
     volume: "Change the volume",
     //
+    alarm: "Send hourly alarms to a voice channel",
     autorole: "Give roles when a member/bot joins the server",
     delete: "Bulk delete messages",
     disconnect: "Disconnect all users from a voice channel",
@@ -54,6 +55,7 @@ export default {
     play: "[query|URL]",
     volume: "<1~10>",
     //
+    alarm: "<subscribe|unsubscribe|test>",
     autorole: "<view|add|purge> [user|bot] [role]",
     delete: "<amount>",
     disconnect: "<voiceChannel>",

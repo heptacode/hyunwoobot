@@ -36,6 +36,7 @@ export default {
     stop: "재생 중인 곡 중지하기",
     volume: "음량 변경하기",
     // manager
+    alarm: "음성 채널에 정각 알람 송출",
     autorole: "서버에 접속하는 멤버/봇에게 자동 역할 부여",
     delete: "메시지 일괄 삭제",
     disconnect: "음성채널 멤버 일괄 연결 끊기",
@@ -54,6 +55,7 @@ export default {
     play: "[query|URL]",
     volume: "<1~10>",
     //
+    alarm: "<subscribe|unsubscribe|test>",
     autorole: "<view|add|purge> [user|bot] [역할]",
     delete: "<개수>",
     disconnect: "<음성채널>",
