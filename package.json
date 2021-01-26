@@ -4,9 +4,9 @@
   "description": "",
   "main": "src/app.ts",
   "scripts": {
-    "serve": "nodemon nodemon.json",
+    "serve": "nodemon",
     "tsc": "tsc",
-    "deploy": "git pull && pm2 start pm2.json --env production && pm2 monit"
+    "deploy": "tsc && pm2 start --env production && pm2 monit"
   },
   "repository": {
     "type": "git",
