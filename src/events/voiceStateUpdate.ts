@@ -105,7 +105,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
             {
               type: "member",
               id: newState.member.id,
-              allow: ["CONNECT", "PRIORITY_SPEAKER", "MUTE_MEMBERS", "DEAFEN_MEMBERS", "MOVE_MEMBERS"],
+              allow: ["CONNECT", "PRIORITY_SPEAKER", "MOVE_MEMBERS"],
             },
             {
               type: "member",
