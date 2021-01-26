@@ -4,4 +4,4 @@ admin.initializeApp({
   credential: admin.credential.cert(require("../../firebase/hyunwoo-bot-5b9111af24ff.json")),
 });
 
-export default admin.firestore();
+export const firestore = admin.firestore();

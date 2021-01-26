@@ -1,7 +1,7 @@
 import { MessageReaction, User } from "discord.js";
 import { getHexfromEmoji } from "../modules/converter";
 import { sendEmbed } from "../modules/embedSender";
-import firestore from "../modules/firestore";
+import { firestore } from "../modules/firebase";
 import Log from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";

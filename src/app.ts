@@ -11,7 +11,7 @@ import Log from "./modules/logger";
 import props from "./props";
 import "dotenv/config";
 import { APIGuild, APIUserRole, Command, Locale, State, UserRole } from "./";
-import firestore from "./modules/firestore";
+import { firestore } from "./modules/firebase";
 
 export const prefix: string = process.env.PREFIX || props.bot.prefix;
 export const client: Client = new Client();
@@ -19,7 +19,7 @@ export const locales: Collection<string, Locale> = new Collection();
 export const states: Collection<string, State> = new Collection();
 export const commands: Collection<string, Command> = new Collection();
 export const commands_manager: Collection<string, Command> = new Collection();
-export const commands_hidden: Collection<string, Command> = new Collection();
+// export const commands_hidden: Collection<string, Command> = new Collection();
 
 for (const file of fs.readdirSync(path.resolve(__dirname, "./locales")).filter((file) => file.match(/(.js|.ts)$/))) {
   const locale: Locale = require(path.resolve(__dirname, `./locales/${file}`)).default;
@@ -36,10 +36,10 @@ for (const file of fs.readdirSync(path.resolve(__dirname, "./commands_manager"))
   commands_manager.set(command.name, command);
 }
 
-for (const file of fs.readdirSync(path.resolve(__dirname, "./commands_hidden")).filter((file) => file.match(/(.js|.ts)$/))) {
-  const command: Command = require(path.resolve(__dirname, `./commands_hidden/${file}`)).default;
-  commands_hidden.set(command.name, command);
-}
+// for (const file of fs.readdirSync(path.resolve(__dirname, "./commands_hidden")).filter((file) => file.match(/(.js|.ts)$/))) {
+//   const command: Command = require(path.resolve(__dirname, `./commands_hidden/${file}`)).default;
+//   commands_hidden.set(command.name, command);
+// }
 
 for (const file of fs.readdirSync(path.resolve(__dirname, "./events")).filter((file) => file.match(/(.js|.ts)$/))) {
   require(path.resolve(__dirname, `./events/${file}`));

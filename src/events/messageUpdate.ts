@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, PartialMessage, TextChannel } from "discord.js";
-import firestore from "../modules/firestore";
+import { firestore } from "../modules/firebase";
 import Log from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";

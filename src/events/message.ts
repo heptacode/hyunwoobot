@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import Log from "../modules/logger";
-import { client, states, commands_hidden, prefix, commands_manager } from "../app";
+import { client, states, prefix, commands_manager } from "../app";
+// import { client, states, commands_hidden, prefix, commands_manager } from "../app";
 import props from "../props";
 import { Command } from "../";
 
@@ -22,7 +23,8 @@ client.on("message", async (message: Message) => {
 
     const args: string[] = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName: string = args.shift().toLowerCase();
-    const command: Command = commands_manager.find((cmd) => cmd.name === commandName && cmd.messageOnly) || commands_hidden.get(commandName);
+    const command: Command = commands_manager.find((cmd) => cmd.name === commandName && cmd.messageOnly);
+    // const command: Command = commands_manager.find((cmd) => cmd.name === commandName && cmd.messageOnly) || commands_hidden.get(commandName);
     if (!command) return;
 
     await command.execute(states.get(message.guild.id), message, args);

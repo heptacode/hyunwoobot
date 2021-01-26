@@ -1,6 +1,6 @@
 import { TextChannel } from "discord.js";
 import { getHexfromEmoji } from "../modules/converter";
-import firestore from "../modules/firestore";
+import { firestore } from "../modules/firebase";
 import Log from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import { client } from "../app";

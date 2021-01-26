@@ -1,5 +1,5 @@
 import { EmbedFieldData } from "discord.js";
-import firestore from "../modules/firestore";
+import { firestore } from "../modules/firebase";
 import { sendEmbed } from "../modules/embedSender";
 import Log from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";

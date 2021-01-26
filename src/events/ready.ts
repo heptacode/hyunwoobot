@@ -1,5 +1,5 @@
 import { Collection, Guild, TextChannel } from "discord.js";
-import firestore from "../modules/firestore";
+import { firestore } from "../modules/firebase";
 import Log from "../modules/logger";
 import { client, commands, commands_manager, locales, states } from "../app";
 import { Config, State } from "../";

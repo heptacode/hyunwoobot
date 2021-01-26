@@ -1,6 +1,6 @@
 import { TextChannel, VoiceState } from "discord.js";
 import { sendEmbed } from "../modules/embedSender";
-import firestore from "../modules/firestore";
+import { firestore } from "../modules/firebase";
 import Log from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";

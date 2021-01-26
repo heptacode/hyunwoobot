@@ -1,5 +1,5 @@
 import { Guild, GuildMember, Message, MessageEmbed, MessageEmbedOptions, TextChannel, User } from "discord.js";
-import firestore from "./firestore";
+import { firestore } from "./firebase";
 import Log from "./logger";
 import { client } from "../app";
 import { Interaction } from "../";
