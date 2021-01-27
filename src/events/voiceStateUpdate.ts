@@ -7,25 +7,9 @@ import props from "../props";
 import { Config, PrivateRoom, VoiceRole } from "../";
 
 client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState) => {
-  const isChannelUpdate = (oldState: VoiceState, newState: VoiceState) => {
-    return (
-      oldState.mute === null ||
-      oldState.deaf === null ||
-      (oldState.mute === newState.mute &&
-        oldState.selfMute === newState.selfMute &&
-        oldState.serverMute === newState.serverMute &&
-        oldState.deaf === newState.deaf &&
-        oldState.selfDeaf === newState.selfDeaf &&
-        oldState.serverDeaf === newState.serverDeaf &&
-        oldState.selfVideo === newState.selfVideo &&
-        oldState.streaming === newState.streaming)
-    );
-  };
-
-  if (oldState && newState && !isChannelUpdate(oldState, newState)) return;
+  if ((oldState && newState && oldState.channelID === newState.channelID) || oldState.member.user.bot || newState.member.user.bot) return;
 
   if (oldState.channelID) {
-    if (oldState.member.user.bot) return;
     // User Leave
     try {
       const configDocRef = firestore.collection(newState.guild.id).doc("config");
@@ -99,7 +83,6 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
   }
 
   if (newState.channelID) {
-    if (newState.member.user.bot) return;
     // User Join
     try {
       const configDocRef = firestore.collection(newState.guild.id).doc("config");
