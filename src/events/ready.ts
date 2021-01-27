@@ -30,7 +30,7 @@ client.once("ready", async () => {
         timeout: null,
       } as State);
 
-      log.d(`LocalDB Initialize for guild [ ${guild.name} | ${guild.id} ]`);
+      log.d(`LocalDB Initialize for guild [ ${guild.name} ]`);
 
       for (const doc of (await collection.get()).docs) {
         if (!["server", "config", "commands"].includes(doc.id)) ((await guild.channels.cache.get(doc.id)) as TextChannel).messages.fetch({ limit: 100 });
@@ -88,7 +88,10 @@ client.once("ready", async () => {
         }
       }
 
-      if (Object.keys(updatedCommands).length) await commandsDocRef.update(updatedCommands);
+      if (Object.keys(updatedCommands).length) {
+        log.s(`Updated ${Object.keys(updatedCommands).length} command(s) for guild [ ${guild.name} ]: ${Object.keys(updatedCommands).join(", ")}`);
+        await commandsDocRef.update(updatedCommands);
+      }
     }
 
     await client.user.setPresence(
