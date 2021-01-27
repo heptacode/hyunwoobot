@@ -165,6 +165,8 @@ export default {
   },
   voiceRole: {
     voiceRole: "Voice Channel Roles",
+    updated: "Updated {cnt} voice role(s).",
+    noChanges: "No moderation have been made.",
     empty: "No roles have been set.",
     roleAppended: "Role Appended [Voice]",
     roleRemoved: "Role Removed [Voice]",
@@ -173,6 +175,7 @@ export default {
       add: "Add VoiceRole Config",
       remove: "Remove VoiceRole Config",
       purge: "Purge VoiceRole Config",
+      update: "Update VoiceRoles",
       channelToSendLogs: "TextChannel to send Enter/Leave Information",
     },
   },

@@ -168,6 +168,8 @@ interface Locale {
   };
   voiceRole: {
     voiceRole: string;
+    updated: string;
+    noChanges: string;
     empty: string;
     roleAppended: string;
     roleRemoved: string;
@@ -176,6 +178,7 @@ interface Locale {
       add: string;
       remove: string;
       purge: string;
+      update: string;
       channelToSendLogs: string;
     };
   };

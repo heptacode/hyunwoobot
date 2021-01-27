@@ -169,6 +169,8 @@ export default {
   },
   voiceRole: {
     voiceRole: "음성채널 역할",
+    updated: "{cnt}개의 음성채널 역할을 업데이트했어요.",
+    noChanges: "아무일도 일어나지 않았어요.",
     empty: "설정된 역할이 없어요.",
     roleAppended: "역할 추가됨 [음성채널]",
     roleRemoved: "역할 제거됨 [음성채널]",
@@ -177,6 +179,7 @@ export default {
       add: "음성채널 역할 추가",
       remove: "음성채널 역할 삭제",
       purge: "음성채널 역할 초기화",
+      update: "음성채널 역할 업데이트",
       channelToSendLogs: "로그를 기록할 채팅채널",
     },
   },

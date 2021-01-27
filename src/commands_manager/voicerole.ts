@@ -1,5 +1,5 @@
 import { EmbedFieldData } from "discord.js";
-import { getChannelName } from "../modules/converter";
+import { getChannelName, getRoleName } from "../modules/converter";
 import { sendEmbed } from "../modules/embedSender";
 import { firestore } from "../modules/firebase";
 import { log } from "../modules/logger";
@@ -10,7 +10,7 @@ import { Interaction, Locale, State, VoiceRole } from "../";
 
 export default {
   name: "voicerole",
-  version: 1,
+  version: 2,
   options(locale: Locale) {
     return [
       {
@@ -61,6 +61,11 @@ export default {
         name: "purge",
         description: `${locale.manager} ${locale.voiceRole.options.purge}`,
       },
+      {
+        type: 1,
+        name: "update",
+        description: `${locale.manager} ${locale.voiceRole.options.update}`,
+      },
     ];
   },
   async execute(state: State, interaction: Interaction) {
@@ -72,39 +77,65 @@ export default {
       const method = interaction.data.options[0].name;
 
       const configDocRef = firestore.collection(guild.id).doc("config");
-      const configDocSnapshot = await configDocRef.get();
 
-      let voiceRole: VoiceRole[] = [];
+      const voiceRoles: VoiceRole[] = (await configDocRef.get()).data().voiceRole as VoiceRole[];
 
       if (method === "view") {
-        voiceRole = configDocSnapshot.data().voiceRole as VoiceRole[];
       } else if (method === "add") {
         const voiceChannel = interaction.data.options[0].options[0].value;
         const role = interaction.data.options[0].options[1].value;
         const textChannel = interaction.data.options[0].options.length >= 3 ? interaction.data.options[0].options[2].value : null;
 
-        voiceRole = configDocSnapshot.data().voiceRole as VoiceRole[];
+        if (!textChannel) voiceRoles.push({ voiceChannel: voiceChannel, role: role });
+        else voiceRoles.push({ voiceChannel: voiceChannel, role: role, textChannel: textChannel });
 
-        if (!textChannel) voiceRole.push({ voiceChannel: voiceChannel, role: role });
-        else voiceRole.push({ voiceChannel: voiceChannel, role: role, textChannel: textChannel });
-
-        await configDocRef.update({ voiceRole: voiceRole });
+        await configDocRef.update({ voiceRole: voiceRoles });
       } else if (method === "remove") {
         const voiceChannel = interaction.data.options[0].options[0].value;
 
-        voiceRole = configDocSnapshot.data().voiceRole as VoiceRole[];
+        const idx = voiceRoles.findIndex((voiceConfig: VoiceRole) => voiceConfig.voiceChannel === voiceChannel);
+        voiceRoles.splice(idx, 1);
 
-        const idx = voiceRole.findIndex((voiceConfig: VoiceRole) => voiceConfig.voiceChannel === voiceChannel);
-        voiceRole.splice(idx, 1);
-
-        await configDocRef.update({ voiceRole: voiceRole });
+        await configDocRef.update({ voiceRole: voiceRoles });
       } else if (method === "purge") {
+        voiceRoles.splice(0, -1);
         await configDocRef.update({ voiceRole: [] });
+      } else if (method === "update") {
+        const payload: { member: string; action: string; role: string }[] = [];
+        for (const voiceRole of voiceRoles) {
+          if (!client.channels.cache.has(voiceRole.voiceChannel)) continue;
+
+          for (const [memberID, member] of client.guilds.cache.get(interaction.guild_id).roles.cache.get(voiceRole.role).members) {
+            if (member.voice.channelID === voiceRole.voiceChannel) continue;
+            await member.roles.remove(voiceRole.role, "[VoiceRole] Force Update");
+            payload.push({ member: memberID, action: "-=", role: voiceRole.role });
+          }
+
+          for (const [memberID, member] of client.guilds.cache.get(interaction.guild_id).channels.cache.get(voiceRole.voiceChannel).members) {
+            if (member.roles.cache.has(voiceRole.role)) continue;
+            await member.roles.add(voiceRole.role, "[VoiceRole] Force Update");
+            payload.push({ member: memberID, action: "+=", role: voiceRole.role });
+          }
+        }
+
+        let description = payload.length ? `✅ **${state.locale.voiceRole.updated.replace("{cnt}", String(payload.length))}**` : `🙅 **${state.locale.voiceRole.noChanges}**\n`;
+        payload.forEach((item) => (description += `\n**<@${item.member}> ${item.action} <@&${item.role}>**`));
+
+        return sendEmbed(
+          { interaction: interaction },
+          {
+            color: props.color.purple,
+            title: `**⚙️ ${state.locale.voiceRole.voiceRole}**`,
+            description: description,
+            timestamp: new Date(),
+          },
+          { guild: true }
+        );
       }
 
       const fields: EmbedFieldData[] = [];
-      if (voiceRole.length >= 1)
-        voiceRole.forEach((voiceConfig: VoiceRole) => {
+      if (voiceRoles.length >= 1)
+        voiceRoles.forEach((voiceConfig: VoiceRole) => {
           fields.push({
             name: `${getChannelName(guild, voiceConfig.voiceChannel)}`,
             value: `<@&${voiceConfig.role}>${voiceConfig.textChannel ? `(<#${voiceConfig.textChannel}>)` : ""}`,
