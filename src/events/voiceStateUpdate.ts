@@ -7,20 +7,22 @@ import props from "../props";
 import { Config, PrivateRoom, VoiceRole } from "../";
 
 client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState) => {
-  const isChannelChange = (oldState: VoiceState, newState: VoiceState) => {
+  const isChannelUpdate = (oldState: VoiceState, newState: VoiceState) => {
     return (
-      oldState.mute === newState.mute &&
-      oldState.selfMute === newState.selfMute &&
-      oldState.serverMute === newState.serverMute &&
-      oldState.deaf === newState.deaf &&
-      oldState.selfDeaf === newState.selfDeaf &&
-      oldState.serverDeaf === newState.serverDeaf &&
-      oldState.selfVideo === newState.selfVideo &&
-      oldState.streaming === newState.streaming
+      oldState.mute === null ||
+      oldState.deaf === null ||
+      (oldState.mute === newState.mute &&
+        oldState.selfMute === newState.selfMute &&
+        oldState.serverMute === newState.serverMute &&
+        oldState.deaf === newState.deaf &&
+        oldState.selfDeaf === newState.selfDeaf &&
+        oldState.serverDeaf === newState.serverDeaf &&
+        oldState.selfVideo === newState.selfVideo &&
+        oldState.streaming === newState.streaming)
     );
   };
 
-  if (oldState && newState && !isChannelChange(oldState, newState)) return;
+  if (oldState && newState && !isChannelUpdate(oldState, newState)) return;
 
   if (oldState.channelID) {
     if (oldState.member.user.bot) return;
@@ -32,6 +34,10 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
       if (config.privateRoom && config.privateRooms.find((privateRoomItem: PrivateRoom) => privateRoomItem.host === oldState.member.id)) {
         const _privateRoom: PrivateRoom = config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
         if (_privateRoom && oldState.guild.channels.cache.has(_privateRoom.room) && oldState.channelID !== newState.channelID) {
+          for (const [memberID, member] of oldState.guild.channels.cache.get(_privateRoom.room).members) {
+            await oldState.guild.channels.cache.get(config.privateRoom).permissionOverwrites.get(memberID).delete("[PrivateRoom] Deletion");
+          }
+
           await oldState.guild.channels.cache.get(_privateRoom.room).delete("[PrivateRoom] Deletion");
           await oldState.guild.channels.cache.get(_privateRoom.waiting).delete("[PrivateRoom] Deletion");
           await oldState.guild.channels.cache.get(_privateRoom.text).delete("[PrivateRoom] Deletion");
@@ -44,15 +50,16 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         }
       } else if (config.privateRoom && config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID)) {
         const _privateText: TextChannel = oldState.guild.channels.cache.get(config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID).text) as TextChannel;
+        if (_privateText) {
+          await _privateText.send({
+            embed: {
+              color: props.color.red,
+              author: { name: oldState.member.user.username, iconURL: oldState.member.user.avatarURL() },
+            },
+          });
 
-        await _privateText.send({
-          embed: {
-            color: props.color.red,
-            author: { name: oldState.member.user.username, iconURL: oldState.member.user.avatarURL() },
-          },
-        });
-
-        await _privateText.updateOverwrite(oldState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Switch/Leave");
+          await _privateText.updateOverwrite(oldState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Switch/Leave");
+        }
 
         await oldState.guild.channels.cache.get(config.privateRoom).permissionOverwrites.get(oldState.member.id).delete("[PrivateRoom] Switch/Leave");
       }
