@@ -1,6 +1,6 @@
 import { Collection, Guild, TextChannel } from "discord.js";
 import { firestore } from "../modules/firebase";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { client, commands, commands_manager, locales, states } from "../app";
 import { Config, State } from "../";
 
@@ -9,7 +9,7 @@ client.once("ready", async () => {
     for (const collection of await firestore.listCollections()) {
       const guild: Guild = client.guilds.cache.get(collection.id);
       if (!guild) {
-        Log.d(`Skipping Initialize for guild [ ${(await collection.doc("server").get()).data().name} | ${collection.id} ]`);
+        log.d(`Skipping Initialize for guild [ ${(await collection.doc("server").get()).data().name} | ${collection.id} ]`);
         continue;
       }
 
@@ -30,7 +30,7 @@ client.once("ready", async () => {
         timeout: null,
       } as State);
 
-      Log.d(`LocalDB Initialize for guild [ ${guild.name} | ${guild.id} ]`);
+      log.d(`LocalDB Initialize for guild [ ${guild.name} | ${guild.id} ]`);
 
       for (const doc of (await collection.get()).docs) {
         if (!["server", "config", "commands"].includes(doc.id)) ((await guild.channels.cache.get(doc.id)) as TextChannel).messages.fetch({ limit: 100 });
@@ -60,7 +60,7 @@ client.once("ready", async () => {
             version: command.version,
           };
         } catch (err) {
-          Log.e(`CommandRegister > ${err}`);
+          log.e(`CommandRegister > ${err}`);
         }
       }
 
@@ -84,7 +84,7 @@ client.once("ready", async () => {
             version: command.version,
           };
         } catch (err) {
-          Log.e(`CommandRegister > Manager > ${err}`);
+          log.e(`CommandRegister > Manager > ${err}`);
         }
       }
 
@@ -103,8 +103,8 @@ client.once("ready", async () => {
         : { status: "online", activity: { type: "WATCHING", name: "/help" } }
     );
   } catch (err) {
-    Log.e(`Initialize > ${err}`);
+    log.e(`Initialize > ${err}`);
   }
 
-  Log.i(`Ready! ${client.user.tag}`);
+  log.i(`Ready! ${client.user.tag}`);
 });

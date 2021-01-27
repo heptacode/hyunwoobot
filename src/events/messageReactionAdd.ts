@@ -2,7 +2,7 @@ import { MessageReaction, User } from "discord.js";
 import { getHexfromEmoji } from "../modules/converter";
 import { sendEmbed } from "../modules/embedSender";
 import { firestore } from "../modules/firebase";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";
 import { ReactionRole } from "../";
@@ -13,7 +13,7 @@ client.on("messageReactionAdd", async (reaction: MessageReaction, user: User) =>
     try {
       await reaction.fetch();
     } catch (err) {
-      Log.e(`MessageReactionAdd > Fetch > ${err}`);
+      log.e(`MessageReactionAdd > Fetch > ${err}`);
       return;
     }
   }
@@ -41,6 +41,6 @@ client.on("messageReactionAdd", async (reaction: MessageReaction, user: User) =>
       { guild: true, log: true }
     );
   } catch (err) {
-    Log.e(`MessageReactionAdd > ${err}`);
+    log.e(`MessageReactionAdd > ${err}`);
   }
 });

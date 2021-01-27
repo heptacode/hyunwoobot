@@ -1,7 +1,7 @@
 import { GuildMember } from "discord.js";
 import { sendEmbed } from "../modules/embedSender";
 import { firestore } from "../modules/firebase";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";
 import { Locale } from "../";
@@ -38,6 +38,6 @@ client.on("guildMemberAdd", async (member: GuildMember) => {
       );
     }
   } catch (err) {
-    Log.e(`GuildMemberAdd > ${err}`);
+    log.e(`GuildMemberAdd > ${err}`);
   }
 });

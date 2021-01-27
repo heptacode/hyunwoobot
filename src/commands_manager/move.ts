@@ -1,7 +1,7 @@
 import { Guild, GuildChannel } from "discord.js";
 import { getChannelName } from "../modules/converter";
 import { sendEmbed } from "../modules/embedSender";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import { client } from "../app";
 import props from "../props";
@@ -64,7 +64,7 @@ export default {
         { guild: true }
       );
     } catch (err) {
-      Log.e(`Move > ${err}`);
+      log.e(`Move > ${err}`);
     }
   },
 };

@@ -1,35 +1,33 @@
 import chalk from "chalk";
 
-class log {
-  private getTsp(): string {
+export const log = {
+  getTsp(): string {
     return new Date().toLocaleString("ko-KR", {
       timeZone: "Asia/Seoul",
     });
-  }
+  },
   // Error
-  public e(str: any): void {
+  e(str: any): void {
     console.error(`[${this.getTsp()}] ${chalk.red(str)}`);
-  }
+  },
   // Warning
-  public w(str: any): void {
+  w(str: any): void {
     console.warn(`[${this.getTsp()}] ${chalk.yellow(str)}`);
-  }
+  },
   // Info
-  public i(str: any): void {
+  i(str: any): void {
     console.info(`[${this.getTsp()}] ${chalk.cyan(str)}`);
-  }
+  },
   // Success
-  public s(str: any): void {
+  s(str: any): void {
     console.log(`[${this.getTsp()}] ${chalk.green(str)}`);
-  }
+  },
   // Verbose
-  public v(str: any): void {
+  v(str: any): void {
     console.log(`[${this.getTsp()}] ${chalk.white(str)}`);
-  }
+  },
   // Debug
-  public d(str: any): void {
+  d(str: any): void {
     console.debug(`[${this.getTsp()}] ${chalk.blue(str)}`);
-  }
-}
-
-export default new log();
+  },
+};

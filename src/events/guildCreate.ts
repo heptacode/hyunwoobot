@@ -1,6 +1,6 @@
 import { Guild } from "discord.js";
 import { firestore } from "../modules/firebase";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { client } from "../app";
 import { Config } from "../";
 
@@ -29,9 +29,9 @@ client.on("guildCreate", async (guild: Guild) => {
         userRoles: [],
         voiceRole: [],
       } as Config);
-      Log.d(`Firestore Initialize for guild [ ${guild.name} | ${guild.id} ]`);
+      log.d(`Firestore Initialize for guild [ ${guild.name} | ${guild.id} ]`);
     } catch (err) {
-      Log.e(`Firestore Initialize > ${err}`);
+      log.e(`Firestore Initialize > ${err}`);
     }
   }
 });

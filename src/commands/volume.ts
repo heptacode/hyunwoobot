@@ -1,6 +1,6 @@
 import { sendEmbed } from "../modules/embedSender";
 import { voiceStateCheck } from "../modules/voiceManager";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import props from "../props";
 import { Interaction, Locale, State } from "../";
 
@@ -35,7 +35,7 @@ export default {
 
       const newVolume = Number(interaction.data.options[0].value);
 
-      state.connection.dispatcher.setVolumeLogarithmic(newVolume / 10);
+      state.connection.dispatcher.setVolume(newVolume / 10);
 
       state.volume = newVolume;
 
@@ -48,7 +48,7 @@ export default {
         { guild: true }
       );
     } catch (err) {
-      Log.e(`ChangeVolume > 1 > ${err}`);
+      log.e(`ChangeVolume > 1 > ${err}`);
     }
   },
 };

@@ -1,6 +1,6 @@
 import { GuildMember } from "discord.js";
 import { sendEmbed } from "../modules/embedSender";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";
 import { Locale } from "../";
@@ -19,6 +19,6 @@ client.on("guildMemberRemove", async (member: GuildMember) => {
       { guild: true, log: true }
     );
   } catch (err) {
-    Log.e(`GuildMemberRemove > ${err}`);
+    log.e(`GuildMemberRemove > ${err}`);
   }
 });

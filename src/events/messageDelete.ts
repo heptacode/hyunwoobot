@@ -1,6 +1,6 @@
 import { Message, MessageEmbed, PartialMessage, TextChannel } from "discord.js";
 import { firestore } from "../modules/firebase";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";
 
@@ -24,6 +24,6 @@ client.on("messageDelete", async (message: Message | PartialMessage) => {
         message.attachments.size && message.attachments.array()[0].width ? messageEmbed : messageEmbed.attachFiles(message.attachments.array())
       );
   } catch (err) {
-    Log.e(`MessageDelete > ${err}`);
+    log.e(`MessageDelete > ${err}`);
   }
 });

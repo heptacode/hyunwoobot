@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import { sendEmbed } from "../modules/embedSender";
 import { firestore } from "../modules/firebase";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import { client, commands, commands_manager, locales } from "../app";
 import props from "../props";
@@ -75,7 +75,7 @@ export default {
             version: command.version,
           };
         } catch (err) {
-          Log.e(`CommandRegister > ${err}`);
+          log.e(`CommandRegister > ${err}`);
         }
       }
 
@@ -99,7 +99,7 @@ export default {
             version: command.version,
           };
         } catch (err) {
-          Log.e(`CommandRegister > Manager > ${err}`);
+          log.e(`CommandRegister > Manager > ${err}`);
         }
       }
 
@@ -115,7 +115,7 @@ export default {
         { guild: true }
       );
     } catch (err) {
-      Log.e(`ChangeLocale > ${err}`);
+      log.e(`ChangeLocale > ${err}`);
     }
   },
 };

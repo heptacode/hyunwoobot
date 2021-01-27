@@ -1,6 +1,6 @@
 import { sendEmbed } from "../modules/embedSender";
 import { firestore } from "../modules/firebase";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import props from "../props";
 import { Interaction, Locale, State } from "../";
@@ -35,7 +35,7 @@ export default {
         { guild: true }
       );
     } catch (err) {
-      Log.e(`Log > ${err}`);
+      log.e(`Log > ${err}`);
     }
   },
 };

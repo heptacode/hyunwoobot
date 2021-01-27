@@ -1,21 +1,21 @@
-import path from "path";
+import { resolve } from "path";
 import { VoiceBroadcast, VoiceChannel, VoiceState } from "discord.js";
 import { sendEmbed } from "../modules/embedSender";
 import { firestore } from "../modules/firebase";
-import Log from "../modules/logger";
-import schedule from "node-schedule";
+import { log } from "../modules/logger";
+import { scheduleJob } from "node-schedule";
 import { checkPermission } from "../modules/permissionChecker";
 import { voiceStateCheck } from "../modules/voiceManager";
 import { client, states } from "../app";
 import { Interaction, Locale, State } from "../";
 
-schedule.scheduleJob({ minute: 59, second: 51 }, () => sendAlarm());
+scheduleJob({ minute: 59, second: 51 }, () => sendAlarm());
 
 const broadcast: VoiceBroadcast = client.voice.createBroadcast();
 
 const sendAlarm = async () => {
   try {
-    const dispatcher = broadcast.play(path.resolve(__dirname, "../assets/alarm.mp3"));
+    const dispatcher = broadcast.play(resolve(__dirname, "../assets/alarm.mp3"));
     dispatcher.setVolume(0.2);
 
     for (const [guildID, state] of states) {
@@ -29,7 +29,7 @@ const sendAlarm = async () => {
       });
     }
   } catch (err) {
-    Log.e(`SendAlarm > ${err}`);
+    log.e(`SendAlarm > ${err}`);
   }
 };
 
@@ -70,14 +70,14 @@ export default {
         state.alarmChannel = voiceState.channelID;
         await firestore.collection(interaction.guild_id).doc("config").update({ alarmChannel: voiceState.channelID });
       } catch (err) {
-        Log.e(`Alarm > Subscribe > ${err}`);
+        log.e(`Alarm > Subscribe > ${err}`);
       }
     } else if (method === "unsubscribe") {
       try {
         state.alarmChannel = null;
         await firestore.collection(interaction.guild_id).doc("config").update({ alarmChannel: null });
       } catch (err) {
-        Log.e(`Alarm > Unsubscribe > ${err}`);
+        log.e(`Alarm > Unsubscribe > ${err}`);
       }
     } else if (method === "test") sendAlarm();
   },

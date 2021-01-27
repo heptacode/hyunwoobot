@@ -1,6 +1,6 @@
 import { Message, MessageEmbed, PartialMessage, TextChannel } from "discord.js";
 import { firestore } from "../modules/firebase";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";
 
@@ -26,6 +26,6 @@ client.on("messageUpdate", async (oldMessage: Message | PartialMessage, newMessa
         oldMessage.attachments.size && oldMessage.attachments.array()[0].width ? messageEmbed : messageEmbed.attachFiles(oldMessage.attachments.array())
       );
   } catch (err) {
-    Log.e(`MessageUpdate > ${err}`);
+    log.e(`MessageUpdate > ${err}`);
   }
 });

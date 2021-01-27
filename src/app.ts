@@ -1,13 +1,13 @@
 import axios from "axios";
-import fs from "fs";
-import path from "path";
+import { readdirSync } from "fs";
+import { resolve } from "path";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import compression from "compression";
 import { Client, Collection } from "discord.js";
-import Log from "./modules/logger";
+import { log } from "./modules/logger";
 import props from "./props";
 import "dotenv/config";
 import { APIGuild, APIUserRole, Command, Locale, State, UserRole } from "./";
@@ -21,28 +21,28 @@ export const commands: Collection<string, Command> = new Collection();
 export const commands_manager: Collection<string, Command> = new Collection();
 // export const commands_hidden: Collection<string, Command> = new Collection();
 
-for (const file of fs.readdirSync(path.resolve(__dirname, "./locales")).filter((file) => file.match(/(.js|.ts)$/))) {
-  const locale: Locale = require(path.resolve(__dirname, `./locales/${file}`)).default;
+for (const file of readdirSync(resolve(__dirname, "./locales")).filter((file) => file.match(/(.js|.ts)$/))) {
+  const locale: Locale = require(resolve(__dirname, `./locales/${file}`)).default;
   locales.set(locale.locale.code, locale);
 }
 
-for (const file of fs.readdirSync(path.resolve(__dirname, "./commands")).filter((file) => file.match(/(.js|.ts)$/))) {
-  const command: Command = require(path.resolve(__dirname, `./commands/${file}`)).default;
+for (const file of readdirSync(resolve(__dirname, "./commands")).filter((file) => file.match(/(.js|.ts)$/))) {
+  const command: Command = require(resolve(__dirname, `./commands/${file}`)).default;
   commands.set(command.name, command);
 }
 
-for (const file of fs.readdirSync(path.resolve(__dirname, "./commands_manager")).filter((file) => file.match(/(.js|.ts)$/))) {
-  const command: Command = require(path.resolve(__dirname, `./commands_manager/${file}`)).default;
+for (const file of readdirSync(resolve(__dirname, "./commands_manager")).filter((file) => file.match(/(.js|.ts)$/))) {
+  const command: Command = require(resolve(__dirname, `./commands_manager/${file}`)).default;
   commands_manager.set(command.name, command);
 }
 
-// for (const file of fs.readdirSync(path.resolve(__dirname, "./commands_hidden")).filter((file) => file.match(/(.js|.ts)$/))) {
-//   const command: Command = require(path.resolve(__dirname, `./commands_hidden/${file}`)).default;
+// for (const file of readdirSync(resolve(__dirname, "./commands_hidden")).filter((file) => file.match(/(.js|.ts)$/))) {
+//   const command: Command = require(resolve(__dirname, `./commands_hidden/${file}`)).default;
 //   commands_hidden.set(command.name, command);
 // }
 
-for (const file of fs.readdirSync(path.resolve(__dirname, "./events")).filter((file) => file.match(/(.js|.ts)$/))) {
-  require(path.resolve(__dirname, `./events/${file}`));
+for (const file of readdirSync(resolve(__dirname, "./events")).filter((file) => file.match(/(.js|.ts)$/))) {
+  require(resolve(__dirname, `./events/${file}`));
 }
 
 client.login(process.env.TOKEN);
@@ -72,7 +72,7 @@ app.post("/fetch", async (req, res) => {
     }
     res.send(payload);
   } catch (err) {
-    Log.e(err);
+    log.e(err);
     res.sendStatus(400);
   }
 });
@@ -90,7 +90,7 @@ app.post("/roles", async (req, res) => {
     }
     res.json(payload);
   } catch (err) {
-    Log.e(err);
+    log.e(err);
     res.sendStatus(400);
   }
 });
@@ -118,11 +118,11 @@ app.put("/roles", async (req, res) => {
     }
     res.sendStatus(200);
   } catch (err) {
-    Log.e(err);
+    log.e(err);
     res.sendStatus(400);
   }
 });
 
 app.listen(process.env.HTTP_PORT || 20002, () => {
-  Log.i(`Listening on http://${process.env.HTTP_HOST || "localhost"}:${process.env.HTTP_PORT || 20002}`);
+  log.i(`Listening on http://${process.env.HTTP_HOST || "localhost"}:${process.env.HTTP_PORT || 20002}`);
 });

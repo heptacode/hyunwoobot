@@ -1,6 +1,6 @@
 import { EmbedFieldData } from "discord.js";
 import { sendEmbed } from "../modules/embedSender";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { commands, commands_manager, prefix } from "../app";
 import props from "../props";
 import { Interaction, Locale, State } from "../";
@@ -45,7 +45,7 @@ export default {
         { dm: true }
       );
     } catch (err) {
-      Log.e(`Help > ${err}`);
+      log.e(`Help > ${err}`);
     }
   },
 };

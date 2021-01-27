@@ -3,7 +3,7 @@ import ytdl from "ytdl-core";
 import youtube from "scrape-youtube";
 import { getLength } from "./converter";
 import { sendEmbed } from "./embedSender";
-import Log from "./logger";
+import { log } from "./logger";
 import { voiceConnect, voiceDisconnect, voiceStateCheck } from "./voiceManager";
 import { client } from "../app";
 import props from "../props";
@@ -95,7 +95,7 @@ export const play = async (state: State, interaction: Interaction) => {
       );
     }
   } catch (err) {
-    Log.e(`Play > 1 > ${err}`);
+    log.e(`Play > 1 > ${err}`);
   }
 };
 
@@ -136,7 +136,7 @@ const stream = async (state: State, interaction: Interaction) => {
           { guild: true }
         );
       } catch (err) {
-        Log.e(`Stream > DispatcherStart > ${err}`);
+        log.e(`Stream > DispatcherStart > ${err}`);
       }
     });
     state.connection.dispatcher.on("finish", async () => {
@@ -157,14 +157,14 @@ const stream = async (state: State, interaction: Interaction) => {
           state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 30000);
         }
       } catch (err) {
-        Log.e(`Stream > DispatcherFinish > ${err}`);
+        log.e(`Stream > DispatcherFinish > ${err}`);
       }
     });
     state.connection.dispatcher.on("error", (err) => {
-      Log.e(`Stream > DispatcherError > ${err}`);
+      log.e(`Stream > DispatcherError > ${err}`);
     });
   } catch (err) {
-    Log.e(`Stream > ${err}`);
+    log.e(`Stream > ${err}`);
   }
 };
 
@@ -195,7 +195,7 @@ export const skip = async (state: State, interaction: Interaction) => {
       { guild: true }
     );
   } catch (err) {
-    Log.e(`Skip > ${err}`);
+    log.e(`Skip > ${err}`);
   }
 };
 
@@ -206,7 +206,7 @@ export const pause = async (state: State, interaction: Interaction) => {
     state.connection.dispatcher.pause();
     state.isPlaying = false;
   } catch (err) {
-    Log.e(`Pause > ${err}`);
+    log.e(`Pause > ${err}`);
   }
 };
 
@@ -217,7 +217,7 @@ export const stop = async (state: State, interaction: Interaction) => {
     state.connection.dispatcher.pause();
     state.isPlaying = false;
   } catch (err) {
-    Log.e(`Stop > ${err}`);
+    log.e(`Stop > ${err}`);
   }
 };
 
@@ -236,7 +236,7 @@ export const toggleLoop = async (state: State, interaction: Interaction) => {
       { guild: true }
     );
   } catch (err) {
-    Log.e(`ToggleLoop > ${err}`);
+    log.e(`ToggleLoop > ${err}`);
   }
 };
 
@@ -255,6 +255,6 @@ export const toggleRepeat = async (state: State, interaction: Interaction) => {
       { guild: true }
     );
   } catch (err) {
-    Log.e(`ToggleRepeat > ${err}`);
+    log.e(`ToggleRepeat > ${err}`);
   }
 };

@@ -1,6 +1,6 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { getChannelID } from "../modules/converter";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import { Args, State } from "../";
 
@@ -18,7 +18,7 @@ export default {
       return message.react("✅");
     } catch (err) {
       message.react("❌");
-      Log.e(`Embed > ${err}`);
+      log.e(`Embed > ${err}`);
     }
   },
 };

@@ -1,6 +1,6 @@
 import { Guild, Message } from "discord.js";
 import { sendEmbed } from "./embedSender";
-import Log from "./logger";
+import { log } from "./logger";
 import { client } from "../app";
 import props from "../props";
 import { Interaction, Locale, State } from "../";
@@ -34,10 +34,10 @@ export const voiceConnect = async (state: State, interaction: Interaction) => {
 
     if (state.voiceChannel) {
       state.connection = await state.voiceChannel.join();
-      Log.d("VoiceConnect");
+      log.d("VoiceConnect");
     }
   } catch (err) {
-    Log.e(`VoiceConnect > ${err}`);
+    log.e(`VoiceConnect > ${err}`);
   }
 };
 
@@ -59,6 +59,6 @@ export const voiceDisconnect = (state: State, interaction: Interaction) => {
       );
     }
   } catch (err) {
-    Log.e(`VoiceDisconnect > ${err}`);
+    log.e(`VoiceDisconnect > ${err}`);
   }
 };

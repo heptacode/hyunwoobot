@@ -1,6 +1,6 @@
 import { Guild, GuildMember, Message, MessageEmbed, MessageEmbedOptions, TextChannel, User } from "discord.js";
 import { firestore } from "./firebase";
-import Log from "./logger";
+import { log } from "./logger";
 import { client } from "../app";
 import { Interaction } from "../";
 
@@ -63,6 +63,6 @@ export const sendEmbed = async (
     } else if (payload.message) {
     }
   } catch (err) {
-    Log.e(`EmbedSender > ${err}`);
+    log.e(`EmbedSender > ${err}`);
   }
 };

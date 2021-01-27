@@ -1,5 +1,5 @@
 import { client, states, commands, commands_manager } from "../app";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { Interaction } from "../";
 
 (client as any).ws.on("INTERACTION_CREATE", async (interaction: Interaction) => {
@@ -9,6 +9,6 @@ import { Interaction } from "../";
 
     command.execute(states.get(interaction.guild_id), interaction);
   } catch (err) {
-    Log.e(`InteractionCreate > ${err}`);
+    log.e(`InteractionCreate > ${err}`);
   }
 });

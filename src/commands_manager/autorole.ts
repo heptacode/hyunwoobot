@@ -1,7 +1,7 @@
 import { EmbedFieldData } from "discord.js";
 import { firestore } from "../modules/firebase";
 import { sendEmbed } from "../modules/embedSender";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import props from "../props";
 import { AutoRole, Interaction, Locale, State } from "../";
@@ -74,7 +74,7 @@ export default {
         { guild: true }
       );
     } catch (err) {
-      Log.e(`AutoRole > ${err}`);
+      log.e(`AutoRole > ${err}`);
     }
   },
 };

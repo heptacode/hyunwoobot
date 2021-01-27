@@ -1,7 +1,7 @@
 import { TextChannel, VoiceState } from "discord.js";
 import { sendEmbed } from "../modules/embedSender";
 import { firestore } from "../modules/firebase";
-import Log from "../modules/logger";
+import { log } from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";
 import { Config, PrivateRoom, VoiceRole } from "../";
@@ -78,7 +78,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         );
       }
     } catch (err) {
-      Log.e(`VoiceStateUpdate > Switch/Leave > ${err}`);
+      log.e(`VoiceStateUpdate > Switch/Leave > ${err}`);
     }
   }
 
@@ -270,7 +270,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         );
       }
     } catch (err) {
-      Log.e(`VoiceStateUpdate > Join/Switch > ${err}`);
+      log.e(`VoiceStateUpdate > Join/Switch > ${err}`);
     }
   }
 });
