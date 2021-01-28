@@ -5,7 +5,7 @@ import props from "../props";
 
 client.on("messageUpdate", async (oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage) => {
   try {
-    if (oldMessage.author.bot) return;
+    if (oldMessage.author.bot || oldMessage.channel.type === "dm") return;
 
     const messageEmbed: MessageEmbed = new MessageEmbed()
       .setColor(props.color.yellow)

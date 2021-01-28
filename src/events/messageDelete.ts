@@ -5,7 +5,7 @@ import props from "../props";
 
 client.on("messageDelete", async (message: Message | PartialMessage) => {
   try {
-    if (message.author.bot) return;
+    if (message.author.bot || message.channel.type === "dm") return;
 
     const messageEmbed: MessageEmbed = new MessageEmbed()
       .setColor(props.color.red)

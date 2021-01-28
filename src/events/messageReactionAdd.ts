@@ -7,7 +7,7 @@ import props from "../props";
 import { ReactionRole } from "../";
 
 client.on("messageReactionAdd", async (reaction: MessageReaction, user: User) => {
-  if (reaction.me) return;
+  if (reaction.me || reaction.message.channel.type === "dm") return;
   if (reaction.partial) {
     try {
       await reaction.fetch();
