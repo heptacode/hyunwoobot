@@ -24,7 +24,7 @@ export default {
           { interaction: interaction },
           {
             color: props.color.red,
-            title: `⚙️ ${state.locale.disconnect.disconnect}`,
+            title: `**⚙️ ${state.locale.disconnect.disconnect}**`,
             description: `❌ **${state.locale.disconnect.notVoiceChannel}**`,
           }
         );

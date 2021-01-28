@@ -41,7 +41,7 @@ export default {
         { interaction: interaction },
         {
           color: props.color.green,
-          title: state.locale.privateRoom.privateRoom,
+          title: `**${state.locale.privateRoom.privateRoom}**`,
           description: `✅ **${state.locale.privateRoom.set}**`,
           timestamp: new Date(),
         },

@@ -13,7 +13,7 @@ client.on("message", async (message: Message) => {
       return await message.reply({
         embed: {
           color: props.color.red,
-          title: "❌ Error",
+          title: "**❌ Error**",
           description: "**This channel is read-only.\n이 채널은 읽기 전용이예요.**",
         },
       });

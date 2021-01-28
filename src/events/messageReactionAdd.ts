@@ -1,7 +1,6 @@
 import { MessageReaction, User } from "discord.js";
 import { getHexfromEmoji } from "../modules/converter";
 import { sendEmbed } from "../modules/embedSender";
-import { firestore } from "../modules/firebase";
 import { log } from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";
@@ -18,12 +17,10 @@ client.on("messageReactionAdd", async (reaction: MessageReaction, user: User) =>
     }
   }
   try {
-    const channelDocRef = firestore.collection(reaction.message.guild.id).doc(reaction.message.channel.id);
-    const channelDocSnapshot = await channelDocRef.get();
-    if (!channelDocSnapshot.exists) return;
+    const reactionRole = states
+      .get(reaction.message.guild.id)
+      .reactionRoles.find((reactionRole: ReactionRole) => reactionRole.message === reaction.message.id && reactionRole.emoji === getHexfromEmoji(reaction.emoji.name));
 
-    const reactionRoles: ReactionRole[] = channelDocSnapshot.data().reactionRoles;
-    const reactionRole = reactionRoles.find((reactionRole: ReactionRole) => reactionRole.message === reaction.message.id && reactionRole.emoji === getHexfromEmoji(reaction.emoji.name));
     // Check If Role Exists
     if (!reactionRole || !reaction.message.guild.roles.cache.has(reactionRole.role)) return;
     // Check If User Has Role

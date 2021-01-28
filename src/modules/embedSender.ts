@@ -1,7 +1,6 @@
 import { Guild, GuildMember, Message, MessageEmbed, MessageEmbedOptions, TextChannel, User } from "discord.js";
-import { firestore } from "./firebase";
 import { log } from "./logger";
-import { client } from "../app";
+import { client, states } from "../app";
 import { Interaction } from "../";
 
 export const sendEmbed = async (
@@ -17,12 +16,7 @@ export const sendEmbed = async (
       let channel: TextChannel;
       if (options && options.guild && options.system) channel = guild.systemChannel;
       else if (options && options.guild && options.log) {
-        const logChannel = (
-          await firestore
-            .collection(payload.member ? payload.member.guild.id : payload.interaction.guild_id)
-            .doc("config")
-            .get()
-        ).data().log;
+        const logChannel = states.get(payload.member ? payload.member.guild.id : payload.interaction.guild_id).logChannel;
         if (!logChannel) return;
         channel = guild.channels.cache.get(logChannel) as TextChannel;
       } else if (payload.interaction) channel = guild.channels.cache.get(payload.interaction.channel_id) as TextChannel;

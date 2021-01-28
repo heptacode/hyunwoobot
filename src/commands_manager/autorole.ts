@@ -47,30 +47,29 @@ export default {
 
       const method = interaction.data.options[0].name;
 
-      const configDocRef = firestore.collection(interaction.guild_id).doc("config");
-      const autoRole = (await configDocRef.get()).data().autoRole;
-
-      let autoRoleConfig: AutoRole[] = autoRole;
-
       if (method === "view") {
       } else if (method === "add") {
-        autoRoleConfig.push({ type: interaction.data.options[0].options[0].value, role: interaction.data.options[0].options[1].value });
-        await configDocRef.update({ autoRole: autoRoleConfig });
+        state.autoRoles.push({ type: interaction.data.options[0].options[0].value, role: interaction.data.options[0].options[1].value });
+        await firestore.collection(interaction.guild_id).doc("config").update({ autoRole: state.autoRoles });
       } else if (method === "purge") {
-        autoRoleConfig = [];
-        await configDocRef.update({ autoRole: [] });
+        state.autoRoles = [];
+        await firestore.collection(interaction.guild_id).doc("config").update({ autoRole: [] });
       }
 
       const fields: EmbedFieldData[] = [];
-      if (autoRoleConfig.length >= 1) {
-        for (const autoRole of autoRoleConfig) {
+      if (state.autoRoles.length >= 1) {
+        for (const autoRole of state.autoRoles) {
           fields.push({ name: autoRole.type, value: `<@&${autoRole.role}>` });
         }
       }
 
       return sendEmbed(
         { interaction: interaction },
-        { color: props.color.yellow, title: `⚙️ ${state.locale.autoRole.autoRole}`, fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: state.locale.autoRole.empty }] },
+        {
+          color: props.color.yellow,
+          title: `**⚙️ ${state.locale.autoRole.autoRole}**`,
+          fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: state.locale.autoRole.empty }],
+        },
         { guild: true }
       );
     } catch (err) {

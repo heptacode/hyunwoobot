@@ -27,7 +27,7 @@ export default {
       for (const [name, command] of !isManager ? commands : commands_manager) {
         fields.push({
           name: `${command.messageOnly ? prefix : "/"}${name}${state.locale.usage[name] ? ` ${state.locale.usage[name]}` : ""}`,
-          value: state.locale.help[name],
+          value: state.locale.help[name] ? state.locale.help[name] : "\u200B",
           inline: true,
         });
       }

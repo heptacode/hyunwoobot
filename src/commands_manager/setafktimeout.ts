@@ -28,7 +28,7 @@ export default {
         { interaction: interaction },
         {
           color: props.color.green,
-          title: state.locale.afkTimeout.afkTimeout,
+          title: `**${state.locale.afkTimeout.afkTimeout}**`,
           description: `✅ **${state.locale.afkTimeout.set}${interaction.data.options[0].value}**`,
           timestamp: new Date(),
         },

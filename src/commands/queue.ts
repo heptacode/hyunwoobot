@@ -24,7 +24,7 @@ export default {
               name: String(state.volume),
               iconURL: props.icon.volume,
             },
-            title: state.queue[0].title,
+            title: `**${state.queue[0].title}**`,
             url: state.queue[0].videoURL,
             description: state.queue[0].channelName,
             thumbnail: { url: state.queue[0].thumbnailURL },

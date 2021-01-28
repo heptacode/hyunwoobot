@@ -70,59 +70,36 @@ export default {
       const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
 
       const method = interaction.data.options[0].name;
+      const messageID = interaction.data.options[0].options[0].value;
+      const emoji = interaction.data.options[0].options[1].value;
+      const role = interaction.data.options[0].options[2].value;
 
-      const channelDocRef = firestore.collection(guild.id).doc(channel.id);
-      let channelDocSnapshot = await channelDocRef.get();
-
-      if (!channelDocSnapshot.exists) {
-        await channelDocRef.set({ reactionRoles: [] });
-        channelDocSnapshot = await channelDocRef.get();
-      }
-
-      const reactionRoles: ReactionRole[] = channelDocSnapshot.data().reactionRoles;
+      const _message = await channel.messages.fetch(messageID);
 
       if (method === "add") {
         try {
-          const messageID = interaction.data.options[0].options[0].value;
-          const emoji = interaction.data.options[0].options[1].value;
-          const role = interaction.data.options[0].options[2].value;
-
-          const _message = await channel.messages.fetch(messageID);
           await _message.react(emoji);
 
-          reactionRoles.push({ message: _message.id, emoji: getHexfromEmoji(emoji), role: role });
-          return await channelDocRef.update({ reactionRoles: reactionRoles });
+          state.reactionRoles.push({ textChannel: channel.id, message: _message.id, emoji: getHexfromEmoji(emoji), role: role });
+          return await firestore.collection(guild.id).doc(channel.id).update({ reactionRoles: state.reactionRoles });
         } catch (err) {
           log.e(`ReactionRole > Add > ${err}`);
         }
       } else if (method === "remove") {
         try {
-          const messageID = interaction.data.options[0].options[0].value;
-          const emoji = interaction.data.options[0].options[1].value;
-
-          const _message = await channel.messages.fetch(messageID);
-
-          const idx = reactionRoles.findIndex((reactionRole: ReactionRole) => reactionRole.emoji === getHexfromEmoji(emoji));
+          const idx = state.reactionRoles.findIndex((reactionRole: ReactionRole) => reactionRole.emoji === getHexfromEmoji(emoji));
           if (!idx) return;
 
-          reactionRoles.splice(idx, 1);
-          await channelDocRef.update({ reactionRoles: reactionRoles });
+          state.reactionRoles.splice(idx, 1);
+          await firestore.collection(guild.id).doc(channel.id).update({ reactionRoles: state.reactionRoles });
           return await _message.reactions.cache.get(emoji).remove();
         } catch (err) {
           log.e(`ReactionRole > Remove > ${err}`);
         }
       } else if (method === "purge") {
         try {
-          const messageID = interaction.data.options[0].options[0].value;
-
-          const _message = await channel.messages.fetch(messageID);
-
-          for (const reactionRole of reactionRoles) {
-            const idx = reactionRoles.findIndex((reactionRole: ReactionRole) => reactionRole.message === messageID);
-            reactionRoles.splice(idx, 1);
-          }
-
-          await channelDocRef.update({ reactionRoles: reactionRoles });
+          state.reactionRoles = [];
+          await firestore.collection(guild.id).doc(channel.id).update({ reactionRoles: [] });
           return await _message.reactions.removeAll();
         } catch (err) {
           log.e(`ReactionRole > Purge > ${err}`);

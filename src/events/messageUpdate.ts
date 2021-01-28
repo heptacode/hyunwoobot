@@ -1,5 +1,4 @@
 import { Message, MessageEmbed, PartialMessage, TextChannel } from "discord.js";
-import { firestore } from "../modules/firebase";
 import { log } from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";
@@ -8,11 +7,9 @@ client.on("messageUpdate", async (oldMessage: Message | PartialMessage, newMessa
   try {
     if (oldMessage.author.bot) return;
 
-    const config = (await firestore.collection(oldMessage.guild.id).doc("config").get()).data();
-
     const messageEmbed: MessageEmbed = new MessageEmbed()
       .setColor(props.color.yellow)
-      .setAuthor(states.get(oldMessage.guild.id).locale.log.messageEdit, props.icon.edit)
+      .setAuthor(states.get(newMessage.guild.id).locale.log.messageEdit, props.icon.edit)
       .setThumbnail(oldMessage.attachments.size ? oldMessage.attachments.array()[0].proxyURL : null)
       .setTitle(`**${(oldMessage.channel as TextChannel).name}**`)
       .setDescription(
@@ -21,8 +18,8 @@ client.on("messageUpdate", async (oldMessage: Message | PartialMessage, newMessa
       .setFooter(oldMessage.author.tag, oldMessage.author.avatarURL())
       .setTimestamp(new Date());
 
-    if (config.logMessageEvents)
-      return await (client.channels.cache.get(config.log) as TextChannel).send(
+    if (states.get(newMessage.guild.id).logMessageEvents)
+      return await (client.channels.cache.get(states.get(newMessage.guild.id).logChannel) as TextChannel).send(
         oldMessage.attachments.size && oldMessage.attachments.array()[0].width ? messageEmbed : messageEmbed.attachFiles(oldMessage.attachments.array())
       );
   } catch (err) {

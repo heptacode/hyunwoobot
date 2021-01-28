@@ -21,6 +21,25 @@ interface Locale {
     pending: string;
     changed: string;
   };
+  usage: {
+    help: string;
+    play: string;
+    volume: string;
+    //
+    alarm: string;
+    autorole: string;
+    delete: string;
+    disconnect: string;
+    edit: string;
+    embed: string;
+    locale: string;
+    log: string;
+    move: string;
+    reactionrole: string;
+    setafktimeout: string;
+    userrole: string;
+    voicerole: string;
+  };
   help: {
     help: string;
     description: string;
@@ -48,24 +67,7 @@ interface Locale {
     privateroom: string;
     reactionrole: string;
     setafktimeout: string;
-    voicerole: string;
-  };
-  usage: {
-    help: string;
-    play: string;
-    volume: string;
-    //
-    alarm: string;
-    autorole: string;
-    delete: string;
-    disconnect: string;
-    edit: string;
-    embed: string;
-    locale: string;
-    log: string;
-    move: string;
-    reactionrole: string;
-    setafktimeout: string;
+    userrole: string;
     voicerole: string;
   };
   insufficientPerms: {
@@ -166,6 +168,16 @@ interface Locale {
   voiceDisconnect: {
     notInVoiceChannel: string;
   };
+  userRole: {
+    userRole: string;
+    empty: string;
+    options: {
+      view: string;
+      add: string;
+      remove: string;
+      purge: string;
+    };
+  };
   voiceRole: {
     voiceRole: string;
     updated: string;
@@ -252,9 +264,20 @@ interface CommandOptionChoice {
 }
 
 interface State {
+  afkTimeout: number;
   afkChannel: Collection<string, NodeJS.Timeout>;
   alarmChannel: string | null;
+  autoRoles: AutoRole[];
   locale: Locale;
+  logChannel: string | null;
+  logMessageEvents: boolean;
+  privateRoom: string | null;
+  privateRooms: PrivateRoom[];
+  reactionRoles: ReactionRole[];
+  timeout: NodeJS.Timeout | null;
+  userRoles: UserRole[];
+  voiceRoles: VoiceRole[];
+
   textChannel: TextChannel;
   voiceChannel: VoiceChannel;
   connection: VoiceConnection;
@@ -270,19 +293,20 @@ interface State {
   isRepeated: boolean;
   isPlaying: boolean;
   volume: number;
-  timeout: NodeJS.Timeout | null;
 }
 
 interface Config {
   afkTimeout: number;
   alarmChannel: string | null;
-  autorole: AutoRole[];
+  autoroles: AutoRole[];
   locale: string;
-  log: string | null;
+  logChannel: string | null;
+  logMessageEvents: boolean;
   privateRoom: string | null;
   privateRooms: PrivateRoom[];
+  reactionRoles: ReactionRole[];
   userRoles: UserRole[];
-  voiceRole: VoiceRole[];
+  voiceRoles: VoiceRole[];
 }
 
 interface UserRole {
@@ -306,6 +330,7 @@ interface AutoRole {
 }
 
 interface ReactionRole {
+  textChannel: string;
   message: string;
   emoji: string;
   role: string;

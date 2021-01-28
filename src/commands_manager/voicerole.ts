@@ -1,5 +1,5 @@
 import { EmbedFieldData } from "discord.js";
-import { getChannelName, getRoleName } from "../modules/converter";
+import { getChannelName } from "../modules/converter";
 import { sendEmbed } from "../modules/embedSender";
 import { firestore } from "../modules/firebase";
 import { log } from "../modules/logger";
@@ -78,31 +78,28 @@ export default {
 
       const configDocRef = firestore.collection(guild.id).doc("config");
 
-      const voiceRoles: VoiceRole[] = (await configDocRef.get()).data().voiceRole as VoiceRole[];
-
       if (method === "view") {
       } else if (method === "add") {
-        const voiceChannel = interaction.data.options[0].options[0].value;
-        const role = interaction.data.options[0].options[1].value;
-        const textChannel = interaction.data.options[0].options.length >= 3 ? interaction.data.options[0].options[2].value : null;
+        state.voiceRoles.push({
+          voiceChannel: interaction.data.options[0].options[0].value,
+          role: interaction.data.options[0].options[1].value,
+          textChannel: interaction.data.options[0].options.length >= 3 ? interaction.data.options[0].options[2].value : null,
+        });
 
-        if (!textChannel) voiceRoles.push({ voiceChannel: voiceChannel, role: role });
-        else voiceRoles.push({ voiceChannel: voiceChannel, role: role, textChannel: textChannel });
-
-        await configDocRef.update({ voiceRole: voiceRoles });
+        await configDocRef.update({ voiceRole: state.voiceRoles });
       } else if (method === "remove") {
         const voiceChannel = interaction.data.options[0].options[0].value;
 
-        const idx = voiceRoles.findIndex((voiceConfig: VoiceRole) => voiceConfig.voiceChannel === voiceChannel);
-        voiceRoles.splice(idx, 1);
+        const idx = state.voiceRoles.findIndex((voiceRole: VoiceRole) => voiceRole.voiceChannel === voiceChannel);
+        state.voiceRoles.splice(idx, 1);
 
-        await configDocRef.update({ voiceRole: voiceRoles });
+        await configDocRef.update({ voiceRole: state.voiceRoles });
       } else if (method === "purge") {
-        voiceRoles.splice(0, -1);
+        state.voiceRoles = [];
         await configDocRef.update({ voiceRole: [] });
       } else if (method === "update") {
         const payload: { member: string; action: string; role: string }[] = [];
-        for (const voiceRole of voiceRoles) {
+        for (const voiceRole of state.voiceRoles) {
           if (!client.channels.cache.has(voiceRole.voiceChannel)) continue;
 
           for (const [memberID, member] of client.guilds.cache.get(interaction.guild_id).roles.cache.get(voiceRole.role).members) {
@@ -119,7 +116,7 @@ export default {
         }
 
         let description = payload.length ? `✅ **${state.locale.voiceRole.updated.replace("{cnt}", String(payload.length))}**` : `🙅 **${state.locale.voiceRole.noChanges}**\n`;
-        payload.forEach((item) => (description += `\n**<@${item.member}> ${item.action} <@&${item.role}>**`));
+        payload.forEach((item) => (description += `\n<@${item.member}> **${item.action}** <@&${item.role}>`));
 
         return sendEmbed(
           { interaction: interaction },
@@ -134,19 +131,19 @@ export default {
       }
 
       const fields: EmbedFieldData[] = [];
-      if (voiceRoles.length >= 1)
-        voiceRoles.forEach((voiceConfig: VoiceRole) => {
+      if (state.voiceRoles.length >= 1)
+        state.voiceRoles.forEach((voiceRole: VoiceRole) =>
           fields.push({
-            name: `${getChannelName(guild, voiceConfig.voiceChannel)}`,
-            value: `<@&${voiceConfig.role}>${voiceConfig.textChannel ? `(<#${voiceConfig.textChannel}>)` : ""}`,
-          });
-        });
+            name: `${getChannelName(guild, voiceRole.voiceChannel)}`,
+            value: `<@&${voiceRole.role}>${voiceRole.textChannel ? `(<#${voiceRole.textChannel}>)` : ""}`,
+          })
+        );
 
       return sendEmbed(
         { interaction: interaction },
         {
           color: props.color.yellow,
-          title: `⚙️ ${state.locale.voiceRole.voiceRole}`,
+          title: `**⚙️ ${state.locale.voiceRole.voiceRole}**`,
           fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: state.locale.voiceRole.empty }],
           timestamp: new Date(),
         },

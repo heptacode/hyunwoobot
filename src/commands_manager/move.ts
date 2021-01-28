@@ -39,7 +39,7 @@ export default {
           { interaction: interaction },
           {
             color: props.color.red,
-            title: `⚙️ ${state.locale.move.move}`,
+            title: `**⚙️ ${state.locale.move.move}**`,
             description: `❌ **${state.locale.move.notVoiceChannel}**`,
           }
         );
@@ -57,7 +57,7 @@ export default {
         { interaction: interaction },
         {
           color: props.color.green,
-          title: `⚙️ ${state.locale.move.move}`,
+          title: `**⚙️ ${state.locale.move.move}**`,
           description: `✅ **${cnt}${state.locale.move.moved}${getChannelName(guild, fromChannel.id)} ➡️ ${getChannelName(guild, targetChannel.id)}**`,
           timestamp: new Date(),
         },

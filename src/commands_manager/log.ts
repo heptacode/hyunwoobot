@@ -22,13 +22,13 @@ export default {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_MESSAGES")) return;
 
-      await firestore.collection(interaction.guild_id).doc("config").update({ log: interaction.data.options[0].value });
+      await firestore.collection(interaction.guild_id).doc("config").update({ logChannel: interaction.data.options[0].value });
 
       return sendEmbed(
         { interaction: interaction },
         {
           color: props.color.green,
-          title: `📦 ${state.locale.log.log}`,
+          title: `**📦 ${state.locale.log.log}**`,
           description: `✅ **${state.locale.log.set}<#${interaction.data.options[0].value}>**`,
           timestamp: new Date(),
         },

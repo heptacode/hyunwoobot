@@ -16,9 +16,20 @@ client.once("ready", async () => {
       const config: Config = (await collection.doc("config").get()).data() as Config;
 
       states.set(guild.id, {
+        afkTimeout: config.afkTimeout,
         afkChannel: new Collection(),
         alarmChannel: config.alarmChannel,
+        autoRoles: config.autoroles,
         locale: locales.get(config.locale),
+        logChannel: config.logChannel,
+        logMessageEvents: config.logMessageEvents,
+        privateRoom: config.privateRoom,
+        privateRooms: config.privateRooms,
+        reactionRoles: config.reactionRoles,
+        timeout: null,
+        userRoles: config.userRoles,
+        voiceRoles: config.voiceRoles,
+
         textChannel: null,
         voiceChannel: null,
         connection: null,
@@ -27,13 +38,12 @@ client.once("ready", async () => {
         isRepeated: false,
         isPlaying: false,
         volume: 1,
-        timeout: null,
       } as State);
 
       log.d(`LocalDB Initialize for guild [ ${guild.name} ]`);
 
-      for (const doc of (await collection.get()).docs) {
-        if (!["server", "config", "commands"].includes(doc.id)) ((await guild.channels.cache.get(doc.id)) as TextChannel).messages.fetch({ limit: 100 });
+      for (const reactionRole of config.reactionRoles) {
+        await (guild.channels.cache.get(reactionRole.textChannel) as TextChannel).messages.fetch({ limit: 100 });
       }
 
       const commandsDocRef = collection.doc("commands");

@@ -4,36 +4,36 @@ import { firestore } from "../modules/firebase";
 import { log } from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";
-import { Config, PrivateRoom, VoiceRole } from "../";
+import { PrivateRoom, State, VoiceRole } from "../";
 
 client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState) => {
   if ((oldState && newState && oldState.channelID === newState.channelID) || oldState.member.user.bot || newState.member.user.bot) return;
 
+  const state: State = states.get(newState.guild.id || oldState.guild.id);
+  const configDocRef = firestore.collection(newState.guild.id || oldState.guild.id).doc("config");
+
   if (oldState.channelID) {
     // User Leave
     try {
-      const configDocRef = firestore.collection(newState.guild.id).doc("config");
-      const config = (await configDocRef.get()).data() as Config;
-
-      if (config.privateRoom && config.privateRooms.find((privateRoomItem: PrivateRoom) => privateRoomItem.host === oldState.member.id)) {
-        const _privateRoom: PrivateRoom = config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
+      if (state.privateRoom && state.privateRooms.find((privateRoomItem: PrivateRoom) => privateRoomItem.host === oldState.member.id)) {
+        const _privateRoom: PrivateRoom = state.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
         if (_privateRoom && oldState.guild.channels.cache.has(_privateRoom.room) && oldState.channelID !== newState.channelID) {
           for (const [memberID, member] of oldState.guild.channels.cache.get(_privateRoom.room).members) {
-            await oldState.guild.channels.cache.get(config.privateRoom).permissionOverwrites.get(memberID).delete("[PrivateRoom] Deletion");
+            await oldState.guild.channels.cache.get(state.privateRoom).permissionOverwrites.get(memberID).delete("[PrivateRoom] Deletion");
           }
 
           await oldState.guild.channels.cache.get(_privateRoom.room).delete("[PrivateRoom] Deletion");
           await oldState.guild.channels.cache.get(_privateRoom.waiting).delete("[PrivateRoom] Deletion");
           await oldState.guild.channels.cache.get(_privateRoom.text).delete("[PrivateRoom] Deletion");
 
-          const idx = config.privateRooms.findIndex((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
-          config.privateRooms.splice(idx, 1);
-          await configDocRef.update({ privateRooms: config.privateRooms });
+          const idx = state.privateRooms.findIndex((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
+          state.privateRooms.splice(idx, 1);
+          await configDocRef.update({ privateRooms: state.privateRooms });
 
-          await oldState.guild.channels.cache.get(config.privateRoom).permissionOverwrites.get(oldState.member.id).delete("[PrivateRoom] Deletion");
+          await oldState.guild.channels.cache.get(state.privateRoom).permissionOverwrites.get(oldState.member.id).delete("[PrivateRoom] Deletion");
         }
-      } else if (config.privateRoom && config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID)) {
-        const _privateText: TextChannel = oldState.guild.channels.cache.get(config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID).text) as TextChannel;
+      } else if (state.privateRoom && state.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID)) {
+        const _privateText: TextChannel = oldState.guild.channels.cache.get(state.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID).text) as TextChannel;
         if (_privateText) {
           await _privateText.send({
             embed: {
@@ -45,15 +45,15 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           await _privateText.updateOverwrite(oldState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Switch/Leave");
         }
 
-        await oldState.guild.channels.cache.get(config.privateRoom).permissionOverwrites.get(oldState.member.id).delete("[PrivateRoom] Switch/Leave");
+        await oldState.guild.channels.cache.get(state.privateRoom).permissionOverwrites.get(oldState.member.id).delete("[PrivateRoom] Switch/Leave");
       }
 
-      if (states.get(oldState.guild.id).afkChannel.has(oldState.member.id)) {
-        clearTimeout(states.get(oldState.guild.id).afkChannel.get(oldState.member.id));
-        states.get(oldState.guild.id).afkChannel.delete(oldState.member.id);
+      if (state.afkChannel.has(oldState.member.id)) {
+        clearTimeout(state.afkChannel.get(oldState.member.id));
+        state.afkChannel.delete(oldState.member.id);
       }
 
-      const voiceRole: VoiceRole = config.voiceRole.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === oldState.channelID);
+      const voiceRole: VoiceRole = state.voiceRoles.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === oldState.channelID);
       if (voiceRole && oldState.member.roles.cache.has(voiceRole.role)) {
         if (voiceRole.textChannel) {
           (oldState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
@@ -70,7 +70,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           { member: oldState.member },
           {
             color: props.color.cyan,
-            author: { name: states.get(oldState.guild.id).locale.voiceRole.roleRemoved, iconURL: props.icon.role_remove },
+            author: { name: state.locale.voiceRole.roleRemoved, iconURL: props.icon.role_remove },
             description: `<@${oldState.member.user.id}> -= <@&${voiceRole.role}>`,
             timestamp: new Date(),
           },
@@ -85,10 +85,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
   if (newState.channelID) {
     // User Join
     try {
-      const configDocRef = firestore.collection(newState.guild.id).doc("config");
-      const config = (await configDocRef.get()).data() as Config;
-
-      if (config.privateRoom === newState.channelID) {
+      if (state.privateRoom === newState.channelID) {
         const _privateRoom = await newState.guild.channels.create(`🔒 ${newState.member.user.username}`, {
           type: "voice",
           permissionOverwrites: [
@@ -104,16 +101,16 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
             },
             { type: "role", id: newState.guild.roles.everyone.id, deny: ["CREATE_INSTANT_INVITE", "CONNECT"] },
           ],
-          parent: newState.guild.channels.cache.get(config.privateRoom).parent,
+          parent: newState.guild.channels.cache.get(state.privateRoom).parent,
         });
 
         // Move Host to Created Room
         await newState.member.voice.setChannel(_privateRoom, `[PrivateRoom] Creation`);
 
-        await newState.guild.channels.cache.get(config.privateRoom).updateOverwrite(newState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Creation");
+        await newState.guild.channels.cache.get(state.privateRoom).updateOverwrite(newState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Creation");
 
         const _waitingRoomID = await (
-          await newState.guild.channels.create(`🚪 ${newState.member.user.username} ${states.get(newState.guild.id).locale.privateRoom.waitingRoom}`, {
+          await newState.guild.channels.create(`🚪 ${newState.member.user.username} ${state.locale.privateRoom.waitingRoom}`, {
             type: "voice",
             permissionOverwrites: [
               {
@@ -128,7 +125,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
               },
               { type: "role", id: newState.guild.roles.everyone.id, deny: ["CREATE_INSTANT_INVITE", "SPEAK"] },
             ],
-            parent: newState.guild.channels.cache.get(config.privateRoom).parent,
+            parent: newState.guild.channels.cache.get(state.privateRoom).parent,
           })
         ).id;
 
@@ -147,35 +144,35 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
             },
             { type: "role", id: newState.guild.roles.everyone.id, deny: ["VIEW_CHANNEL", "CREATE_INSTANT_INVITE", "READ_MESSAGE_HISTORY"] },
           ],
-          parent: newState.guild.channels.cache.get(config.privateRoom).parent,
+          parent: newState.guild.channels.cache.get(state.privateRoom).parent,
         });
 
         await _privateText.send({
           embed: {
             color: props.color.green,
-            title: `🚪 ${states.get(newState.guild.id).locale.privateRoom.privateRoom}`,
-            description: `✅ **${states.get(newState.guild.id).locale.privateRoom.privateTextCreated}**`,
+            title: `**🚪 ${state.locale.privateRoom.privateRoom}**`,
+            description: `✅ **${state.locale.privateRoom.privateTextCreated}**`,
             timestamp: new Date(),
           },
         });
 
-        config.privateRooms.push({ host: newState.member.id, text: _privateText.id, room: _privateRoom.id, waiting: _waitingRoomID });
-        return await configDocRef.update({ privateRooms: config.privateRooms });
-      } else if (config.privateRoom && config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.waiting === newState.channelID || privateRoom.room === newState.channelID)) {
-        const _privateRoom: PrivateRoom = config.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.waiting === newState.channelID || privateRoom.room === newState.channelID);
+        state.privateRooms.push({ host: newState.member.id, text: _privateText.id, room: _privateRoom.id, waiting: _waitingRoomID });
+        return await configDocRef.update({ privateRooms: state.privateRooms });
+      } else if (state.privateRoom && state.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.waiting === newState.channelID || privateRoom.room === newState.channelID)) {
+        const _privateRoom: PrivateRoom = state.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.waiting === newState.channelID || privateRoom.room === newState.channelID);
         const _privateText: TextChannel = newState.guild.channels.cache.get(_privateRoom.text) as TextChannel;
 
         if (_privateRoom.waiting === newState.channelID) {
           return await _privateText.send({
             embed: {
               color: props.color.yellow,
-              title: `🚪 ${states.get(newState.guild.id).locale.privateRoom.privateRoom}`,
-              description: `**<@${newState.member.user.id}>${states.get(newState.guild.id).locale.privateRoom.waitingForMove}**`,
+              title: `**🚪 ${state.locale.privateRoom.privateRoom}**`,
+              description: `**<@${newState.member.user.id}>${state.locale.privateRoom.waitingForMove}**`,
               timestamp: new Date(),
             },
           });
         } else if (_privateRoom.room === newState.channelID && _privateRoom.host !== newState.member.id) {
-          await newState.guild.channels.cache.get(config.privateRoom).updateOverwrite(newState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Accepted");
+          await newState.guild.channels.cache.get(state.privateRoom).updateOverwrite(newState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Accepted");
           await _privateText.updateOverwrite(newState.member, { VIEW_CHANNEL: true }, "[PrivateRoom] Accepted");
 
           return await _privateText.send({
@@ -187,13 +184,13 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         }
       }
 
-      if (states.get(newState.guild.id).afkChannel.has(newState.member.id)) {
-        clearTimeout(states.get(newState.guild.id).afkChannel.get(newState.member.id));
-        states.get(newState.guild.id).afkChannel.delete(newState.member.id);
+      if (state.afkChannel.has(newState.member.id)) {
+        clearTimeout(state.afkChannel.get(newState.member.id));
+        state.afkChannel.delete(newState.member.id);
       }
 
-      if (config.afkTimeout > 0 && newState.channelID === newState.guild.afkChannelID) {
-        states.get(newState.guild.id).afkChannel.set(
+      if (state.afkTimeout > 0 && newState.channelID === newState.guild.afkChannelID) {
+        state.afkChannel.set(
           newState.member.id,
           setTimeout(async () => {
             try {
@@ -205,7 +202,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
                 { member: newState.member },
                 {
                   color: props.color.purple,
-                  description: `**${states.get(newState.guild.id).locale.afkTimeout.disconnected_dm}**`,
+                  description: `**${state.locale.afkTimeout.disconnected_dm}**`,
                 },
                 { dm: true }
               );
@@ -215,16 +212,16 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
                 {
                   color: props.color.cyan,
                   author: {
-                    name: states.get(newState.guild.id).locale.afkTimeout.afkTimeout,
+                    name: state.locale.afkTimeout.afkTimeout,
                     iconURL: props.icon.call_end,
                   },
-                  description: `**<@${newState.member.user.id}>${states.get(newState.guild.id).locale.afkTimeout.disconnected}**`,
+                  description: `**<@${newState.member.user.id}>${state.locale.afkTimeout.disconnected}**`,
                   timestamp: new Date(),
                 },
                 { guild: true, log: true }
               );
             } catch (err) {}
-          }, config.afkTimeout * 60000)
+          }, state.afkTimeout * 60000)
         );
 
         return await sendEmbed(
@@ -232,7 +229,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           {
             color: props.color.cyan,
             author: {
-              name: `${states.get(newState.guild.id).locale.afkTimeout.countdownStarted}(${config.afkTimeout}${states.get(newState.guild.id).locale.minute})`,
+              name: `${state.locale.afkTimeout.countdownStarted}(${state.afkTimeout}${state.locale.minute})`,
               iconURL: props.icon.timer,
             },
             description: `<@${newState.member.user.id}>`,
@@ -242,7 +239,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         );
       }
 
-      const voiceRole: VoiceRole = config.voiceRole.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === newState.channelID);
+      const voiceRole: VoiceRole = state.voiceRoles.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === newState.channelID);
       if (voiceRole && !newState.member.roles.cache.has(voiceRole.role)) {
         await newState.member.roles.add(voiceRole.role, "[VoiceRole] Join Voice");
 
@@ -260,7 +257,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           {
             color: props.color.cyan,
             author: {
-              name: states.get(newState.guild.id).locale.voiceRole.roleAppended,
+              name: state.locale.voiceRole.roleAppended,
               iconURL: props.icon.role_append,
             },
             description: `<@${newState.member.user.id}> += <@&${voiceRole.role}>`,

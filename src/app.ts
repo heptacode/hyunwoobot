@@ -65,9 +65,10 @@ app.post("/fetch", async (req, res) => {
       guilds: [],
     };
     const guilds: APIGuild[] = (await axios.get("https://discord.com/api/v8/users/@me/guilds", { headers: { Authorization: `Bearer ${req.body.token}` } })).data;
-    for (const collection of await firestore.listCollections()) {
-      const guild: APIGuild = guilds.find((guild: APIGuild) => guild.id === collection.id);
+    for (const [guildID, state] of states) {
+      const guild: APIGuild = guilds.find((guild: APIGuild) => guild.id === guildID);
       if (!guild) continue;
+
       payload.guilds.push(guild);
     }
     res.send(payload);

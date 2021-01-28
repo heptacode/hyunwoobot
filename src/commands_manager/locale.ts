@@ -51,9 +51,9 @@ export default {
         { guild: true }
       );
 
-      await configDocRef.update({ locale: interaction.data.options[0].value });
-
       state.locale = locales.get(interaction.data.options[0].value);
+
+      await configDocRef.update({ locale: interaction.data.options[0].value });
 
       const payload: any = {};
       for (const [name, command] of commands) {
