@@ -124,6 +124,15 @@ app.put("/roles", async (req, res) => {
   }
 });
 
+app.post("/userRoles", async (req, res) => {
+  try {
+    res.json(states.get(req.body.guild).userRoles);
+  } catch (err) {
+    log.e(err);
+    res.sendStatus(400);
+  }
+});
+
 app.listen(process.env.HTTP_PORT || 20002, () => {
   log.i(`Listening on http://${process.env.HTTP_HOST || "localhost"}:${process.env.HTTP_PORT || 20002}`);
 });
