@@ -1,4 +1,4 @@
-import { Collection, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
+import { Activity, Collection, PresenceStatus, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
 
 interface Locale {
   on: string;
@@ -342,15 +342,6 @@ interface VoiceRole {
   textChannel?: string;
 }
 
-interface APIGuild {
-  id: string;
-  name: string;
-  icon: string;
-  owner: boolean;
-  permissions: number;
-  features: string[];
-}
-
 interface APIUser {
   id: string;
   username: string;
@@ -362,8 +353,25 @@ interface APIUser {
   mfa_enabled: boolean;
 }
 
-interface APIUserRole {
+interface APIGuild {
   id: string;
   name: string;
-  color: string | null;
+  icon: string;
+  owner: boolean;
+  permissions: number;
+  features: string[];
+  member: APIGuildMember;
+  userRoles: UserRole[];
+}
+
+interface APIGuildMember {
+  displayName: string;
+  displayHexColor: string;
+  presence: APIGuildUserPresence;
+  roles: string[];
+}
+
+interface APIGuildUserPresence {
+  activities: Array<Activity>;
+  status: PresenceStatus;
 }

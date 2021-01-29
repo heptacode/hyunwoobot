@@ -6,12 +6,11 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import compression from "compression";
-import { Client, Collection } from "discord.js";
+import { Client, Collection, GuildMember } from "discord.js";
 import { log } from "./modules/logger";
 import props from "./props";
 import "dotenv/config";
-import { APIGuild, APIUserRole, Command, Locale, State, UserRole } from "./";
-import { firestore } from "./modules/firebase";
+import { APIGuild, APIGuildMember, APIUser, Command, Locale, State, UserRole } from "./";
 
 export const prefix: string = process.env.PREFIX || props.bot.prefix;
 export const client: Client = new Client();
@@ -58,9 +57,28 @@ app.set("trust proxy", true);
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.json({ limit: "50mb" }));
 
+const fetchGuildMember = (guildID: string, memberID: string): APIGuildMember => {
+  const _roles: string[] = [];
+
+  const member = client.guilds.cache.get(guildID).member(memberID);
+  for (const userRole of states.get(guildID).userRoles) {
+    if (member.roles.cache.has(userRole.id)) _roles.push(userRole.id);
+  }
+
+  return {
+    displayName: member.displayName,
+    displayHexColor: member.displayHexColor,
+    presence: {
+      activities: member.user.presence.activities,
+      status: member.user.presence.status,
+    },
+    roles: _roles,
+  };
+};
+
 app.post("/fetch", async (req, res) => {
   try {
-    const payload = {
+    const payload: { user: APIUser; guilds: APIGuild[] } = {
       user: (await axios.get("https://discord.com/api/v8/users/@me", { headers: { Authorization: `Bearer ${req.body.token}` } })).data,
       guilds: [],
     };
@@ -69,7 +87,11 @@ app.post("/fetch", async (req, res) => {
       const guild: APIGuild = guilds.find((guild: APIGuild) => guild.id === guildID);
       if (!guild) continue;
 
-      payload.guilds.push(guild);
+      payload.guilds.push({
+        ...guild,
+        member: fetchGuildMember(guildID, payload.user.id),
+        userRoles: states.get(guildID).userRoles,
+      });
     }
     res.send(payload);
   } catch (err) {
@@ -78,18 +100,14 @@ app.post("/fetch", async (req, res) => {
   }
 });
 
-app.post("/roles", async (req, res) => {
+app.post("/guild", async (req, res) => {
   try {
-    const payload = [];
-    const member = client.guilds.cache.get(req.body.guild).members.cache.get(req.body.member);
-    const memberRolesCache = member.roles.cache;
-    const userRoles: UserRole[] = (await firestore.collection(req.body.guild).doc("config").get()).data().userRoles;
-    if (!member || !userRoles) return res.sendStatus(404);
+    if (!states.get(req.body.guild) || !client.guilds.cache.get(req.body.guild).member(req.body.member)) return;
 
-    for (const userRole of userRoles) {
-      if (memberRolesCache.has(userRole.id)) payload.push(userRole.id);
-    }
-    res.json(payload);
+    res.json({
+      member: fetchGuildMember(req.body.guild, req.body.member),
+      userRoles: states.get(req.body.guild).userRoles,
+    });
   } catch (err) {
     log.e(err);
     res.sendStatus(400);
@@ -98,35 +116,24 @@ app.post("/roles", async (req, res) => {
 
 app.put("/roles", async (req, res) => {
   try {
-    const member = client.guilds.cache.get(req.body.guild).members.cache.get(req.body.member);
-    const memberRole = member.roles;
+    const member: GuildMember = client.guilds.cache.get(req.body.guild).member(req.body.member);
 
     if (!member || !req.body.roles) return res.sendStatus(404);
 
-    const userRoles: APIUserRole[] = (await firestore.collection(req.body.guild).doc("config").get()).data().userRoles;
-
     for (const roleID of req.body.roles) {
-      if (!client.guilds.cache.get(req.body.guild).roles.cache.has(roleID) || userRoles.findIndex((userRole: APIUserRole) => userRole.id === roleID) === -1) return res.sendStatus(404);
+      if (!client.guilds.cache.get(req.body.guild).roles.cache.has(roleID) || states.get(req.body.guild).userRoles.findIndex((userRole: UserRole) => userRole.id === roleID) === -1)
+        return res.sendStatus(404);
     }
 
-    for (const userRole of userRoles) {
+    for (const userRole of states.get(req.body.guild).userRoles) {
       const idx = req.body.roles.findIndex((roleID) => roleID === userRole.id);
       if (idx !== -1) {
-        if (!memberRole.cache.has(userRole.id)) await memberRole.add(userRole.id, "[Dashboard] Role Update");
+        if (!member.roles.cache.has(userRole.id)) await member.roles.add(userRole.id, "[Dashboard] Role Update");
       } else {
-        if (memberRole.cache.has(userRole.id)) await memberRole.remove(userRole.id, "[Dashboard] Role Update");
+        if (member.roles.cache.has(userRole.id)) await member.roles.remove(userRole.id, "[Dashboard] Role Update");
       }
     }
     res.sendStatus(200);
-  } catch (err) {
-    log.e(err);
-    res.sendStatus(400);
-  }
-});
-
-app.post("/userRoles", async (req, res) => {
-  try {
-    res.json(states.get(req.body.guild).userRoles);
   } catch (err) {
     log.e(err);
     res.sendStatus(400);
