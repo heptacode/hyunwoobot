@@ -3,12 +3,11 @@ import { firestore } from "../modules/firebase";
 import { log } from "../modules/logger";
 import { client, commands, commands_manager, locales, states } from "../app";
 import { Command, Config, State } from "../";
-import locale from "../commands_manager/locale";
 
 client.once("ready", async () => {
   try {
     for (const collection of await firestore.listCollections()) {
-      const guild: Guild = client.guilds.cache.get(collection.id);
+      const guild: Guild = client.guilds.resolve(collection.id);
       if (!guild) {
         log.d(`Skipping Initialize for guild [ ${(await collection.doc("server").get()).data().name} | ${collection.id} ]`);
         continue;
@@ -49,7 +48,7 @@ client.once("ready", async () => {
               } as State);
 
               for (const reactionRole of config.reactionRoles) {
-                await (guild.channels.cache.get(reactionRole.textChannel) as TextChannel).messages.fetch({ limit: 100 });
+                await (guild.channels.resolve(reactionRole.textChannel) as TextChannel).messages.fetch({ limit: 100 });
               }
 
               const commandsDocRef = collection.doc("commands");

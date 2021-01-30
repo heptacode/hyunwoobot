@@ -1,5 +1,4 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
-import { getChannelID } from "../modules/converter";
 import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import { Args, State } from "../";
@@ -14,7 +13,7 @@ export default {
       // replace(/\n/g, "\\n")
       const embed: MessageEmbed = JSON.parse(args.slice(1).join(" "));
 
-      await (message.guild.channels.cache.get(getChannelID(message.guild, args[0])) as TextChannel).send({ embed: embed });
+      await (message.guild.channels.resolve(args[0]) as TextChannel).send({ embed: embed });
       return message.react("✅");
     } catch (err) {
       message.react("❌");

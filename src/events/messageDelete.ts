@@ -5,7 +5,7 @@ import props from "../props";
 
 client.on("messageDelete", async (message: Message | PartialMessage) => {
   try {
-    if (message.author.bot || message.channel.type === "dm" || states.get(message.guild.id).logMessageEvents) return;
+    if (message.author.bot || message.channel.type === "dm" || !states.get(message.guild.id).logMessageEvents) return;
 
     const messageEmbed: MessageEmbed = new MessageEmbed()
       .setColor(props.color.red)
@@ -16,7 +16,7 @@ client.on("messageDelete", async (message: Message | PartialMessage) => {
       .setFooter(message.author.tag, message.author.avatarURL())
       .setTimestamp(new Date());
 
-    return await (client.channels.cache.get(states.get(message.guild.id).logChannel) as TextChannel).send(
+    return await (client.channels.resolve(states.get(message.guild.id).logChannel) as TextChannel).send(
       message.attachments.size && message.attachments.array()[0].width ? messageEmbed : messageEmbed.attachFiles(message.attachments.array())
     );
   } catch (err) {

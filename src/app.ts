@@ -60,7 +60,7 @@ app.use(express.json({ limit: "50mb" }));
 const fetchGuildMember = (guildID: string, memberID: string): APIGuildMember => {
   const _roles: string[] = [];
 
-  const member = client.guilds.cache.get(guildID).member(memberID);
+  const member = client.guilds.resolve(guildID).member(memberID);
   for (const userRole of states.get(guildID).userRoles) {
     if (member.roles.cache.has(userRole.id)) _roles.push(userRole.id);
   }
@@ -102,7 +102,7 @@ app.post("/fetch", async (req, res) => {
 
 app.post("/guild", async (req, res) => {
   try {
-    if (!states.get(req.body.guild) || !client.guilds.cache.get(req.body.guild).member(req.body.member)) return;
+    if (!states.get(req.body.guild) || !client.guilds.resolve(req.body.guild).member(req.body.member)) return;
 
     res.json({
       member: fetchGuildMember(req.body.guild, req.body.member),
@@ -116,12 +116,12 @@ app.post("/guild", async (req, res) => {
 
 app.put("/roles", async (req, res) => {
   try {
-    const member: GuildMember = client.guilds.cache.get(req.body.guild).member(req.body.member);
+    const member: GuildMember = client.guilds.resolve(req.body.guild).member(req.body.member);
 
     if (!member || !req.body.roles) return res.sendStatus(404);
 
     for (const roleID of req.body.roles) {
-      if (!client.guilds.cache.get(req.body.guild).roles.cache.has(roleID) || states.get(req.body.guild).userRoles.findIndex((userRole: UserRole) => userRole.id === roleID) === -1)
+      if (!client.guilds.resolve(req.body.guild).roles.cache.has(roleID) || states.get(req.body.guild).userRoles.findIndex((userRole: UserRole) => userRole.id === roleID) === -1)
         return res.sendStatus(404);
     }
 

@@ -7,15 +7,15 @@ import { Interaction, Locale, State } from "../";
 
 export const voiceStateCheck = async (locale: Locale, payload: { interaction?: Interaction; message?: Message }): Promise<boolean> => {
   if (
-    !client.guilds.cache
-      .get(payload.interaction ? payload.interaction.guild_id : payload.message.guild.id)
-      .members.cache.get(payload.interaction ? payload.interaction.member.user.id : payload.message.member.id).voice.channelID
+    !client.guilds.resolve(payload.interaction ? payload.interaction.guild_id : payload.message.guild.id).member(payload.interaction ? payload.interaction.member.user.id : payload.message.member.id)
+      .voice.channelID
   ) {
+    const guild: Guild = client.guilds.resolve(payload.interaction ? payload.interaction.guild_id : payload.message.guild.id);
     sendEmbed(payload, {
       color: props.color.red,
       author: {
-        name: client.guilds.cache.get(payload.interaction ? payload.interaction.guild_id : payload.message.guild.id).name,
-        iconURL: client.guilds.cache.get(payload.interaction ? payload.interaction.guild_id : payload.message.guild.id).iconURL(),
+        name: guild.name,
+        iconURL: guild.iconURL(),
       },
       description: `❌ **${locale.music.joinVoiceChannel}**`,
     });
@@ -25,11 +25,11 @@ export const voiceStateCheck = async (locale: Locale, payload: { interaction?: I
 };
 
 export const voiceConnect = async (state: State, interaction: Interaction) => {
-  const guild: Guild = client.guilds.cache.get(interaction.guild_id);
-  state.voiceChannel = guild.members.cache.get(interaction.member.user.id).voice.channel;
+  const guild: Guild = client.guilds.resolve(interaction.guild_id);
+  state.voiceChannel = guild.member(interaction.member.user.id).voice.channel;
 
   try {
-    if (!guild.members.cache.get(interaction.member.user.id).voice.channel.permissionsFor(client.user).has(["CONNECT", "SPEAK"]))
+    if (!guild.member(interaction.member.user.id).voice.channel.permissionsFor(client.user).has(["CONNECT", "SPEAK"]))
       return await sendEmbed({ interaction: interaction }, { description: `❌ **${state.locale.insufficientPerms.connect}**` }, { guild: true });
 
     if (state.voiceChannel) {

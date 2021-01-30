@@ -4,7 +4,7 @@ import { client } from "../app";
 import { Interaction, Locale } from "../";
 
 export const checkPermission = async (locale: Locale, payload: { interaction?: Interaction; message?: Message }, permission: PermissionResolvable): Promise<boolean> => {
-  if (payload.interaction && !client.guilds.cache.get(payload.interaction.guild_id).members.cache.get(payload.interaction.member.user.id).hasPermission(permission)) {
+  if (payload.interaction && !client.guilds.resolve(payload.interaction.guild_id).member(payload.interaction.member.user.id).hasPermission(permission)) {
     await sendEmbed(
       { interaction: payload.interaction },
       {
@@ -12,7 +12,7 @@ export const checkPermission = async (locale: Locale, payload: { interaction?: I
       }
     );
     return true;
-  } else if (payload.message && !payload.message.guild.members.cache.get(payload.message.member.id).hasPermission(permission)) {
+  } else if (payload.message && !payload.message.guild.member(payload.message.member.id).hasPermission(permission)) {
     await sendEmbed(
       { message: payload.message },
       {

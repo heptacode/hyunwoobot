@@ -1,4 +1,3 @@
-import { getRoleColor, getRoleHexColor, getRoleID, getRoleName } from "../modules/converter";
 import { sendEmbed } from "../modules/embedSender";
 import { firestore } from "../modules/firebase";
 import { log } from "../modules/logger";
@@ -54,18 +53,17 @@ export default {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_ROLES")) return;
 
-      const guild = client.guilds.cache.get(interaction.guild_id);
-
-      const method = interaction.data.options[0].name;
+      const guild = client.guilds.resolve(interaction.guild_id);
 
       const configDocRef = firestore.collection(guild.id).doc("config");
 
+      const method = interaction.data.options[0].name;
       if (method === "view") {
       } else if (method === "add") {
         state.userRoles.push({
-          id: getRoleID(guild, interaction.data.options[0].options[0].value),
-          name: getRoleName(guild, interaction.data.options[0].options[0].value),
-          color: getRoleColor(guild, interaction.data.options[0].options[0].value) === 0 ? null : getRoleHexColor(guild, interaction.data.options[0].options[0].value),
+          id: guild.roles.resolveID(interaction.data.options[0].options[0].value),
+          name: guild.roles.resolve(interaction.data.options[0].options[0].value).name,
+          color: guild.roles.resolve(interaction.data.options[0].options[0].value).color === 0 ? null : guild.roles.resolve(interaction.data.options[0].options[0].value).hexColor,
         });
 
         // Sort

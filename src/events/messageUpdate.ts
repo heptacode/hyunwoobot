@@ -18,7 +18,7 @@ client.on("messageUpdate", async (oldMessage: Message | PartialMessage, newMessa
       .setFooter(oldMessage.author.tag, oldMessage.author.avatarURL())
       .setTimestamp(new Date());
 
-    return await (client.channels.cache.get(states.get(newMessage.guild.id).logChannel) as TextChannel).send(
+    return await (client.channels.resolve(states.get(newMessage.guild.id).logChannel) as TextChannel).send(
       oldMessage.attachments.size && oldMessage.attachments.array()[0].width ? messageEmbed : messageEmbed.attachFiles(oldMessage.attachments.array())
     );
   } catch (err) {

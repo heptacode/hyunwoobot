@@ -23,7 +23,7 @@ export default {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_MESSAGES")) return;
 
-      await (client.channels.cache.get(interaction.channel_id) as TextChannel).bulkDelete(Number(interaction.data.options[0].value));
+      await (client.channels.resolve(interaction.channel_id) as TextChannel).bulkDelete(Number(interaction.data.options[0].value));
 
       return sendEmbed(
         { interaction: interaction },

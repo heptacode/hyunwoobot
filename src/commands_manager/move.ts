@@ -1,5 +1,4 @@
 import { Guild, GuildChannel } from "discord.js";
-import { getChannelName } from "../modules/converter";
 import { sendEmbed } from "../modules/embedSender";
 import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
@@ -30,9 +29,9 @@ export default {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, "MOVE_MEMBERS")) return;
 
-      const guild: Guild = client.guilds.cache.get(interaction.guild_id);
-      const fromChannel: GuildChannel = guild.channels.cache.get(interaction.data.options[0].value);
-      const targetChannel: GuildChannel = guild.channels.cache.get(interaction.data.options[1].value);
+      const guild: Guild = client.guilds.resolve(interaction.guild_id);
+      const fromChannel: GuildChannel = guild.channels.resolve(interaction.data.options[0].value);
+      const targetChannel: GuildChannel = guild.channels.resolve(interaction.data.options[1].value);
 
       if (fromChannel.type !== "voice" || targetChannel.type !== "voice")
         return sendEmbed(
@@ -58,7 +57,7 @@ export default {
         {
           color: props.color.green,
           title: `**⚙️ ${state.locale.move.move}**`,
-          description: `✅ **${cnt}${state.locale.move.moved}${getChannelName(guild, fromChannel.id)} ➡️ ${getChannelName(guild, targetChannel.id)}**`,
+          description: `✅ **${cnt}${state.locale.move.moved}${fromChannel.name} ➡️ ${targetChannel.name}**`,
           timestamp: new Date(),
         },
         { guild: true }

@@ -21,11 +21,11 @@ const sendAlarm = async () => {
     for (const [guildID, state] of states) {
       if (!state.alarmChannel || state.isPlaying) continue;
 
-      state.connection = await (client.channels.cache.get(state.alarmChannel) as VoiceChannel).join();
+      state.connection = await (client.channels.resolve(state.alarmChannel) as VoiceChannel).join();
       state.connection.play(broadcast);
 
       dispatcher.on("finish", () => {
-        (client.channels.cache.get(state.alarmChannel) as VoiceChannel).leave();
+        (client.channels.resolve(state.alarmChannel) as VoiceChannel).leave();
       });
     }
   } catch (err) {
@@ -61,7 +61,7 @@ export default {
     const method = interaction.data.options[0].name;
     if (method === "subscribe") {
       try {
-        const voiceState: VoiceState = client.guilds.cache.get(interaction.guild_id).members.cache.get(interaction.member.user.id).voice;
+        const voiceState: VoiceState = client.guilds.resolve(interaction.guild_id).member(interaction.member.user.id).voice;
 
         if (!voiceState.channel.permissionsFor(client.user).has(["CONNECT", "SPEAK"]))
           return await sendEmbed({ interaction: interaction }, { description: `❌ **${state.locale.insufficientPerms.connect}**` });

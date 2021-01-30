@@ -43,7 +43,7 @@ export const play = async (state: State, interaction: Interaction) => {
           length: result[0].duration,
           thumbnailURL: result[0].thumbnail,
           videoURL: result[0].link,
-          requestedBy: { tag: `${interaction.member.user.username}#${interaction.member.user.discriminator}`, avatarURL: client.users.cache.get(interaction.member.user.id).avatarURL() },
+          requestedBy: { tag: `${interaction.member.user.username}#${interaction.member.user.discriminator}`, avatarURL: client.users.resolve(interaction.member.user.id).avatarURL() },
         });
       } else {
         // Query Search
@@ -53,7 +53,7 @@ export const play = async (state: State, interaction: Interaction) => {
           length: result[0].duration,
           thumbnailURL: result[0].thumbnail,
           videoURL: result[0].link,
-          requestedBy: { tag: `${interaction.member.user.username}#${interaction.member.user.discriminator}`, avatarURL: client.users.cache.get(interaction.member.user.id).avatarURL() },
+          requestedBy: { tag: `${interaction.member.user.username}#${interaction.member.user.discriminator}`, avatarURL: client.users.resolve(interaction.member.user.id).avatarURL() },
         });
         // return message.channel.send(locale.urlInvalid);
       }

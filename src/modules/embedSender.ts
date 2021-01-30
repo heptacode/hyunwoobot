@@ -10,16 +10,16 @@ export const sendEmbed = async (
 ): Promise<Message> => {
   try {
     if (payload.interaction || payload.member) {
-      const user: User = payload.member ? payload.member.user : client.users.cache.get(payload.interaction.member.user.id);
-      const guild: Guild = payload.member ? payload.member.guild : client.guilds.cache.get(payload.interaction.guild_id);
+      const user: User = payload.member ? payload.member.user : client.users.resolve(payload.interaction.member.user.id);
+      const guild: Guild = payload.member ? payload.member.guild : client.guilds.resolve(payload.interaction.guild_id);
 
       let channel: TextChannel;
       if (options && options.guild && options.system) channel = guild.systemChannel;
       else if (options && options.guild && options.log) {
         const logChannel = states.get(payload.member ? payload.member.guild.id : payload.interaction.guild_id).logChannel;
         if (!logChannel) return;
-        channel = guild.channels.cache.get(logChannel) as TextChannel;
-      } else if (payload.interaction) channel = guild.channels.cache.get(payload.interaction.channel_id) as TextChannel;
+        channel = guild.channels.resolve(logChannel) as TextChannel;
+      } else if (payload.interaction) channel = guild.channels.resolve(payload.interaction.channel_id) as TextChannel;
 
       try {
         if (!options || options.dm)

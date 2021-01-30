@@ -66,8 +66,8 @@ export default {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_MESSAGES")) return;
 
-      const guild = client.guilds.cache.get(interaction.guild_id);
-      const channel = guild.channels.cache.get(interaction.channel_id) as TextChannel;
+      const guild = client.guilds.resolve(interaction.guild_id);
+      const channel = guild.channels.resolve(interaction.channel_id) as TextChannel;
 
       const method = interaction.data.options[0].name;
       const messageID = interaction.data.options[0].options[0].value;

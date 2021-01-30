@@ -18,22 +18,22 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
       if (state.privateRoom && state.privateRooms.find((privateRoomItem: PrivateRoom) => privateRoomItem.host === oldState.member.id)) {
         const _privateRoom: PrivateRoom = state.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
         if (_privateRoom && oldState.guild.channels.cache.has(_privateRoom.room) && oldState.channelID !== newState.channelID) {
-          for (const [memberID, member] of oldState.guild.channels.cache.get(_privateRoom.room).members) {
-            await oldState.guild.channels.cache.get(state.privateRoom).permissionOverwrites.get(memberID).delete("[PrivateRoom] Deletion");
+          for (const [memberID, member] of oldState.guild.channels.resolve(_privateRoom.room).members) {
+            await oldState.guild.channels.resolve(state.privateRoom).permissionOverwrites.get(memberID).delete("[PrivateRoom] Deletion");
           }
 
-          await oldState.guild.channels.cache.get(_privateRoom.room).delete("[PrivateRoom] Deletion");
-          await oldState.guild.channels.cache.get(_privateRoom.waiting).delete("[PrivateRoom] Deletion");
-          await oldState.guild.channels.cache.get(_privateRoom.text).delete("[PrivateRoom] Deletion");
+          await oldState.guild.channels.resolve(_privateRoom.room).delete("[PrivateRoom] Deletion");
+          await oldState.guild.channels.resolve(_privateRoom.waiting).delete("[PrivateRoom] Deletion");
+          await oldState.guild.channels.resolve(_privateRoom.text).delete("[PrivateRoom] Deletion");
 
           const idx = state.privateRooms.findIndex((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
           state.privateRooms.splice(idx, 1);
           await configDocRef.update({ privateRooms: state.privateRooms });
 
-          await oldState.guild.channels.cache.get(state.privateRoom).permissionOverwrites.get(oldState.member.id).delete("[PrivateRoom] Deletion");
+          await oldState.guild.channels.resolve(state.privateRoom).permissionOverwrites.get(oldState.member.id).delete("[PrivateRoom] Deletion");
         }
       } else if (state.privateRoom && state.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID)) {
-        const _privateText: TextChannel = oldState.guild.channels.cache.get(state.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID).text) as TextChannel;
+        const _privateText: TextChannel = oldState.guild.channels.resolve(state.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID).text) as TextChannel;
         if (_privateText) {
           await _privateText.send({
             embed: {
@@ -45,7 +45,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           await _privateText.updateOverwrite(oldState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Switch/Leave");
         }
 
-        await oldState.guild.channels.cache.get(state.privateRoom).permissionOverwrites.get(oldState.member.id).delete("[PrivateRoom] Switch/Leave");
+        await oldState.guild.channels.resolve(state.privateRoom).permissionOverwrites.get(oldState.member.id).delete("[PrivateRoom] Switch/Leave");
       }
 
       if (state.afkChannel.has(oldState.member.id)) {
@@ -56,7 +56,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
       const voiceRole: VoiceRole = state.voiceRoles.find((voiceRole: VoiceRole) => voiceRole.voiceChannel === oldState.channelID);
       if (voiceRole && oldState.member.roles.cache.has(voiceRole.role)) {
         if (voiceRole.textChannel) {
-          (oldState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
+          (oldState.guild.channels.resolve(voiceRole.textChannel) as TextChannel).send({
             embed: {
               color: props.color.red,
               author: { name: oldState.member.user.username, iconURL: oldState.member.user.avatarURL() },
@@ -101,13 +101,13 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
             },
             { type: "role", id: newState.guild.roles.everyone.id, deny: ["CREATE_INSTANT_INVITE", "CONNECT"] },
           ],
-          parent: newState.guild.channels.cache.get(state.privateRoom).parent,
+          parent: newState.guild.channels.resolve(state.privateRoom).parent,
         });
 
         // Move Host to Created Room
         await newState.member.voice.setChannel(_privateRoom, `[PrivateRoom] Creation`);
 
-        await newState.guild.channels.cache.get(state.privateRoom).updateOverwrite(newState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Creation");
+        await newState.guild.channels.resolve(state.privateRoom).updateOverwrite(newState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Creation");
 
         const _waitingRoomID = await (
           await newState.guild.channels.create(`🚪 ${newState.member.user.username} ${state.locale.privateRoom.waitingRoom}`, {
@@ -125,7 +125,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
               },
               { type: "role", id: newState.guild.roles.everyone.id, deny: ["CREATE_INSTANT_INVITE", "SPEAK"] },
             ],
-            parent: newState.guild.channels.cache.get(state.privateRoom).parent,
+            parent: newState.guild.channels.resolve(state.privateRoom).parent,
           })
         ).id;
 
@@ -144,7 +144,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
             },
             { type: "role", id: newState.guild.roles.everyone.id, deny: ["VIEW_CHANNEL", "CREATE_INSTANT_INVITE", "READ_MESSAGE_HISTORY"] },
           ],
-          parent: newState.guild.channels.cache.get(state.privateRoom).parent,
+          parent: newState.guild.channels.resolve(state.privateRoom).parent,
         });
 
         await _privateText.send({
@@ -160,7 +160,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         return await configDocRef.update({ privateRooms: state.privateRooms });
       } else if (state.privateRoom && state.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.waiting === newState.channelID || privateRoom.room === newState.channelID)) {
         const _privateRoom: PrivateRoom = state.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.waiting === newState.channelID || privateRoom.room === newState.channelID);
-        const _privateText: TextChannel = newState.guild.channels.cache.get(_privateRoom.text) as TextChannel;
+        const _privateText: TextChannel = newState.guild.channels.resolve(_privateRoom.text) as TextChannel;
 
         if (_privateRoom.waiting === newState.channelID) {
           return await _privateText.send({
@@ -172,7 +172,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
             },
           });
         } else if (_privateRoom.room === newState.channelID && _privateRoom.host !== newState.member.id) {
-          await newState.guild.channels.cache.get(state.privateRoom).updateOverwrite(newState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Accepted");
+          await newState.guild.channels.resolve(state.privateRoom).updateOverwrite(newState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Accepted");
           await _privateText.updateOverwrite(newState.member, { VIEW_CHANNEL: true }, "[PrivateRoom] Accepted");
 
           return await _privateText.send({
@@ -244,7 +244,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         await newState.member.roles.add(voiceRole.role, "[VoiceRole] Join Voice");
 
         if (voiceRole.textChannel) {
-          (newState.guild.channels.cache.get(voiceRole.textChannel) as TextChannel).send({
+          (newState.guild.channels.resolve(voiceRole.textChannel) as TextChannel).send({
             embed: {
               color: props.color.cyan,
               author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },

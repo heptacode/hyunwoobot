@@ -1,5 +1,4 @@
 import { GuildChannel } from "discord.js";
-import { getChannelName } from "../modules/converter";
 import { sendEmbed } from "../modules/embedSender";
 import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
@@ -17,7 +16,7 @@ export default {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, "MOVE_MEMBERS")) return;
 
-      const channel: GuildChannel = client.channels.cache.get(interaction.data.options[0].value) as GuildChannel;
+      const channel: GuildChannel = client.channels.resolve(interaction.data.options[0].value) as GuildChannel;
 
       if (channel.type !== "voice")
         return sendEmbed(
@@ -44,7 +43,7 @@ export default {
           color: props.color.purple,
           title: `**⚙️ ${state.locale.disconnect.disconnect}**`,
           description: `✅ **${state.locale.disconnect.disconnected
-            .replace("{voiceChannel}", getChannelName(client.guilds.cache.get(interaction.guild_id), interaction.data.options[0].value))
+            .replace("{voiceChannel}", client.guilds.resolve(interaction.guild_id).channels.resolve(interaction.data.options[0].value).name)
             .replace("{cnt}", String(cnt))}**`,
           timestamp: new Date(),
         },

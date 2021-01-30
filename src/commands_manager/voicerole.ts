@@ -1,5 +1,4 @@
 import { EmbedFieldData } from "discord.js";
-import { getChannelName } from "../modules/converter";
 import { sendEmbed } from "../modules/embedSender";
 import { firestore } from "../modules/firebase";
 import { log } from "../modules/logger";
@@ -72,12 +71,11 @@ export default {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_ROLES")) return;
 
-      const guild = client.guilds.cache.get(interaction.guild_id);
-
-      const method = interaction.data.options[0].name;
+      const guild = client.guilds.resolve(interaction.guild_id);
 
       const configDocRef = firestore.collection(guild.id).doc("config");
 
+      const method = interaction.data.options[0].name;
       if (method === "view") {
       } else if (method === "add") {
         state.voiceRoles.push({
@@ -102,13 +100,13 @@ export default {
         for (const voiceRole of state.voiceRoles) {
           if (!client.channels.cache.has(voiceRole.voiceChannel)) continue;
 
-          for (const [memberID, member] of client.guilds.cache.get(interaction.guild_id).roles.cache.get(voiceRole.role).members) {
+          for (const [memberID, member] of client.guilds.resolve(interaction.guild_id).roles.resolve(voiceRole.role).members) {
             if (member.voice.channelID === voiceRole.voiceChannel) continue;
             await member.roles.remove(voiceRole.role, "[VoiceRole] Force Update");
             payload.push({ member: memberID, action: "-=", role: voiceRole.role });
           }
 
-          for (const [memberID, member] of client.guilds.cache.get(interaction.guild_id).channels.cache.get(voiceRole.voiceChannel).members) {
+          for (const [memberID, member] of client.guilds.resolve(interaction.guild_id).channels.resolve(voiceRole.voiceChannel).members) {
             if (member.user.bot || member.roles.cache.has(voiceRole.role)) continue;
             await member.roles.add(voiceRole.role, "[VoiceRole] Force Update");
             payload.push({ member: memberID, action: "+=", role: voiceRole.role });
@@ -134,7 +132,7 @@ export default {
       if (state.voiceRoles.length >= 1)
         state.voiceRoles.forEach((voiceRole: VoiceRole) =>
           fields.push({
-            name: `${getChannelName(guild, voiceRole.voiceChannel)}`,
+            name: `${guild.channels.resolve(voiceRole.voiceChannel).name}`,
             value: `<@&${voiceRole.role}>${voiceRole.textChannel ? `(<#${voiceRole.textChannel}>)` : ""}`,
           })
         );

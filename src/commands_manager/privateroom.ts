@@ -14,7 +14,7 @@ export default {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_CHANNELS")) return;
 
-      const guild: Guild = client.guilds.cache.get(interaction.guild_id);
+      const guild: Guild = client.guilds.resolve(interaction.guild_id);
 
       const privateRoomID = (
         await guild.channels.create(state.locale.privateRoom.create, {
