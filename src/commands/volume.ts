@@ -1,6 +1,6 @@
 import { sendEmbed } from "../modules/embedSender";
-import { voiceStateCheck } from "../modules/voiceManager";
 import { log } from "../modules/logger";
+import { voiceStateCheck } from "../modules/voiceManager";
 import props from "../props";
 import { Interaction, Locale, State } from "../";
 

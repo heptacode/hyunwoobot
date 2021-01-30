@@ -4,7 +4,7 @@ import { sendEmbed } from "../modules/embedSender";
 import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import props from "../props";
-import { AutoRole, Interaction, Locale, State } from "../";
+import { Interaction, Locale, State } from "../";
 
 export default {
   name: "autorole",
@@ -57,11 +57,10 @@ export default {
       }
 
       const fields: EmbedFieldData[] = [];
-      if (state.autoRoles.length >= 1) {
+      if (state.autoRoles.length >= 1)
         for (const autoRole of state.autoRoles) {
           fields.push({ name: autoRole.type, value: `<@&${autoRole.role}>` });
         }
-      }
 
       return sendEmbed(
         { interaction: interaction },

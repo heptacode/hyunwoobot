@@ -5,7 +5,7 @@ import props from "../props";
 
 client.on("messageUpdate", async (oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage) => {
   try {
-    if (oldMessage.author.bot || oldMessage.channel.type === "dm") return;
+    if (oldMessage.author.bot || oldMessage.channel.type === "dm" || !states.get(newMessage.guild.id).logMessageEvents) return;
 
     const messageEmbed: MessageEmbed = new MessageEmbed()
       .setColor(props.color.yellow)
@@ -18,10 +18,9 @@ client.on("messageUpdate", async (oldMessage: Message | PartialMessage, newMessa
       .setFooter(oldMessage.author.tag, oldMessage.author.avatarURL())
       .setTimestamp(new Date());
 
-    if (states.get(newMessage.guild.id).logMessageEvents)
-      return await (client.channels.cache.get(states.get(newMessage.guild.id).logChannel) as TextChannel).send(
-        oldMessage.attachments.size && oldMessage.attachments.array()[0].width ? messageEmbed : messageEmbed.attachFiles(oldMessage.attachments.array())
-      );
+    return await (client.channels.cache.get(states.get(newMessage.guild.id).logChannel) as TextChannel).send(
+      oldMessage.attachments.size && oldMessage.attachments.array()[0].width ? messageEmbed : messageEmbed.attachFiles(oldMessage.attachments.array())
+    );
   } catch (err) {
     log.e(`MessageUpdate > ${err}`);
   }

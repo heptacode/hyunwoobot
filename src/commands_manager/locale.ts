@@ -5,7 +5,7 @@ import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import { client, commands, commands_manager, locales } from "../app";
 import props from "../props";
-import { Interaction, Locale, State } from "../";
+import { Command, Interaction, Locale, State } from "../";
 
 const choices = [];
 for (const [code, locale] of locales) {
@@ -30,9 +30,9 @@ export default {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_GUILD")) return;
 
-      const configDocRef = firestore.collection(interaction.guild_id).doc("config");
+      const newLocale = interaction.data.options[0].value;
 
-      if ((await configDocRef.get()).data().locale === interaction.data.options[0].value)
+      if (state.locale.locale.code === newLocale)
         return sendEmbed(
           { interaction: interaction },
           {
@@ -51,11 +51,9 @@ export default {
         { guild: true }
       );
 
-      state.locale = locales.get(interaction.data.options[0].value);
+      state.locale = locales.get(newLocale);
 
-      await configDocRef.update({ locale: interaction.data.options[0].value });
-
-      const payload: any = {};
+      const payload: { [key: string]: Command } = {};
       for (const [name, command] of commands) {
         try {
           payload[name] = {
@@ -75,7 +73,7 @@ export default {
             version: command.version,
           };
         } catch (err) {
-          log.e(`CommandRegister > ${err}`);
+          log.e(`Locale > CommandRegister > ${err}`);
         }
       }
 
@@ -99,13 +97,15 @@ export default {
             version: command.version,
           };
         } catch (err) {
-          log.e(`CommandRegister > Manager > ${err}`);
+          log.e(`Locale > CommandRegister > Manager > ${err}`);
         }
       }
 
+      await firestore.collection(interaction.guild_id).doc("config").update({ locale: newLocale });
       await firestore.collection(interaction.guild_id).doc("commands").update(payload);
 
       await _message.delete();
+
       return sendEmbed(
         { interaction: interaction },
         {

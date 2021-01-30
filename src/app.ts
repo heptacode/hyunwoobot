@@ -1,15 +1,15 @@
 import axios from "axios";
-import { readdirSync } from "fs";
-import { resolve } from "path";
-import express from "express";
+import compression from "compression";
 import cors from "cors";
+import { Client, Collection, GuildMember } from "discord.js";
+import express from "express";
+import { readdirSync } from "fs";
 import helmet from "helmet";
 import morgan from "morgan";
-import compression from "compression";
-import { Client, Collection, GuildMember } from "discord.js";
+import { resolve } from "path";
+import "dotenv/config";
 import { log } from "./modules/logger";
 import props from "./props";
-import "dotenv/config";
 import { APIGuild, APIGuildMember, APIUser, Command, Locale, State, UserRole } from "./";
 
 export const prefix: string = process.env.PREFIX || props.bot.prefix;
