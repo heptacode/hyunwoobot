@@ -5,22 +5,14 @@ import { client } from "../app";
 import { Config } from "../";
 
 client.on("guildCreate", async (guild: Guild) => {
-  await firestore
-    .collection(guild.id)
-    .doc("server")
-    .set(JSON.parse(JSON.stringify(guild)));
-
-  await firestore.collection(guild.id).doc("commands").set({});
-
-  const configDocRef = firestore.collection(guild.id).doc("config");
-  const configDocSnapshot = await configDocRef.get();
-
-  if (!configDocSnapshot.exists) {
-    try {
-      await configDocRef.set({
+  try {
+    await firestore
+      .collection(guild.id)
+      .doc("config")
+      .create({
         afkTimeout: -1,
         alarmChannel: null,
-        autoroles: [],
+        autoRoles: [],
         locale: "ko",
         logChannel: "",
         logMessageEvents: false,
@@ -31,9 +23,15 @@ client.on("guildCreate", async (guild: Guild) => {
         voiceRoles: [],
       } as Config);
 
-      log.d(`Firestore Initialize for guild [ ${guild.name} | ${guild.id} ]`);
-    } catch (err) {
-      log.e(`Firestore Initialize > ${err}`);
-    }
+    await firestore
+      .collection(guild.id)
+      .doc("server")
+      .set(JSON.parse(JSON.stringify(guild)));
+
+    await firestore.collection(guild.id).doc("commands").create({});
+
+    log.d(`Firestore Initialize for guild [ ${guild.name} | ${guild.id} ]`);
+  } catch (err) {
+    log.e(`Firestore Initialize > ${err}`);
   }
 });

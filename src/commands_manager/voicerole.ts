@@ -109,7 +109,7 @@ export default {
           }
 
           for (const [memberID, member] of client.guilds.cache.get(interaction.guild_id).channels.cache.get(voiceRole.voiceChannel).members) {
-            if (member.roles.cache.has(voiceRole.role)) continue;
+            if (member.user.bot || member.roles.cache.has(voiceRole.role)) continue;
             await member.roles.add(voiceRole.role, "[VoiceRole] Force Update");
             payload.push({ member: memberID, action: "+=", role: voiceRole.role });
           }

@@ -239,11 +239,12 @@ interface CommandInteractionDataOption {
 }
 
 interface Command {
+  id?: string;
   name: string;
   version: number;
   messageOnly?: boolean;
   options?: Function;
-  execute: Function;
+  execute?: Function;
 }
 
 type CommandOptionType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
@@ -298,7 +299,7 @@ interface State {
 interface Config {
   afkTimeout: number;
   alarmChannel: string | null;
-  autoroles: AutoRole[];
+  autoRoles: AutoRole[];
   locale: string;
   logChannel: string | null;
   logMessageEvents: boolean;
