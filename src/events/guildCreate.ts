@@ -16,7 +16,7 @@ client.on("guildCreate", async (guild: Guild) => {
         locale: "ko",
         logChannel: "",
         logMessageEvents: false,
-        privateRoom: null,
+        privateRoom: { generator: null, fallback: null },
         privateRooms: [],
         reactionRoles: [],
         userRoles: [],

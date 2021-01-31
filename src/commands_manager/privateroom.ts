@@ -5,14 +5,34 @@ import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import { client } from "../app";
 import props from "../props";
-import { Interaction, State } from "../";
+import { Interaction, Locale, State } from "../";
 
 export default {
   name: "privateroom",
-  version: 1,
+  version: 2,
+  options(locale: Locale) {
+    return [
+      {
+        type: 7,
+        name: "fallbackVoiceChannel",
+        description: locale.voiceChannel,
+        required: false,
+      },
+    ];
+  },
   async execute(state: State, interaction: Interaction) {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_CHANNELS")) return;
+
+      if (interaction.data.options && client.channels.resolve(interaction.data.options[0].value).type !== "voice")
+        return sendEmbed(
+          { interaction: interaction },
+          {
+            color: props.color.red,
+            title: `**⚙️ ${state.locale.privateRoom.privateRoom}**`,
+            description: `❌ **${state.locale.notVoiceChannel}**`,
+          }
+        );
 
       const guild: Guild = client.guilds.resolve(interaction.guild_id);
 
@@ -35,7 +55,10 @@ export default {
         })
       ).id;
 
-      await firestore.collection(guild.id).doc("config").update({ privateRoom: privateRoomID });
+      await firestore
+        .collection(guild.id)
+        .doc("config")
+        .update({ privateRoom: { generator: privateRoomID, fallback: interaction.data.options ? interaction.data.options[0].value : null } });
 
       return sendEmbed(
         { interaction: interaction },

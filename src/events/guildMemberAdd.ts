@@ -6,7 +6,7 @@ import props from "../props";
 
 client.on("guildMemberAdd", async (member: GuildMember) => {
   try {
-    await sendEmbed(
+    sendEmbed(
       { member: member },
       {
         color: props.color.cyan,
@@ -22,7 +22,7 @@ client.on("guildMemberAdd", async (member: GuildMember) => {
 
       await member.roles.add(autoRole.role, "[AutoRole] GuildMemberAdd");
 
-      await sendEmbed(
+      return sendEmbed(
         { member: member },
         {
           color: props.color.cyan,

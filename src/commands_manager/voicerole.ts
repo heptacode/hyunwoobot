@@ -6,6 +6,7 @@ import { checkPermission } from "../modules/permissionChecker";
 import { client } from "../app";
 import props from "../props";
 import { Interaction, Locale, State, VoiceRole } from "../";
+import { text } from "express";
 
 export default {
   name: "voicerole",
@@ -78,15 +79,47 @@ export default {
       const method = interaction.data.options[0].name;
       if (method === "view") {
       } else if (method === "add") {
+        const voiceChannel: string = interaction.data.options[0].value;
+        const textChannel: string = interaction.data.options[2].value;
+
+        if (client.channels.resolve(voiceChannel).type !== "voice")
+          return sendEmbed(
+            { interaction: interaction },
+            {
+              color: props.color.red,
+              title: `**⚙️ ${state.locale.voiceRole.voiceRole}**`,
+              description: `❌ **${state.locale.notVoiceChannel}**`,
+            }
+          );
+        if (client.channels.resolve(textChannel).type !== "text")
+          return sendEmbed(
+            { interaction: interaction },
+            {
+              color: props.color.red,
+              title: `**⚙️ ${state.locale.voiceRole.voiceRole}**`,
+              description: `❌ **${state.locale.notTextChannel}**`,
+            }
+          );
+
         state.voiceRoles.push({
-          voiceChannel: interaction.data.options[0].options[0].value,
+          voiceChannel: voiceChannel,
           role: interaction.data.options[0].options[1].value,
-          textChannel: interaction.data.options[0].options.length >= 3 ? interaction.data.options[0].options[2].value : null,
+          textChannel: interaction.data.options[0].options.length >= 3 ? textChannel : null,
         });
 
         await configDocRef.update({ voiceRole: state.voiceRoles });
       } else if (method === "remove") {
         const voiceChannel = interaction.data.options[0].options[0].value;
+
+        if (client.channels.resolve(voiceChannel).type !== "voice")
+          return sendEmbed(
+            { interaction: interaction },
+            {
+              color: props.color.red,
+              title: `**⚙️ ${state.locale.voiceRole.voiceRole}**`,
+              description: `❌ **${state.locale.notVoiceChannel}**`,
+            }
+          );
 
         const idx = state.voiceRoles.findIndex((voiceRole: VoiceRole) => voiceRole.voiceChannel === voiceChannel);
         state.voiceRoles.splice(idx, 1);

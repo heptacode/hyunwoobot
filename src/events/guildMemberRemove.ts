@@ -6,7 +6,7 @@ import props from "../props";
 
 client.on("guildMemberRemove", async (member: GuildMember) => {
   try {
-    await sendEmbed(
+    return sendEmbed(
       { member: member },
       {
         color: props.color.cyan,

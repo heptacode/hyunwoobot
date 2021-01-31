@@ -27,7 +27,7 @@ client.on("messageReactionRemove", async (reaction: MessageReaction, user: User)
     if (!reaction.message.guild.member(user).roles.cache.has(reactionRole.role)) return;
     reaction.message.guild.member(user).roles.remove(reactionRole.role, "[ReactionRole] MessageReactionRemove");
 
-    return await sendEmbed(
+    return sendEmbed(
       { member: reaction.message.member },
       {
         color: props.color.red,

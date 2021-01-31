@@ -8,6 +8,8 @@ interface Locale {
   role: string;
   textChannel: string;
   voiceChannel: string;
+  notTextChannel: string;
+  notVoiceChannel: string;
   messageID: string;
   embed: string;
   emoji: string;
@@ -35,6 +37,7 @@ interface Locale {
     locale: string;
     log: string;
     move: string;
+    privateroom: string;
     reactionrole: string;
     setafktimeout: string;
     userrole: string;
@@ -112,7 +115,6 @@ interface Locale {
   disconnect: {
     disconnect: string;
     disconnected: string;
-    notVoiceChannel: string;
   };
   log: {
     log: string;
@@ -145,7 +147,6 @@ interface Locale {
   move: {
     move: string;
     moved: string;
-    notVoiceChannel: string;
   };
   privateRoom: {
     privateRoom: string;
@@ -272,7 +273,7 @@ interface State {
   locale: Locale;
   logChannel: string | null;
   logMessageEvents: boolean;
-  privateRoom: string | null;
+  privateRoom: { generator: string | null; fallback: string | null };
   privateRooms: PrivateRoom[];
   reactionRoles: ReactionRole[];
   timeout: NodeJS.Timeout | null;
@@ -303,7 +304,7 @@ interface Config {
   locale: string;
   logChannel: string | null;
   logMessageEvents: boolean;
-  privateRoom: string | null;
+  privateRoom: { generator: string | null; fallback: string | null };
   privateRooms: PrivateRoom[];
   reactionRoles: ReactionRole[];
   userRoles: UserRole[];

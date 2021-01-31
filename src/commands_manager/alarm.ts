@@ -64,7 +64,7 @@ export default {
         const voiceState: VoiceState = client.guilds.resolve(interaction.guild_id).member(interaction.member.user.id).voice;
 
         if (!voiceState.channel.permissionsFor(client.user).has(["CONNECT", "SPEAK"]))
-          return await sendEmbed({ interaction: interaction }, { description: `❌ **${state.locale.insufficientPerms.connect}**` });
+          return sendEmbed({ interaction: interaction }, { description: `❌ **${state.locale.insufficientPerms.connect}**` });
         else if (await voiceStateCheck(state.locale, { interaction: interaction })) return;
 
         state.alarmChannel = voiceState.channelID;

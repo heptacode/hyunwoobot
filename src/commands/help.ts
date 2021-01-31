@@ -32,7 +32,7 @@ export default {
         });
       }
 
-      return await sendEmbed(
+      return sendEmbed(
         { interaction: interaction },
         {
           color: props.color.purple,

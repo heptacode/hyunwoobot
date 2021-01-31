@@ -8,6 +8,8 @@ export default {
   role: "Role",
   textChannel: "TextChannel",
   voiceChannel: "VoiceChannel",
+  notTextChannel: "Not a text channel.",
+  notVoiceChannel: "Not a voice channel.",
   messageID: "MessageID",
   embed: "Embed",
   emoji: "Emoji",
@@ -35,6 +37,7 @@ export default {
     locale: "<code>",
     log: "<textChannel>",
     move: "<fromVoiceChannel> <targetVoiceChannel>",
+    privateroom: "[fallbackVoiceChannel]",
     reactionrole: "<view|add|remove|purge> <textChannel> <messageID> [emoji] [role]",
     setafktimeout: "<minute(s)>",
     userrole: "<view|add|remove|purge> [role]",
@@ -108,7 +111,6 @@ export default {
   disconnect: {
     disconnect: "Disconnect",
     disconnected: "Disconnected {cnt}user(s) from {voiceChannel}",
-    notVoiceChannel: "Not a voice channel.",
   },
   voiceDisconnect: {
     notInVoiceChannel: "I'm currently not in a voice channel!",
@@ -144,7 +146,6 @@ export default {
   move: {
     move: "Move",
     moved: " user(s) moved: ",
-    notVoiceChannel: "Not a voice channel.",
   },
   privateRoom: {
     privateRoom: "Private Room",

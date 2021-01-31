@@ -39,7 +39,7 @@ export default {
           {
             color: props.color.red,
             title: `**⚙️ ${state.locale.move.move}**`,
-            description: `❌ **${state.locale.move.notVoiceChannel}**`,
+            description: `❌ **${state.locale.notVoiceChannel}**`,
           }
         );
 

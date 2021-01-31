@@ -27,7 +27,7 @@ client.on("messageReactionAdd", async (reaction: MessageReaction, user: User) =>
     if (reaction.message.guild.member(user).roles.cache.has(reactionRole.role)) return;
     reaction.message.guild.member(user).roles.add(reactionRole.role, "[ReactionRole] MessageReactionAdd");
 
-    return await sendEmbed(
+    return sendEmbed(
       { member: reaction.message.member },
       {
         color: props.color.cyan,

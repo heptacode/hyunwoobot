@@ -8,6 +8,8 @@ export default {
   role: "역할",
   textChannel: "채팅채널",
   voiceChannel: "음성채널",
+  notTextChannel: "해당 채널은 채팅 채널이 아니예요.",
+  notVoiceChannel: "해당 채널은 음성 채널이 아니예요.",
   messageID: "메시지 ID",
   embed: "임베드",
   emoji: "이모지",
@@ -35,6 +37,7 @@ export default {
     locale: "<언어 코드>",
     log: "<채팅채널>",
     move: "<음성채널> <타겟 음성채널>",
+    privateroom: "[fallback 음성채널]",
     reactionrole: "<view|add|remove|purge> <채팅채널> <메시지ID> [이모지] [역할]",
     setafktimeout: "<분>",
     userrole: "<view|add|remove|purge> <역할>",
@@ -113,7 +116,6 @@ export default {
   disconnect: {
     disconnect: "연결 해제",
     disconnected: "{voiceChannel}에서 {cnt}명의 연결을 끊었어요.",
-    notVoiceChannel: "입력하신 채널은 음성 채널이 아니에요.",
   },
   log: {
     log: "로그",
@@ -146,7 +148,6 @@ export default {
   move: {
     move: "멤버 이동",
     moved: "명의 멤버가 이동됐어요: ",
-    notVoiceChannel: "입력하신 채널은 음성 채널이 아니에요.",
   },
   privateRoom: {
     privateRoom: "개인방",

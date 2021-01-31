@@ -30,7 +30,7 @@ export const voiceConnect = async (state: State, interaction: Interaction) => {
 
   try {
     if (!guild.member(interaction.member.user.id).voice.channel.permissionsFor(client.user).has(["CONNECT", "SPEAK"]))
-      return await sendEmbed({ interaction: interaction }, { description: `❌ **${state.locale.insufficientPerms.connect}**` }, { guild: true });
+      return sendEmbed({ interaction: interaction }, { description: `❌ **${state.locale.insufficientPerms.connect}**` }, { guild: true });
 
     if (state.voiceChannel) {
       state.connection = await state.voiceChannel.join();

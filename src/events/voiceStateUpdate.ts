@@ -1,4 +1,4 @@
-import { TextChannel, VoiceState } from "discord.js";
+import { Collection, TextChannel, VoiceState } from "discord.js";
 import { sendEmbed } from "../modules/embedSender";
 import { firestore } from "../modules/firebase";
 import { log } from "../modules/logger";
@@ -16,7 +16,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
     // User Leave
     try {
       const privateRoom: PrivateRoom = state.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === oldState.channelID || privateRoom.waiting === oldState.channelID);
-      if (state.privateRoom && privateRoom) {
+      if (state.privateRoom.generator && privateRoom) {
         if (privateRoom.room === oldState.channelID && privateRoom.host !== oldState.member.id) {
           const privateText: TextChannel = oldState.guild.channels.resolve(privateRoom.text) as TextChannel;
           if (privateText) {
@@ -29,16 +29,21 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
 
             await privateText.updateOverwrite(oldState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Switch/Leave");
           }
-
-          await oldState.guild.channels.resolve(state.privateRoom).permissionOverwrites.get(oldState.member.id).delete("[PrivateRoom] Switch/Leave");
+          try {
+            await oldState.guild.channels.resolve(state.privateRoom.generator).permissionOverwrites.get(oldState.member.id).delete("[PrivateRoom] Switch/Leave");
+          } catch (err) {
+            log.e(err);
+          }
         } else if (
           privateRoom.room !== newState.channelID &&
           privateRoom.waiting !== newState.channelID &&
           privateRoom.host === oldState.member.id &&
           oldState.guild.channels.cache.has(privateRoom.room)
         ) {
-          for (const [memberID, member] of oldState.guild.channels.resolve(privateRoom.room).members) {
-            await oldState.guild.channels.resolve(state.privateRoom).permissionOverwrites.get(memberID).delete("[PrivateRoom] Deletion");
+          for (const [memberID, member] of new Collection([...oldState.guild.channels.resolve(privateRoom.room).members, ...oldState.guild.channels.resolve(privateRoom.waiting).members])) {
+            if (state.privateRoom.fallback) await member.voice.setChannel(state.privateRoom.fallback, "[PrivateRoom] Deletion");
+            else if (privateRoom.room === member.voice.channelID)
+              await oldState.guild.channels.resolve(state.privateRoom.generator).permissionOverwrites.get(memberID).delete("[PrivateRoom] Deletion");
           }
 
           await oldState.guild.channels.resolve(privateRoom.room).delete("[PrivateRoom] Deletion");
@@ -49,7 +54,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           state.privateRooms.splice(idx, 1);
           await configDocRef.update({ privateRooms: state.privateRooms });
 
-          await oldState.guild.channels.resolve(state.privateRoom).permissionOverwrites.get(oldState.member.id).delete("[PrivateRoom] Deletion");
+          await oldState.guild.channels.resolve(state.privateRoom.generator).permissionOverwrites.get(oldState.member.id).delete("[PrivateRoom] Deletion");
         }
       }
 
@@ -71,7 +76,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
 
         await oldState.member.roles.remove(voiceRole.role, "[VoiceRole] Switch/Leave Voice");
 
-        await sendEmbed(
+        return sendEmbed(
           { member: oldState.member },
           {
             color: props.color.cyan,
@@ -92,7 +97,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
     try {
       const privateRoom: PrivateRoom = state.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === newState.channelID || privateRoom.waiting === newState.channelID);
 
-      if (state.privateRoom === newState.channelID) {
+      if (state.privateRoom.generator === newState.channelID) {
         const _privateRoom = await newState.guild.channels.create(`🔒 ${newState.member.user.username}`, {
           type: "voice",
           permissionOverwrites: [
@@ -108,13 +113,13 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
             },
             { type: "role", id: newState.guild.roles.everyone.id, deny: ["CREATE_INSTANT_INVITE", "CONNECT"] },
           ],
-          parent: newState.guild.channels.resolve(state.privateRoom).parent,
+          parent: newState.guild.channels.resolve(state.privateRoom.generator).parent,
         });
 
         // Move Host to Created Room
         await newState.member.voice.setChannel(_privateRoom, `[PrivateRoom] Creation`);
 
-        await newState.guild.channels.resolve(state.privateRoom).updateOverwrite(newState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Creation");
+        await newState.guild.channels.resolve(state.privateRoom.generator).updateOverwrite(newState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Creation");
 
         const _waitingRoomID = await (
           await newState.guild.channels.create(`🚪 ${newState.member.user.username} ${state.locale.privateRoom.waitingRoom}`, {
@@ -132,7 +137,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
               },
               { type: "role", id: newState.guild.roles.everyone.id, deny: ["CREATE_INSTANT_INVITE", "SPEAK"] },
             ],
-            parent: newState.guild.channels.resolve(state.privateRoom).parent,
+            parent: newState.guild.channels.resolve(state.privateRoom.generator).parent,
           })
         ).id;
 
@@ -151,7 +156,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
             },
             { type: "role", id: newState.guild.roles.everyone.id, deny: ["VIEW_CHANNEL", "CREATE_INSTANT_INVITE", "READ_MESSAGE_HISTORY"] },
           ],
-          parent: newState.guild.channels.resolve(state.privateRoom).parent,
+          parent: newState.guild.channels.resolve(state.privateRoom.generator).parent,
         });
 
         await _privateText.send({
@@ -169,7 +174,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         const privateText: TextChannel = newState.guild.channels.resolve(privateRoom.text) as TextChannel;
         if (privateRoom.room === newState.channelID) {
           if (privateRoom.host !== newState.member.id) {
-            await newState.guild.channels.resolve(state.privateRoom).updateOverwrite(newState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Accepted");
+            await newState.guild.channels.resolve(state.privateRoom.generator).updateOverwrite(newState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Accepted");
 
             if (privateText) {
               await privateText.updateOverwrite(newState.member, { VIEW_CHANNEL: true }, "[PrivateRoom] Accepted");
@@ -207,7 +212,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
 
               await newState.kick("[AFKTimeout] Disconnected due to inactivity");
 
-              await sendEmbed(
+              sendEmbed(
                 { member: newState.member },
                 {
                   color: props.color.purple,
@@ -216,7 +221,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
                 { dm: true }
               );
 
-              return await sendEmbed(
+              return sendEmbed(
                 { member: newState.member },
                 {
                   color: props.color.cyan,
@@ -233,7 +238,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           }, state.afkTimeout * 60000)
         );
 
-        return await sendEmbed(
+        return sendEmbed(
           { member: newState.member },
           {
             color: props.color.cyan,
@@ -261,7 +266,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           });
         }
 
-        return await sendEmbed(
+        return sendEmbed(
           { member: newState.member },
           {
             color: props.color.cyan,

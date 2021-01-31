@@ -115,7 +115,7 @@ const stream = async (state: State, interaction: Interaction) => {
         if (state.timeout) clearTimeout(state.timeout);
         state.isPlaying = true;
 
-        await sendEmbed(
+        sendEmbed(
           { interaction: interaction },
           {
             color: props.color.blue,
