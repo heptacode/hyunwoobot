@@ -34,31 +34,39 @@ export const play = async (state: State, interaction: Interaction) => {
         { guild: true }
       );
 
-    const result = (await youtube.search(interaction.data.options[0].value, { type: "video" })).videos;
-    if (result.length >= 1) {
-      if (result.length === 1) {
+    let result: any = (await youtube.search(interaction.data.options[0].value, { type: "video" })).videos;
+    if (result.length)
+      state.queue.push({
+        title: result[0].title,
+        channelName: result[0].channel.name,
+        length: result[0].duration,
+        thumbnailURL: result[0].thumbnail,
+        videoURL: result[0].link,
+        requestedBy: { tag: `${interaction.member.user.username}#${interaction.member.user.discriminator}`, avatarURL: client.users.resolve(interaction.member.user.id).avatarURL() },
+      });
+    else {
+      result = (await ytdl.getInfo(interaction.data.options[0].value)).videoDetails;
+      if (result)
         state.queue.push({
-          title: result[0].title,
-          channelName: result[0].channel.name,
-          length: result[0].duration,
-          thumbnailURL: result[0].thumbnail,
-          videoURL: result[0].link,
+          title: result.title,
+          channelName: result.ownerChannelName,
+          length: result.lengthSeconds,
+          thumbnailURL: result.thumbnail.thumbnails[0].url,
+          videoURL: result.video_url,
           requestedBy: { tag: `${interaction.member.user.username}#${interaction.member.user.discriminator}`, avatarURL: client.users.resolve(interaction.member.user.id).avatarURL() },
         });
-      } else {
-        // Query Search
-        state.queue.push({
-          title: result[0].title,
-          channelName: result[0].channel.name,
-          length: result[0].duration,
-          thumbnailURL: result[0].thumbnail,
-          videoURL: result[0].link,
-          requestedBy: { tag: `${interaction.member.user.username}#${interaction.member.user.discriminator}`, avatarURL: client.users.resolve(interaction.member.user.id).avatarURL() },
-        });
-        // return message.channel.send(locale.urlInvalid);
-      }
+      else
+        return sendEmbed(
+          { interaction: interaction },
+          {
+            color: props.color.red,
+            description: `❌ **${state.locale.music.noResult}**`,
+          }
+        );
+    }
 
-      if (state.queue && state.queue.length === 1) {
+    if (state.queue) {
+      if (state.queue.length === 1) {
         return stream(state, interaction);
       } else {
         const fields: EmbedFieldData[] = [
@@ -85,17 +93,9 @@ export const play = async (state: State, interaction: Interaction) => {
           { guild: true }
         );
       }
-    } else {
-      return sendEmbed(
-        { interaction: interaction },
-        {
-          color: props.color.red,
-          description: `❌ **${state.locale.music.noResult}**`,
-        }
-      );
     }
   } catch (err) {
-    log.e(`Play > 1 > ${err}`);
+    log.e(`Play > ${err}`);
   }
 };
 
