@@ -51,7 +51,7 @@ export const play = async (state: State, interaction: Interaction) => {
           title: result.title,
           channelName: result.ownerChannelName,
           length: result.lengthSeconds,
-          thumbnailURL: result.thumbnail.thumbnails[0].url,
+          thumbnailURL: result.thumbnails[0].url,
           videoURL: result.video_url,
           requestedBy: { tag: `${interaction.member.user.username}#${interaction.member.user.discriminator}`, avatarURL: client.users.resolve(interaction.member.user.id).avatarURL() },
         });
@@ -108,7 +108,7 @@ const stream = async (state: State, interaction: Interaction) => {
       highWaterMark: 1 << 25,
     });
 
-    state.connection.dispatcher.setVolume(state.volume / 10);
+    state.connection.dispatcher.setVolume(state.volume / 15);
 
     state.connection.dispatcher.on("start", async () => {
       try {
