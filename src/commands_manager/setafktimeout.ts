@@ -29,7 +29,7 @@ export default {
         {
           color: props.color.green,
           title: `**${state.locale.afkTimeout.afkTimeout}**`,
-          description: `✅ **${state.locale.afkTimeout.set}${interaction.data.options[0].value}**`,
+          description: `✅ **${state.locale.afkTimeout.set.replace("{min}", interaction.data.options[0].value)}**`,
           timestamp: new Date(),
         },
         { guild: true, system: true }

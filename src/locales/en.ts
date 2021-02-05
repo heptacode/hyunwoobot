@@ -84,10 +84,10 @@ export default {
 
   afkTimeout: {
     afkTimeout: "AFK Timeout",
-    set: "AFK Timeout was set to: ",
+    set: "AFK Timeout has been updated: {min} minutes",
     disconnected: " was disconnected due to inactivity.",
     disconnected_dm: "You've been disconnected due to inactivity.",
-    countdownStarted: "AFK Timeout Countdown Started",
+    countdownStarted: "AFK Timeout Countdown Started({min} minutes)",
     options: {
       minutesToDisconnect: "Minutes to Timeout",
     },

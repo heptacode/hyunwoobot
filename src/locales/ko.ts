@@ -85,10 +85,10 @@ export default {
 
   afkTimeout: {
     afkTimeout: "자리비움 연결 해제",
-    set: "자리비움 연결 해제 시간이 업데이트 됐어요: ",
-    disconnected: "님께서 일정시간 자리를 비워서 연결 해제됐어요.",
-    disconnected_dm: "일정시간 자리를 비우셨기에 음성 채널에서 연결 해제됐어요.",
-    countdownStarted: "자리비움 연결 해제 카운트다운",
+    set: "자리비움 연결 해제 시간이 {min}분으로 업데이트 됐어요.",
+    disconnected: "님께서 {min}분 동안 비워서 연결 해제됐어요.",
+    disconnected_dm: "{min}분 동안 자리를 비우셨기에 음성 채널에서 연결 해제됐어요.",
+    countdownStarted: "자리비움 연결 해제 카운트다운({min}분)",
     options: {
       minutesToDisconnect: "자동 연결 해제까지 대기 시간(분)",
     },

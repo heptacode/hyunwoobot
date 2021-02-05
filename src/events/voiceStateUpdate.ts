@@ -216,7 +216,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
                 { member: newState.member },
                 {
                   color: props.color.purple,
-                  description: `**${state.locale.afkTimeout.disconnected_dm}**`,
+                  description: `**${state.locale.afkTimeout.disconnected_dm.replace("{min}", String(state.afkTimeout))}**`,
                 },
                 { dm: true }
               );
@@ -229,7 +229,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
                     name: state.locale.afkTimeout.afkTimeout,
                     iconURL: props.icon.call_end,
                   },
-                  description: `**<@${newState.member.user.id}>${state.locale.afkTimeout.disconnected}**`,
+                  description: `**<@${newState.member.user.id}>${state.locale.afkTimeout.disconnected.replace("{min}", String(state.afkTimeout))}**`,
                   timestamp: new Date(),
                 },
                 { guild: true, log: true }
@@ -243,7 +243,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           {
             color: props.color.cyan,
             author: {
-              name: `${state.locale.afkTimeout.countdownStarted}(${state.afkTimeout}${state.locale.minute})`,
+              name: `${state.locale.afkTimeout.countdownStarted.replace("{min}", String(state.afkTimeout))}`,
               iconURL: props.icon.timer,
             },
             description: `<@${newState.member.user.id}>`,
