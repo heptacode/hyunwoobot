@@ -108,7 +108,7 @@ const stream = async (state: State, interaction: Interaction) => {
       highWaterMark: 1 << 25,
     });
 
-    state.connection.dispatcher.setVolume(state.volume / 15);
+    state.connection.dispatcher.setVolume(state.volume / 150);
 
     state.connection.dispatcher.on("start", async () => {
       try {
@@ -152,9 +152,9 @@ const stream = async (state: State, interaction: Interaction) => {
           }
           if (state.queue && state.queue.length >= 1) {
             return await stream(state, interaction);
-          } else state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 30000);
+          } else state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 180000);
         } else {
-          state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 30000);
+          state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 180000);
         }
       } catch (err) {
         log.e(`Stream > DispatcherFinish > ${err}`);

@@ -35,7 +35,7 @@ export default {
 
       const newVolume = Number(interaction.data.options[0].value);
 
-      state.connection.dispatcher.setVolume(newVolume / 15);
+      state.connection.dispatcher.setVolume(newVolume / 150);
 
       state.volume = newVolume;
 

@@ -44,7 +44,7 @@ client.once("ready", async () => {
                 isLooped: false,
                 isRepeated: false,
                 isPlaying: false,
-                volume: 1,
+                volume: 3,
               } as State);
 
               for (const reactionRole of config.reactionRoles) {
