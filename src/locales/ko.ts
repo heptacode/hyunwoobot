@@ -154,8 +154,8 @@ export default {
     create: "개인방 만들기",
     set: "개인방이 초기화됐어요.",
     waitingRoom: "대기실",
-    waitingForMove: "님이 개인방 대기실에 입장하여 이동을 기다리고 있어요.",
-    privateTextCreated: "개인방 채팅채널이 생성됐어요.\n이 채널은 개인방에 참가한 멤버들과 서버 매니저만 볼 수 있어요.\n늦게 참가한 멤버는 먼저 보낸 메시지를 읽을 수 없다는 점을 알아두세요.",
+    waitingForMove: "님이 대기실에 입장하여 이동을 기다리고 있어요.",
+    privateTextCreated: "개인방 채팅채널이 만들어졌어요.\n이 채널은 개인방에 참가한 멤버들과 매니저만 볼 수 있어요.\n늦게 참가한 멤버는 먼저 보낸 메시지를 읽을 수 없다는 점을 알아두세요.",
   },
   reactionRole: {
     roleAppended: "역할 추가됨 [이모지 역할]",
