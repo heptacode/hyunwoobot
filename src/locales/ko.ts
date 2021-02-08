@@ -69,7 +69,7 @@ export default {
     move: "음성채널 멤버 일괄 이동",
     privateroom: "개인방 초기화하기",
     reactionrole: "이모지 반응에 따른 역할 부여",
-    setafktimeout: "자리 비움 연결 해제 시간 설정",
+    setafktimeout: "비활성화 채널 연결 해제 시간 설정",
     userrole: "대시보드를 통해 할당 가능한 역할 설정",
     voicerole: "음성채널 접속자에게 역할 부여",
   },
@@ -84,11 +84,11 @@ export default {
   },
 
   afkTimeout: {
-    afkTimeout: "자리비움 연결 해제",
-    set: "자리비움 연결 해제 시간이 {min}분으로 업데이트 됐어요.",
-    disconnected: "님께서 {min}분 동안 자리를 비우셨기에 음성 채널에서 연결 해제됐어요.",
-    disconnected_dm: "{min}분 동안 자리를 비우셨기에 음성 채널에서 연결 해제됐어요.",
-    countdownStarted: "자리비움 연결 해제 카운트다운({min}분)",
+    afkTimeout: "비활성화 연결 해제",
+    set: "비활성화 채널 연결 해제 시간이 {min}분으로 업데이트 됐어요.",
+    disconnected: "님께서 비활성화 채널에서 {min}분 동안 자리를 비우셨기에 연결 해제됐어요.",
+    disconnected_dm: "비활성화 채널에서 {min}분 동안 자리를 비우셨기에 연결 해제됐어요.",
+    countdownStarted: "비활성화 연결 해제 카운트다운({min}분)",
     options: {
       minutesToDisconnect: "자동 연결 해제까지 대기 시간(분)",
     },
