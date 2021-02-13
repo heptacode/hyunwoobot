@@ -1,5 +1,6 @@
 import { GuildMember } from "discord.js";
 import { sendEmbed } from "../modules/embedSender";
+import { setGuild } from "../modules/initializer";
 import { log } from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";
@@ -22,7 +23,7 @@ client.on("guildMemberAdd", async (member: GuildMember) => {
 
       await member.roles.add(autoRole.role, "[AutoRole] GuildMemberAdd");
 
-      return sendEmbed(
+      sendEmbed(
         { member: member },
         {
           color: props.color.cyan,
@@ -33,6 +34,8 @@ client.on("guildMemberAdd", async (member: GuildMember) => {
         { guild: true, log: true }
       );
     }
+
+    return setGuild(member.guild.id);
   } catch (err) {
     log.e(`GuildMemberAdd > ${err}`);
   }
