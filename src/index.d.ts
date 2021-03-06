@@ -224,19 +224,34 @@ interface Interaction {
     is_pending: boolean;
     deaf: boolean;
   };
-  data?: CommandInteractionData;
+  data?: ApplicationCommandInteractionData;
 }
 
-interface CommandInteractionData {
+interface ApplicationCommandInteractionData {
   id: string;
   name: string;
-  options: CommandInteractionDataOption[];
+  options: ApplicationCommandInteractionDataOption[];
 }
 
-interface CommandInteractionDataOption {
+interface ApplicationCommandInteractionDataOption {
   name: string;
   value?: string;
-  options?: CommandInteractionDataOption[];
+  options?: ApplicationCommandInteractionDataOption[];
+}
+
+interface InteractionResponse {
+  type: InteractionResponseType;
+  data: InteractionApplicationCommandCallbackData;
+}
+
+type InteractionResponseType = 1 | 2 | 3 | 4 | 5;
+
+interface InteractionApplicationCommandCallbackData {
+  tts?: boolean;
+  content?: string;
+  embeds?: any[];
+  allowed_mentions?: any;
+  flags?: number;
 }
 
 interface Command {
@@ -248,8 +263,6 @@ interface Command {
   execute?: Function;
 }
 
-type CommandOptionType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-
 interface CommandOptions {
   type: CommandOptionType;
   name: string;
@@ -259,6 +272,7 @@ interface CommandOptions {
   choices?: CommandOptionChoice[];
   options?: CommandOptions[];
 }
+type CommandOptionType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
 interface CommandOptionChoice {
   name: string;
