@@ -6,6 +6,7 @@ export default {
   manager: "[Manager]",
   scope: "Scope",
   role: "Role",
+  text: "Text",
   textChannel: "TextChannel",
   voiceChannel: "VoiceChannel",
   notTextChannel: "Not a text channel.",
@@ -26,6 +27,7 @@ export default {
   usage: {
     help: "[manager]",
     play: "[query|URL]",
+    tts: "<text>",
     volume: "<1~10>",
     //
     alarm: "<subscribe|unsubscribe|test>",
@@ -56,6 +58,7 @@ export default {
     repeat: "Toggle repeat",
     skip: "Skip current music",
     stop: "Stop the music",
+    tts: "Send a TTS to a voice channel you are in",
     volume: "Change the volume",
     //
     alarm: "Send hourly alarms to a voice channel",
@@ -111,9 +114,6 @@ export default {
   disconnect: {
     disconnect: "Disconnect",
     disconnected: "Disconnected {cnt}user(s) from {voiceChannel}",
-  },
-  voiceDisconnect: {
-    notInVoiceChannel: "I'm currently not in a voice channel!",
   },
   music: {
     joinVoiceChannel: "To use this command, join a voice channel.",
@@ -175,6 +175,9 @@ export default {
       remove: "Remove UserRole Config",
       purge: "Purge UserRole Config",
     },
+  },
+  voiceDisconnect: {
+    notInVoiceChannel: "I'm currently not in a voice channel!",
   },
   voiceRole: {
     voiceRole: "Voice Channel Roles",

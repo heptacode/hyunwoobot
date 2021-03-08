@@ -36,6 +36,7 @@ export const setState = (guildID: string, config?: Config) => {
     locale: config ? locales.get(config.locale) : locales.get("ko"),
     logChannel: config ? config.logChannel : null,
     logMessageEvents: config ? config.logMessageEvents : false,
+    mentionDebounce: null,
     privateRoom: config ? config.privateRoom : { generator: null, fallback: null },
     privateRooms: config ? config.privateRooms : null,
     reactionRoles: config ? config.reactionRoles : [],

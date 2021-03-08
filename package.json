@@ -20,6 +20,7 @@
   "homepage": "https://github.com/heptacode/discordbot#readme",
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
+    "aws-sdk": "^2.858.0",
     "axios": "^0.21.1",
     "chalk": "^4.1.0",
     "compression": "^1.7.4",

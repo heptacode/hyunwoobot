@@ -6,6 +6,7 @@ export default {
   manager: "[매니저]",
   scope: "범위",
   role: "역할",
+  text: "텍스트",
   textChannel: "채팅채널",
   voiceChannel: "음성채널",
   notTextChannel: "해당 채널은 채팅 채널이 아니예요.",
@@ -26,6 +27,7 @@ export default {
   usage: {
     help: "[manager]",
     play: "[query|URL]",
+    tts: "<텍스트>",
     volume: "<1~10>",
     //
     alarm: "<subscribe|unsubscribe|test>",
@@ -56,6 +58,7 @@ export default {
     repeat: "한 곡 반복 활성화/비활성화",
     skip: "재생 중인 곡 건너뛰기",
     stop: "재생 중인 곡 중지하기",
+    tts: "음성채널에 TTS 메시지 보내기",
     volume: "음량 변경하기",
     // manager
     alarm: "음성 채널에 정각 알람 송출",
@@ -167,9 +170,6 @@ export default {
       purge: "이모지 역할 초기화",
     },
   },
-  voiceDisconnect: {
-    notInVoiceChannel: "저는 지금 음성채널에 있지 않아요!",
-  },
   userRole: {
     userRole: "대시보드 역할",
     empty: "설정된 역할이 없어요.",
@@ -179,6 +179,9 @@ export default {
       remove: "대시보드 역할 삭제",
       purge: "대시보드 역할 초기화",
     },
+  },
+  voiceDisconnect: {
+    notInVoiceChannel: "저는 지금 음성채널에 있지 않아요!",
   },
   voiceRole: {
     voiceRole: "음성채널 역할",

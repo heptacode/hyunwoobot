@@ -6,6 +6,7 @@ interface Locale {
   manager: string;
   scope: string;
   role: string;
+  text: string;
   textChannel: string;
   voiceChannel: string;
   notTextChannel: string;
@@ -26,6 +27,7 @@ interface Locale {
   usage: {
     help: string;
     play: string;
+    tts: string;
     volume: string;
     //
     alarm: string;
@@ -56,6 +58,7 @@ interface Locale {
     repeat: string;
     skip: string;
     stop: string;
+    tts: string;
     volume: string;
     //
     alarm: string;
@@ -166,9 +169,6 @@ interface Locale {
       purge: string;
     };
   };
-  voiceDisconnect: {
-    notInVoiceChannel: string;
-  };
   userRole: {
     userRole: string;
     empty: string;
@@ -178,6 +178,9 @@ interface Locale {
       remove: string;
       purge: string;
     };
+  };
+  voiceDisconnect: {
+    notInVoiceChannel: string;
   };
   voiceRole: {
     voiceRole: string;
@@ -287,6 +290,7 @@ interface State {
   locale: Locale;
   logChannel: string | null;
   logMessageEvents: boolean;
+  mentionDebounce: NodeJS.Timeout;
   privateRoom: { generator: string | null; fallback: string | null };
   privateRooms: PrivateRoom[];
   reactionRoles: ReactionRole[];
