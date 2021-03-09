@@ -1,7 +1,7 @@
+import axios from "axios";
 import { client, states, commands, commands_manager } from "../app";
 import { log } from "../modules/logger";
 import { Interaction, InteractionResponse } from "../";
-import axios from "axios";
 
 (client as any).ws.on("INTERACTION_CREATE", async (interaction: Interaction) => {
   try {
