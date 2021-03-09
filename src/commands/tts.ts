@@ -28,7 +28,7 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if (state.isPlaying || interaction.data.options[0].value.length > 100 || (await voiceStateCheck(state.locale, { interaction: interaction }))) return;
+      if (state.isPlaying || interaction.data.options[0].value.length > 50 || (await voiceStateCheck(state.locale, { interaction: interaction }))) return;
       state.isPlaying = true;
 
       if (!state.connection) await voiceConnect(state, interaction);
