@@ -29,7 +29,7 @@ export default {
     ];
   },
   async execute(state: State, interaction: Interaction) {
-    const message = interaction.data.options[0].value.replace(/[^a-zA-Z가-힣0-9 \.,]/g, ``);
+    const message = interaction.data.options[0].value.replace(/[^a-zA-Zㄱ-힣0-9 \.,]/g, ``);
     if (message.length === 0) throw new Error();
 
     sendEmbed(
@@ -62,7 +62,7 @@ export default {
           return log.e(`TTS > ${err.code}`);
         }
         if (data.AudioStream instanceof Buffer) {
-          state.connection.play(resolve(__dirname, "../assets/message.mp3"));
+          state.connection.play(resolve(__dirname, process.env.NODE_ENV === "production" ? "../../src/assets/message.mp3" : "../assets/message.mp3"));
           state.connection.dispatcher.setVolume(0.1);
 
           const stream = new PassThrough();
