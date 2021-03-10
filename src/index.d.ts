@@ -290,7 +290,7 @@ interface State {
   locale: Locale;
   logChannel: string | null;
   logMessageEvents: boolean;
-  mentionDebounce: NodeJS.Timeout;
+  mentionDebounce: NodeJS.Timeout | null;
   privateRoom: { generator: string | null; fallback: string | null };
   privateRooms: PrivateRoom[];
   reactionRoles: ReactionRole[];

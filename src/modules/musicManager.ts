@@ -112,7 +112,7 @@ const stream = async (state: State, interaction: Interaction) => {
 
     state.connection.dispatcher.on("start", async () => {
       try {
-        if (state.timeout) clearTimeout(state.timeout);
+        if (state.timeout) state.timeout = null;
         state.isPlaying = true;
 
         sendEmbed(
@@ -152,9 +152,9 @@ const stream = async (state: State, interaction: Interaction) => {
           }
           if (state.queue && state.queue.length >= 1) {
             return await stream(state, interaction);
-          } else state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 180000);
+          } else state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 300000);
         } else {
-          state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 180000);
+          state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 300000);
         }
       } catch (err) {
         log.e(`Stream > DispatcherFinish > ${err}`);
