@@ -25,10 +25,10 @@ export const voiceStateCheck = async (locale: Locale, payload: { interaction?: I
 };
 
 export const voiceConnect = async (state: State, interaction: Interaction) => {
-  const guild: Guild = client.guilds.resolve(interaction.guild_id);
-  state.voiceChannel = guild.member(interaction.member.user.id).voice.channel;
-
   try {
+    const guild: Guild = client.guilds.resolve(interaction.guild_id);
+    state.voiceChannel = guild.member(interaction.member.user.id).voice.channel;
+
     if (!guild.member(interaction.member.user.id).voice.channel.permissionsFor(client.user).has(["CONNECT", "SPEAK"]))
       return sendEmbed({ interaction: interaction }, { description: `❌ **${state.locale.insufficientPerms.connect}**` }, { guild: true });
 
@@ -43,21 +43,12 @@ export const voiceConnect = async (state: State, interaction: Interaction) => {
 
 export const voiceDisconnect = (state: State, interaction: Interaction) => {
   try {
-    if (state.voiceChannel) {
-      state.isPlaying = false;
-      state.voiceChannel.leave();
-      state.connection = null;
-      state.voiceChannel = null;
-    } else {
-      return sendEmbed(
-        { interaction: interaction },
-        {
-          color: props.color.red,
-          description: `❌ **${state.locale.voiceDisconnect.notInVoiceChannel}**`,
-        },
-        { guild: true }
-      );
-    }
+    if (!state.voiceChannel) return;
+
+    state.isPlaying = false;
+    state.voiceChannel.leave();
+    state.connection = null;
+    state.voiceChannel = null;
   } catch (err) {
     log.e(`VoiceDisconnect > ${err}`);
   }
