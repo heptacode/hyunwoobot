@@ -9,6 +9,8 @@ client.on("roleUpdate", async (oldRole: Role, newRole: Role) => {
     if (!states.get(newRole.guild.id).userRoles) return;
 
     const idx = states.get(newRole.guild.id).userRoles.findIndex((userRole: UserRole) => userRole.id === newRole.id);
+    if (!idx) return;
+
     states.get(newRole.guild.id).userRoles[idx].name = newRole.name;
     states.get(newRole.guild.id).userRoles[idx].color = newRole.hexColor;
 

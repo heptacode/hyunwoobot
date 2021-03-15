@@ -23,7 +23,7 @@ client.on("guildMemberAdd", async (member: GuildMember) => {
 
       await member.roles.add(autoRole.role, "[AutoRole] GuildMemberAdd");
 
-      sendEmbed(
+      await sendEmbed(
         { member: member },
         {
           color: props.color.cyan,

@@ -50,10 +50,10 @@ export default {
       if (method === "view") {
       } else if (method === "add") {
         state.autoRoles.push({ type: interaction.data.options[0].options[0].value, role: interaction.data.options[0].options[1].value });
-        await firestore.collection(interaction.guild_id).doc("config").update({ autoRole: state.autoRoles });
+        await firestore.collection(interaction.guild_id).doc("config").update({ autoRoles: state.autoRoles });
       } else if (method === "purge") {
         state.autoRoles = [];
-        await firestore.collection(interaction.guild_id).doc("config").update({ autoRole: [] });
+        await firestore.collection(interaction.guild_id).doc("config").update({ autoRoles: [] });
       }
 
       const fields: EmbedFieldData[] = [];
