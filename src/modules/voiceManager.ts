@@ -1,4 +1,4 @@
-import { Guild, Message } from "discord.js";
+import { Guild, Message, VoiceChannel } from "discord.js";
 import { sendEmbed } from "./embedSender";
 import { log } from "./logger";
 import { client } from "../app";
@@ -26,16 +26,13 @@ export const voiceStateCheck = async (locale: Locale, payload: { interaction?: I
 
 export const voiceConnect = async (state: State, interaction: Interaction) => {
   try {
-    const guild: Guild = client.guilds.resolve(interaction.guild_id);
-    state.voiceChannel = guild.member(interaction.member.user.id).voice.channel;
+    const voiceChannel: VoiceChannel = client.guilds.resolve(interaction.guild_id).member(interaction.member.user.id).voice.channel;
 
-    if (!guild.member(interaction.member.user.id).voice.channel.permissionsFor(client.user).has(["CONNECT", "SPEAK"]))
+    if (!voiceChannel) return;
+    else if (!voiceChannel.permissionsFor(client.user).has(["CONNECT", "SPEAK"]))
       return sendEmbed({ interaction: interaction }, { description: `❌ **${state.locale.insufficientPerms.connect}**` }, { guild: true });
 
-    if (state.voiceChannel) {
-      state.connection = await state.voiceChannel.join();
-      log.d("VoiceConnect");
-    }
+    state.connection = await voiceChannel.join();
   } catch (err) {
     log.e(`VoiceConnect > ${err}`);
   }
@@ -43,12 +40,11 @@ export const voiceConnect = async (state: State, interaction: Interaction) => {
 
 export const voiceDisconnect = (state: State, interaction: Interaction) => {
   try {
-    if (!state.voiceChannel) return;
+    if (!state.connection.voice.channel) return;
 
     state.isPlaying = false;
-    state.voiceChannel.leave();
+    state.connection.voice.channel.leave();
     state.connection = null;
-    state.voiceChannel = null;
   } catch (err) {
     log.e(`VoiceDisconnect > ${err}`);
   }

@@ -25,7 +25,7 @@ const sendAlarm = async () => {
       state.connection.play(broadcast);
 
       dispatcher.on("finish", () => {
-        (client.channels.resolve(state.alarmChannel) as VoiceChannel).leave();
+        state.connection.channel.leave();
       });
     }
   } catch (err) {

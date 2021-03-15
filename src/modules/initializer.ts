@@ -44,8 +44,6 @@ export const setState = (guildID: string, config?: Config) => {
     userRoles: config ? config.userRoles : [],
     voiceRoles: config ? config.voiceRoles : [],
 
-    textChannel: null,
-    voiceChannel: null,
     connection: null,
     queue: [],
     isLooped: false,

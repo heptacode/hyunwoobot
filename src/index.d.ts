@@ -298,8 +298,6 @@ interface State {
   userRoles: UserRole[];
   voiceRoles: VoiceRole[];
 
-  textChannel: TextChannel;
-  voiceChannel: VoiceChannel;
   connection: VoiceConnection;
   queue: {
     title: string;
