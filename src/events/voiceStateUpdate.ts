@@ -7,9 +7,15 @@ import props from "../props";
 import { PrivateRoom, State, VoiceRole } from "../";
 
 client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState) => {
-  if ((oldState && newState && oldState.channelID === newState.channelID) || oldState.member.user.bot || newState.member.user.bot) return;
+  if (oldState && newState && oldState.channelID === newState.channelID) return;
 
   const state: State = states.get(newState.guild.id || oldState.guild.id);
+
+  if (oldState.member.user.id === client.user.id) return (state.connection = null);
+  if (newState.member.user.id === client.user.id) return (state.connection = newState.connection);
+
+  if (oldState.member.user.bot || newState.member.user.bot) return;
+
   const configDocRef = firestore.collection(newState.guild.id || oldState.guild.id).doc("config");
 
   if (oldState.channelID) {
