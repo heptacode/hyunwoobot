@@ -78,6 +78,8 @@ const fetchGuildMember = (guildID: string, memberID: string): APIGuildMember => 
 
 app.post("/fetch", async (req, res) => {
   try {
+    if (!req.body.token) return res.sendStatus(401);
+
     const payload: { user: APIUser; guilds: APIGuild[] } = {
       user: (await axios.get("https://discord.com/api/v8/users/@me", { headers: { Authorization: `Bearer ${req.body.token}` } })).data,
       guilds: [],
@@ -102,6 +104,8 @@ app.post("/fetch", async (req, res) => {
 
 app.post("/guild", async (req, res) => {
   try {
+    if (!req.body.token) return res.sendStatus(401);
+
     if (!states.get(req.body.guild) || !client.guilds.resolve(req.body.guild).member(req.body.member)) return;
 
     res.json({
@@ -116,6 +120,8 @@ app.post("/guild", async (req, res) => {
 
 app.put("/roles", async (req, res) => {
   try {
+    if (!req.body.token) return res.sendStatus(401);
+
     const member: GuildMember = client.guilds.resolve(req.body.guild).member(req.body.member);
 
     if (!member || !req.body.roles) return res.sendStatus(404);
