@@ -44,7 +44,10 @@ export default {
 
     if (state.isPlaying || interaction.data.options[0].value.length > 50 || (await voiceStateCheck(state.locale, { interaction: interaction }))) throw new Error();
     state.isPlaying = true;
-    if (state.timeout) state.timeout = null;
+    if (state.timeout) {
+      clearTimeout(state.timeout);
+      state.timeout = null;
+    }
 
     if (!state.connection) await voiceConnect(state, interaction);
 
@@ -72,7 +75,11 @@ export default {
 
             state.connection.dispatcher.on("finish", () => {
               state.isPlaying = false;
-              state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 300000);
+
+              if (state.timeout) {
+                clearTimeout(state.timeout);
+                state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 300000);
+              }
             });
           }, 400);
         }
