@@ -29,7 +29,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
             await privateText.send({
               embed: {
                 color: props.color.red,
-                author: { name: oldState.member.user.username, iconURL: oldState.member.user.avatarURL() },
+                author: { name: oldState.member.displayName, iconURL: oldState.member.user.avatarURL() },
               },
             });
 
@@ -75,7 +75,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           (oldState.guild.channels.resolve(voiceRole.textChannel) as TextChannel).send({
             embed: {
               color: props.color.red,
-              author: { name: oldState.member.user.username, iconURL: oldState.member.user.avatarURL() },
+              author: { name: oldState.member.displayName, iconURL: oldState.member.user.avatarURL() },
             },
           });
         }
@@ -104,7 +104,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
       const privateRoom: PrivateRoom = state.privateRooms.find((privateRoom: PrivateRoom) => privateRoom.room === newState.channelID || privateRoom.waiting === newState.channelID);
 
       if (state.privateRoom.generator === newState.channelID) {
-        const _privateRoom = await newState.guild.channels.create(`🔒 ${newState.member.user.username}`, {
+        const _privateRoom = await newState.guild.channels.create(`🔒 ${newState.member.displayName}`, {
           type: "voice",
           permissionOverwrites: [
             {
@@ -128,7 +128,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         await newState.guild.channels.resolve(state.privateRoom.generator).updateOverwrite(newState.member, { VIEW_CHANNEL: false }, "[PrivateRoom] Creation");
 
         const _waitingRoomID = await (
-          await newState.guild.channels.create(`🚪 ${newState.member.user.username} ${state.locale.privateRoom.waitingRoom}`, {
+          await newState.guild.channels.create(`🚪 ${newState.member.displayName} ${state.locale.privateRoom.waitingRoom}`, {
             type: "voice",
             permissionOverwrites: [
               {
@@ -147,7 +147,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           })
         ).id;
 
-        const _privateText = await newState.guild.channels.create(`🔒 ${newState.member.user.username}`, {
+        const _privateText = await newState.guild.channels.create(`🔒 ${newState.member.displayName}`, {
           type: "text",
           permissionOverwrites: [
             {
@@ -188,7 +188,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
               return await privateText.send({
                 embed: {
                   color: props.color.cyan,
-                  author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },
+                  author: { name: newState.member.displayName, iconURL: newState.member.user.avatarURL() },
                 },
               });
             }
@@ -267,7 +267,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           (newState.guild.channels.resolve(voiceRole.textChannel) as TextChannel).send({
             embed: {
               color: props.color.cyan,
-              author: { name: newState.member.user.username, iconURL: newState.member.user.avatarURL() },
+              author: { name: newState.member.displayName, iconURL: newState.member.user.avatarURL() },
             },
           });
         }
