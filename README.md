@@ -1,4 +1,4 @@
-# Hyunwoo Bot
+# HyunwooBot
 
 ## Dependencies
 
