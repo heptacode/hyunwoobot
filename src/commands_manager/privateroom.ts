@@ -22,17 +22,16 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_CHANNELS")) return;
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_CHANNELS")) throw new Error();
 
       if (interaction.data.options && client.channels.resolve(interaction.data.options[0].value).type !== "voice")
-        return sendEmbed(
-          { interaction: interaction },
+        return [
           {
             color: props.color.red,
             title: `**⚙️ ${state.locale.privateRoom.privateRoom}**`,
             description: `❌ **${state.locale.notVoiceChannel}**`,
-          }
-        );
+          },
+        ];
 
       const guild: Guild = client.guilds.resolve(interaction.guild_id);
 
@@ -60,16 +59,13 @@ export default {
         .doc("config")
         .update({ privateRoom: { generator: privateRoomID, fallback: interaction.data.options ? interaction.data.options[0].value : null } });
 
-      return sendEmbed(
-        { interaction: interaction },
+      return [
         {
           color: props.color.green,
           title: `**${state.locale.privateRoom.privateRoom}**`,
           description: `✅ **${state.locale.privateRoom.set}**`,
-          timestamp: new Date(),
         },
-        { guild: true }
-      );
+      ];
     } catch (err) {
       log.e(`PrivateRoom > ${err}`);
     }

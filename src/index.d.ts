@@ -1,6 +1,7 @@
 import { Activity, Collection, PresenceStatus, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
 
 interface Locale {
+  done: string;
   on: string;
   off: string;
   manager: string;
@@ -247,7 +248,7 @@ interface InteractionResponse {
   data: InteractionApplicationCommandCallbackData;
 }
 
-type InteractionResponseType = 1 | 2 | 3 | 4 | 5;
+type InteractionResponseType = 1 | 4 | 5;
 
 interface InteractionApplicationCommandCallbackData {
   tts?: boolean;

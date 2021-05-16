@@ -14,19 +14,18 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if (await checkPermission(state.locale, { interaction: interaction }, "MOVE_MEMBERS")) return;
+      if (await checkPermission(state.locale, { interaction: interaction }, "MOVE_MEMBERS")) throw new Error();
 
       const channel: GuildChannel = client.channels.resolve(interaction.data.options[0].value) as GuildChannel;
 
       if (channel.type !== "voice")
-        return sendEmbed(
-          { interaction: interaction },
+        return [
           {
             color: props.color.red,
             title: `**⚙️ ${state.locale.disconnect.disconnect}**`,
             description: `❌ **${state.locale.notVoiceChannel}**`,
-          }
-        );
+          },
+        ];
 
       const cnt = channel.members.size;
       if (cnt <= 0) return;
@@ -37,18 +36,15 @@ export default {
         } catch (err) {}
       }
 
-      return sendEmbed(
-        { interaction: interaction },
+      return [
         {
           color: props.color.purple,
           title: `**⚙️ ${state.locale.disconnect.disconnect}**`,
           description: `✅ **${state.locale.disconnect.disconnected
             .replace("{voiceChannel}", client.guilds.resolve(interaction.guild_id).channels.resolve(interaction.data.options[0].value).name)
             .replace("{cnt}", String(cnt))}**`,
-          timestamp: new Date(),
         },
-        { guild: true }
-      );
+      ];
     } catch (err) {
       log.e(`Disconnect > ${err}`);
     }

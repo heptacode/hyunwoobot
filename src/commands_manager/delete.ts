@@ -21,19 +21,16 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_MESSAGES")) return;
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_MESSAGES")) throw new Error();
 
       await (client.channels.resolve(interaction.channel_id) as TextChannel).bulkDelete(Number(interaction.data.options[0].value));
 
-      return sendEmbed(
-        { interaction: interaction },
+      return [
         {
           color: props.color.purple,
           description: `🗑 **${interaction.data.options[0].value}${state.locale.delete.deleted}**`,
-          timestamp: new Date(),
         },
-        { guild: true }
-      );
+      ];
     } catch (err) {
       log.e(`Delete > ${err}`);
     }

@@ -27,21 +27,20 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if (await checkPermission(state.locale, { interaction: interaction }, "MOVE_MEMBERS")) return;
+      if (await checkPermission(state.locale, { interaction: interaction }, "MOVE_MEMBERS")) throw new Error();
 
       const guild: Guild = client.guilds.resolve(interaction.guild_id);
       const fromChannel: GuildChannel = guild.channels.resolve(interaction.data.options[0].value);
       const targetChannel: GuildChannel = guild.channels.resolve(interaction.data.options[1].value);
 
       if (fromChannel.type !== "voice" || targetChannel.type !== "voice")
-        return sendEmbed(
-          { interaction: interaction },
+        return [
           {
             color: props.color.red,
             title: `**⚙️ ${state.locale.move.move}**`,
             description: `❌ **${state.locale.notVoiceChannel}**`,
-          }
-        );
+          },
+        ];
 
       const cnt = fromChannel.members.size;
       if (cnt <= 0) return;
@@ -52,16 +51,13 @@ export default {
         } catch (err) {}
       }
 
-      return sendEmbed(
-        { interaction: interaction },
+      return [
         {
           color: props.color.green,
           title: `**⚙️ ${state.locale.move.move}**`,
           description: `✅ **${cnt}${state.locale.move.moved}${fromChannel.name} ➡️ ${targetChannel.name}**`,
-          timestamp: new Date(),
         },
-        { guild: true }
-      );
+      ];
     } catch (err) {
       log.e(`Move > ${err}`);
     }

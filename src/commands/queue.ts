@@ -16,8 +16,7 @@ export default {
         }
         fields.push({ name: "\u200B", value: `${state.isPlaying ? "▶️" : "⏹"}${state.isLooped ? " 🔁" : ""}${state.isRepeated ? " 🔂" : ""}` });
 
-        return sendEmbed(
-          { interaction: interaction },
+        return [
           {
             color: props.color.purple,
             author: {
@@ -30,17 +29,14 @@ export default {
             thumbnail: { url: state.queue[0].thumbnailURL },
             fields: fields,
           },
-          { guild: true }
-        );
+        ];
       } else {
-        return sendEmbed(
-          { interaction: interaction },
+        return [
           {
             color: props.color.purple,
             description: `🗑 **${state.locale.music.queueEmpty}**`,
           },
-          { guild: true }
-        );
+        ];
       }
     } catch (err) {
       log.e(`Queue > ${err}`);

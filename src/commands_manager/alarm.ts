@@ -56,7 +56,7 @@ export default {
     ];
   },
   async execute(state: State, interaction: Interaction) {
-    if (await checkPermission(state.locale, { interaction: interaction }, "ADMINISTRATOR")) return;
+    if (await checkPermission(state.locale, { interaction: interaction }, "ADMINISTRATOR")) throw new Error();
 
     const method = interaction.data.options[0].name;
     if (method === "subscribe") {
@@ -65,7 +65,7 @@ export default {
 
         if (!voiceState.channel.permissionsFor(client.user).has(["CONNECT", "SPEAK"]))
           return sendEmbed({ interaction: interaction }, { description: `❌ **${state.locale.insufficientPerms.connect}**` });
-        else if (await voiceStateCheck(state.locale, { interaction: interaction })) return;
+        else if (await voiceStateCheck(state.locale, { interaction: interaction })) throw new Error();
 
         state.alarmChannel = voiceState.channelID;
         await firestore.collection(interaction.guild_id).doc("config").update({ alarmChannel: voiceState.channelID });

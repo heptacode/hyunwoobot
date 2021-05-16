@@ -20,20 +20,17 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_GUILD")) return;
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_GUILD")) throw new Error();
 
       await firestore.collection(interaction.guild_id).doc("config").update({ afkTimeout: interaction.data.options[0].value });
 
-      return sendEmbed(
-        { interaction: interaction },
+      return [
         {
           color: props.color.green,
           title: `**${state.locale.afkTimeout.afkTimeout}**`,
           description: `✅ **${state.locale.afkTimeout.set.replace("{min}", interaction.data.options[0].value)}**`,
-          timestamp: new Date(),
         },
-        { guild: true, system: true }
-      );
+      ];
     } catch (err) {
       log.e(`SetAfkTimeout > ${err}`);
     }

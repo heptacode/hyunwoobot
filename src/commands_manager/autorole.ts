@@ -43,7 +43,7 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_ROLES")) return;
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_ROLES")) throw new Error();
 
       const method = interaction.data.options[0].name;
 
@@ -62,15 +62,13 @@ export default {
           fields.push({ name: autoRole.type, value: `<@&${autoRole.role}>` });
         }
 
-      return sendEmbed(
-        { interaction: interaction },
+      return [
         {
           color: props.color.yellow,
           title: `**⚙️ ${state.locale.autoRole.autoRole}**`,
           fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: state.locale.autoRole.empty }],
         },
-        { guild: true }
-      );
+      ];
     } catch (err) {
       log.e(`AutoRole > ${err}`);
     }

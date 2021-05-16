@@ -28,19 +28,17 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_GUILD")) return;
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_GUILD")) throw new Error();
 
       const newLocale = interaction.data.options[0].value;
 
       if (state.locale.locale.code === newLocale)
-        return sendEmbed(
-          { interaction: interaction },
+        return [
           {
             color: props.color.red,
             description: `❌ **${state.locale.locale.noChange}**`,
           },
-          { guild: true }
-        );
+        ];
 
       const _message: Message = await sendEmbed(
         { interaction: interaction },
@@ -106,7 +104,7 @@ export default {
 
       await _message.delete();
 
-      return sendEmbed(
+      sendEmbed(
         { interaction: interaction },
         {
           color: props.color.green,

@@ -6,7 +6,6 @@ import { checkPermission } from "../modules/permissionChecker";
 import { client } from "../app";
 import props from "../props";
 import { Interaction, Locale, State, VoiceRole } from "../";
-import { text } from "express";
 
 export default {
   name: "voicerole",
@@ -70,7 +69,7 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_ROLES")) return;
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_ROLES")) throw new Error();
 
       const guild = client.guilds.resolve(interaction.guild_id);
 
@@ -83,23 +82,21 @@ export default {
         const textChannel: string = interaction.data.options[2].value;
 
         if (client.channels.resolve(voiceChannel).type !== "voice")
-          return sendEmbed(
-            { interaction: interaction },
+          return [
             {
               color: props.color.red,
               title: `**⚙️ ${state.locale.voiceRole.voiceRole}**`,
               description: `❌ **${state.locale.notVoiceChannel}**`,
-            }
-          );
+            },
+          ];
         if (client.channels.resolve(textChannel).type !== "text")
-          return sendEmbed(
-            { interaction: interaction },
+          return [
             {
               color: props.color.red,
               title: `**⚙️ ${state.locale.voiceRole.voiceRole}**`,
               description: `❌ **${state.locale.notTextChannel}**`,
-            }
-          );
+            },
+          ];
 
         state.voiceRoles.push({
           voiceChannel: voiceChannel,
@@ -112,14 +109,13 @@ export default {
         const voiceChannel = interaction.data.options[0].options[0].value;
 
         if (client.channels.resolve(voiceChannel).type !== "voice")
-          return sendEmbed(
-            { interaction: interaction },
+          return [
             {
               color: props.color.red,
               title: `**⚙️ ${state.locale.voiceRole.voiceRole}**`,
               description: `❌ **${state.locale.notVoiceChannel}**`,
-            }
-          );
+            },
+          ];
 
         const idx = state.voiceRoles.findIndex((voiceRole: VoiceRole) => voiceRole.voiceChannel === voiceChannel);
         state.voiceRoles.splice(idx, 1);
@@ -149,16 +145,13 @@ export default {
         let description = payload.length ? `✅ **${state.locale.voiceRole.updated.replace("{cnt}", String(payload.length))}**` : `🙅 **${state.locale.voiceRole.noChanges}**\n`;
         payload.forEach((item) => (description += `\n<@${item.member}> **${item.action}** <@&${item.role}>`));
 
-        return sendEmbed(
-          { interaction: interaction },
+        return [
           {
             color: props.color.purple,
             title: `**⚙️ ${state.locale.voiceRole.voiceRole}**`,
             description: description,
-            timestamp: new Date(),
           },
-          { guild: true }
-        );
+        ];
       }
 
       const fields: EmbedFieldData[] = [];
@@ -170,16 +163,13 @@ export default {
           })
         );
 
-      return sendEmbed(
-        { interaction: interaction },
+      return [
         {
           color: props.color.yellow,
           title: `**⚙️ ${state.locale.voiceRole.voiceRole}**`,
           fields: fields.length >= 1 ? fields : [{ name: "\u200B", value: state.locale.voiceRole.empty }],
-          timestamp: new Date(),
         },
-        { guild: true }
-      );
+      ];
     } catch (err) {
       log.e(`VoiceRole > ${err}`);
     }

@@ -51,7 +51,7 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_ROLES")) return;
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_ROLES")) throw new Error();
 
       const guild = client.guilds.resolve(interaction.guild_id);
 
@@ -88,16 +88,13 @@ export default {
       if (state.userRoles.length >= 1) state.userRoles.forEach((userRole: UserRole) => (description += `\n<@&${userRole.id}>`));
       else description = state.locale.userRole.empty;
 
-      return sendEmbed(
-        { interaction: interaction },
+      return [
         {
           color: props.color.yellow,
           title: `**⚙️ ${state.locale.userRole.userRole}**`,
           description: description,
-          timestamp: new Date(),
         },
-        { guild: true }
-      );
+      ];
     } catch (err) {
       log.e(`VoiceRole > ${err}`);
     }

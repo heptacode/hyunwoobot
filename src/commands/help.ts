@@ -32,8 +32,7 @@ export default {
         });
       }
 
-      return sendEmbed(
-        { interaction: interaction },
+      return [
         {
           color: props.color.purple,
           title: `${props.bot.name} ${!isManager ? state.locale.help.help : `${state.locale.help.help} ${state.locale.manager}`}`,
@@ -42,8 +41,7 @@ export default {
           thumbnail: { url: props.bot.icon },
           fields: fields,
         },
-        { dm: true }
-      );
+      ];
     } catch (err) {
       log.e(`Help > ${err}`);
     }

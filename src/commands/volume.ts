@@ -39,14 +39,12 @@ export default {
 
       state.volume = newVolume;
 
-      return sendEmbed(
-        { interaction: interaction },
+      return [
         {
           color: props.color.purple,
           description: `🔈 **${state.locale.music.volumeChanged}${newVolume}**`,
         },
-        { guild: true }
-      );
+      ];
     } catch (err) {
       log.e(`ChangeVolume > 1 > ${err}`);
     }

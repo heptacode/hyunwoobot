@@ -32,16 +32,6 @@ export default {
     const message = interaction.data.options[0].value.replace(/[^a-zA-Zㄱ-힣0-9 \.,]/g, ``);
     if (message.length === 0) throw new Error();
 
-    sendEmbed(
-      { interaction: interaction },
-      {
-        color: props.color.purple,
-        description: `💬 **${message}**`,
-        timestamp: new Date(),
-      },
-      { guild: true }
-    );
-
     if (state.isPlaying || interaction.data.options[0].value.length > 50 || (await voiceStateCheck(state.locale, { interaction: interaction }))) throw new Error();
     state.isPlaying = true;
     if (state.timeout) {
@@ -85,5 +75,12 @@ export default {
         }
       }
     );
+
+    return [
+      {
+        color: props.color.purple,
+        description: `💬 **${message}**`,
+      },
+    ];
   },
 };

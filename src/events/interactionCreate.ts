@@ -3,16 +3,22 @@ import { client, states, commands, commands_manager } from "../app";
 import { log } from "../modules/logger";
 import { Interaction, InteractionResponse } from "../";
 
-(client as any).ws.on("INTERACTION_CREATE", async (interaction: Interaction) => {
+(client.ws as any).on("INTERACTION_CREATE", async (interaction: Interaction) => {
   try {
     const command = commands.get(interaction.data.name) || commands_manager.find((cmd) => cmd.name === interaction.data.name && !cmd.messageOnly);
     if (!command) return;
 
-    await command.execute(states.get(interaction.guild_id), interaction);
+    const response = await command.execute(states.get(interaction.guild_id), interaction);
 
-    await axios.post(`https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`, {
-      type: 2,
-    } as InteractionResponse);
+    await axios.post(
+      `https://discord.com/api/v8/interactions/${interaction.id}/${interaction.token}/callback`,
+      command.name !== "locale"
+        ? ({
+            type: 4,
+            data: response ? (Array.isArray(response) ? { embeds: response } : { content: response }) : { content: `**✅ ${states.get(interaction.guild_id).locale.done}**` },
+          } as InteractionResponse)
+        : { type: 5, data: { content: "❕" } }
+    );
   } catch (err) {
     log.e(`InteractionCreate > ${err}`);
   }

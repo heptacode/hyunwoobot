@@ -1,6 +1,7 @@
 import { Locale } from "../";
 
 export default {
+  done: "Done",
   on: "ON",
   off: "OFF",
   manager: "[Manager]",

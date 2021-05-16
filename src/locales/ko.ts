@@ -1,6 +1,7 @@
 import { Locale } from "../";
 
 export default {
+  done: "완료",
   on: "켜졌어요.",
   off: "꺼졌어요.",
   manager: "[매니저]",

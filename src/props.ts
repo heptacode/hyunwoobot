@@ -1,6 +1,6 @@
 export default {
   bot: { prefix: "/", name: "HyunwooBot", website: "https://bot.hyunwoo.dev", icon: "https://cdn.discordapp.com/avatars/303202584007671812/9fe36da1c721e959a991d38dcffdbe67.png?size=256" },
-  color: { red: "#E88388", magenta: "#D290E4", orange: "#DBAB79", yellow: "#FBDF81", green: "#A8CC8B", cyan: "#66C2CD", blue: "#71BEF2", purple: "#7788D4", white: "#B9BFCA" },
+  color: { red: 15238024, magenta: 13799652, orange: 14396281, yellow: 16506753, green: 11062411, cyan: 6734541, blue: 7454450, purple: 7833812, white: 12173258 },
   icon: {
     call_end: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/call_end.png?alt=media&token=94663943-12f5-4566-9185-119bb7c4ad21",
     delete: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/delete.png?alt=media&token=7c210430-e1f1-4ef2-aa88-4e1d533b5dfe",

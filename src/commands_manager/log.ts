@@ -20,20 +20,17 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_MESSAGES")) return;
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_MESSAGES")) throw new Error();
 
       await firestore.collection(interaction.guild_id).doc("config").update({ logChannel: interaction.data.options[0].value });
 
-      return sendEmbed(
-        { interaction: interaction },
+      return [
         {
           color: props.color.green,
           title: `**📦 ${state.locale.log.log}**`,
           description: `✅ **${state.locale.log.set}<#${interaction.data.options[0].value}>**`,
-          timestamp: new Date(),
         },
-        { guild: true }
-      );
+      ];
     } catch (err) {
       log.e(`Log > ${err}`);
     }
