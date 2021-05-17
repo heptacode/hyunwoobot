@@ -1,12 +1,12 @@
 import { VoiceBroadcast, VoiceChannel, VoiceState } from "discord.js";
 import { scheduleJob } from "node-schedule";
 import { resolve } from "path";
-import { sendEmbed } from "../modules/embedSender";
 import { firestore } from "../modules/firebase";
 import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import { voiceStateCheck } from "../modules/voiceManager";
 import { client, states } from "../app";
+import props from "../props";
 import { Interaction, Locale, State } from "../";
 
 scheduleJob({ minute: 59, second: 51 }, () => sendAlarm());
@@ -56,16 +56,15 @@ export default {
     ];
   },
   async execute(state: State, interaction: Interaction) {
-    if (await checkPermission(state.locale, { interaction: interaction }, "ADMINISTRATOR")) throw new Error();
+    if (await checkPermission(state.locale, { interaction: interaction }, "ADMINISTRATOR")) throw new Error("Missing Permissions");
 
     const method = interaction.data.options[0].name;
     if (method === "subscribe") {
       try {
         const voiceState: VoiceState = client.guilds.resolve(interaction.guild_id).member(interaction.member.user.id).voice;
 
-        if (!voiceState.channel.permissionsFor(client.user).has(["CONNECT", "SPEAK"]))
-          return sendEmbed({ interaction: interaction }, { description: `❌ **${state.locale.insufficientPerms.connect}**` });
-        else if (await voiceStateCheck(state.locale, { interaction: interaction })) throw new Error();
+        if (!voiceState.channel.permissionsFor(client.user).has(["CONNECT", "SPEAK"])) return [{ color: props.color.red, description: `❌ **${state.locale.insufficientPerms.connect}**` }];
+        else if (await voiceStateCheck(state.locale, { interaction: interaction })) throw new Error("Missing Permissions");
 
         state.alarmChannel = voiceState.channelID;
         await firestore.collection(interaction.guild_id).doc("config").update({ alarmChannel: voiceState.channelID });

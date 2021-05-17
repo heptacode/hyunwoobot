@@ -22,7 +22,7 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_CHANNELS")) throw new Error();
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_CHANNELS")) throw new Error("Missing Permissions");
 
       if (interaction.data.options && client.channels.resolve(interaction.data.options[0].value).type !== "voice")
         return [

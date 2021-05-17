@@ -14,7 +14,7 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if (await checkPermission(state.locale, { interaction: interaction }, "MOVE_MEMBERS")) throw new Error();
+      if (await checkPermission(state.locale, { interaction: interaction }, "MOVE_MEMBERS")) throw new Error("Missing Permissions");
 
       const channel: GuildChannel = client.channels.resolve(interaction.data.options[0].value) as GuildChannel;
 

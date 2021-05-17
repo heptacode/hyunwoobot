@@ -29,8 +29,17 @@ export const voiceConnect = async (state: State, interaction: Interaction) => {
     const voiceChannel: VoiceChannel = client.guilds.resolve(interaction.guild_id).member(interaction.member.user.id).voice.channel;
 
     if (!voiceChannel) return;
-    else if (!voiceChannel.permissionsFor(client.user).has(["CONNECT", "SPEAK"]))
-      return sendEmbed({ interaction: interaction }, { description: `❌ **${state.locale.insufficientPerms.connect}**` }, { guild: true });
+    else if (!voiceChannel.permissionsFor(client.user).has(["CONNECT", "SPEAK"])) {
+      sendEmbed(
+        { interaction: interaction },
+        {
+          color: props.color.red,
+          description: `❌ **${state.locale.insufficientPerms.connect}**`,
+        },
+        { guild: true }
+      );
+      throw new Error("Missing Permissions");
+    }
 
     state.connection = await voiceChannel.join();
   } catch (err) {

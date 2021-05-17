@@ -64,7 +64,7 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     try {
-      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_MESSAGES")) throw new Error();
+      if (await checkPermission(state.locale, { interaction: interaction }, "MANAGE_MESSAGES")) throw new Error("Missing Permissions");
 
       const guild = client.guilds.resolve(interaction.guild_id);
       const channel = guild.channels.resolve(interaction.channel_id) as TextChannel;

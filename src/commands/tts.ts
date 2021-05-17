@@ -30,9 +30,9 @@ export default {
   },
   async execute(state: State, interaction: Interaction) {
     const message = interaction.data.options[0].value.replace(/[^a-zA-Zㄱ-힣0-9 \.,]/g, ``);
-    if (message.length === 0) throw new Error();
+    if (message.length === 0) throw new Error("Invalid Message");
 
-    if (state.isPlaying || interaction.data.options[0].value.length > 50 || (await voiceStateCheck(state.locale, { interaction: interaction }))) throw new Error();
+    if (state.isPlaying || interaction.data.options[0].value.length > 50 || (await voiceStateCheck(state.locale, { interaction: interaction }))) throw new Error("Missing Permissions");
     state.isPlaying = true;
     if (state.timeout) {
       clearTimeout(state.timeout);
