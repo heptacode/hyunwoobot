@@ -156,12 +156,12 @@ const stream = async (state: State, interaction: Interaction) => {
           if (state.queue && state.queue.length >= 1) {
             return await stream(state, interaction);
           } else {
-            clearTimeout(state.timeout);
-            state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 300000);
+            if (state.timeout) clearTimeout(state.timeout);
+            state.timeout = setTimeout(() => voiceDisconnect(state), 300000);
           }
         } else {
-          clearTimeout(state.timeout);
-          state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 300000);
+          if (state.timeout) clearTimeout(state.timeout);
+          state.timeout = setTimeout(() => voiceDisconnect(state), 300000);
         }
       } catch (err) {
         log.e(`Stream > DispatcherFinish > ${err}`);

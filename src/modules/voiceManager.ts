@@ -42,12 +42,15 @@ export const voiceConnect = async (state: State, interaction: Interaction) => {
     }
 
     state.connection = await voiceChannel.join();
+
+    if (state.timeout) clearTimeout(state.timeout);
+    state.timeout = setTimeout(() => voiceDisconnect(state), 300000);
   } catch (err) {
     log.e(`VoiceConnect > ${err}`);
   }
 };
 
-export const voiceDisconnect = (state: State, interaction: Interaction) => {
+export const voiceDisconnect = (state: State, interaction?: Interaction) => {
   try {
     if (!state.connection.voice.channel) return;
 

@@ -66,10 +66,8 @@ export default {
             state.connection.dispatcher.on("finish", () => {
               state.isPlaying = false;
 
-              if (state.timeout) {
-                clearTimeout(state.timeout);
-                state.timeout = setTimeout(() => voiceDisconnect(state, interaction), 300000);
-              }
+              if (state.timeout) clearTimeout(state.timeout);
+              state.timeout = setTimeout(() => voiceDisconnect(state), 300000);
             });
           }, 400);
         }
