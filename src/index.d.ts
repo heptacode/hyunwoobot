@@ -6,6 +6,8 @@ interface Locale {
   off: string;
   manager: string;
   scope: string;
+  user: string;
+  member: string;
   role: string;
   text: string;
   textChannel: string;
