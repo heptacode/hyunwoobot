@@ -1,9 +1,11 @@
+import axios from "axios";
 import { Message } from "discord.js";
 import { log } from "../modules/logger";
 import { client, states, prefix, commands_manager } from "../app";
 // import { client, states, commands_hidden, prefix, commands_manager } from "../app";
 import props from "../props";
 import { Command } from "../";
+import "dotenv/config";
 
 client.on("message", async (message: Message) => {
   try {
@@ -24,7 +26,14 @@ client.on("message", async (message: Message) => {
       !message.content.startsWith(prefix)
     ) {
       states.get(message.guild.id).mentionDebounce = setTimeout(() => (states.get(message.guild.id).mentionDebounce = null), 30000);
-      await message.channel.send("<@303202584007671812>");
+      await axios.post(
+        `https://discord.com/api/v8/channels/${message.channel.id}/messages`,
+        {
+          content: "<@303202584007671812>",
+          message_reference: { message_id: message.id },
+        },
+        { headers: { Authorization: `Bot ${process.env.TOKEN}` } }
+      );
     } else if (!message.content.startsWith(prefix)) return;
 
     const args: string[] = message.content.slice(prefix.length).trim().split(/ +/);
@@ -36,6 +45,6 @@ client.on("message", async (message: Message) => {
     await command.execute(states.get(message.guild.id), message, args);
   } catch (err) {
     await message.react("❌");
-    log.e(`Main > ${JSON.stringify(message.content)} > ${err}`);
+    log.e(`Message > ${JSON.stringify(message.content)} > ${err}`);
   }
 });
