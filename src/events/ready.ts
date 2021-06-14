@@ -1,4 +1,5 @@
 import { Guild, TextChannel } from "discord.js";
+import { createError } from "../modules/createError";
 import { firestore } from "../modules/firebase";
 import { registerCommands, setGuild, setState } from "../modules/initializer";
 import { log } from "../modules/logger";
@@ -42,7 +43,7 @@ client.once("ready", async () => {
             }
           },
           (err) => {
-            console.log(`Firestore > DocumentUpdate > ${err}`);
+            createError("Initialize > Firestore > DocumentUpdate", err);
           }
         );
     }
@@ -59,7 +60,7 @@ client.once("ready", async () => {
         : { status: "online", activity: { type: "WATCHING", name: "/help" } }
     );
   } catch (err) {
-    log.e(`Initialize > ${err}`);
+    createError("Initialize", err);
   }
 
   log.i(`Login w/ ${client.user.tag}`);

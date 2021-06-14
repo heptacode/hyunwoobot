@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
+import { createError } from "../modules/createError";
 import { sendEmbed } from "../modules/embedSender";
 import { firestore } from "../modules/firebase";
-import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import { client, commands, commands_manager, locales } from "../app";
 import props from "../props";
@@ -71,7 +71,7 @@ export default {
             version: command.version,
           };
         } catch (err) {
-          log.e(`Locale > CommandRegister > ${err}`);
+          createError("ChangeLocale > CommandRegister", err, { interaction: interaction });
         }
       }
 
@@ -95,7 +95,7 @@ export default {
             version: command.version,
           };
         } catch (err) {
-          log.e(`Locale > CommandRegister > Manager > ${err}`);
+          createError("ChangeLocale > CommandRegister > Manager", err, { interaction: interaction });
         }
       }
 
@@ -113,7 +113,7 @@ export default {
         { guild: true }
       );
     } catch (err) {
-      log.e(`ChangeLocale > ${err}`);
+      createError("ChangeLocale", err, { interaction: interaction });
     }
   },
 };

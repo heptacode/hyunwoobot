@@ -8,6 +8,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import { resolve } from "path";
 import "dotenv/config";
+import { createError } from "./modules/createError";
 import { log } from "./modules/logger";
 import props from "./props";
 import { APIGuild, APIGuildMember, APIUser, Command, Locale, State, UserRole } from "./";
@@ -97,7 +98,7 @@ app.post("/fetch", async (req, res) => {
     }
     res.send(payload);
   } catch (err) {
-    log.e(err);
+    createError("Dashboard > Fetch", err);
     res.sendStatus(400);
   }
 });
@@ -113,7 +114,7 @@ app.post("/guild", async (req, res) => {
       userRoles: states.get(req.body.guild).userRoles,
     });
   } catch (err) {
-    log.e(err);
+    createError("Dashboard > Guild", err);
     res.sendStatus(400);
   }
 });
@@ -141,7 +142,7 @@ app.put("/roles", async (req, res) => {
     }
     res.sendStatus(200);
   } catch (err) {
-    log.e(err);
+    createError("Dashboard > Roles", err);
     res.sendStatus(400);
   }
 });

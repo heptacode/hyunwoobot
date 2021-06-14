@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Message } from "discord.js";
-import { log } from "../modules/logger";
+import { createError } from "../modules/createError";
 import { client, states, prefix, commands_manager } from "../app";
 // import { client, states, commands_hidden, prefix, commands_manager } from "../app";
 import props from "../props";
@@ -29,7 +29,7 @@ client.on("message", async (message: Message) => {
       await axios.post(
         `https://discord.com/api/v8/channels/${message.channel.id}/messages`,
         {
-          content: "<@303202584007671812>",
+          content: `<@${props.developerID}>`,
           message_reference: { message_id: message.id },
         },
         { headers: { Authorization: `Bot ${process.env.TOKEN}` } }
@@ -44,7 +44,7 @@ client.on("message", async (message: Message) => {
 
     await command.execute(states.get(message.guild.id), message, args);
   } catch (err) {
-    await message.react("❌");
-    log.e(`Message > ${JSON.stringify(message.content)} > ${err}`);
+    message.react("❌");
+    createError("Message", err, { message: message });
   }
 });

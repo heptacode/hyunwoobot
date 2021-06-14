@@ -1,5 +1,5 @@
 import { Guild, GuildMember, Message, MessageEmbed, MessageEmbedOptions, TextChannel, User } from "discord.js";
-import { log } from "./logger";
+import { createError } from "./createError";
 import { client, states } from "../app";
 import { Interaction } from "../";
 
@@ -57,6 +57,6 @@ export const sendEmbed = async (
     } else if (payload.message) {
     }
   } catch (err) {
-    log.e(`EmbedSender > ${err}`);
+    createError("EmbedSender", err, payload);
   }
 };

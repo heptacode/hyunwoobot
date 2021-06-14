@@ -1,6 +1,6 @@
 import { Guild, Message, VoiceChannel } from "discord.js";
+import { createError } from "./createError";
 import { sendEmbed } from "./embedSender";
-import { log } from "./logger";
 import { client } from "../app";
 import props from "../props";
 import { Interaction, Locale, State } from "../";
@@ -46,7 +46,7 @@ export const voiceConnect = async (state: State, interaction: Interaction) => {
     if (state.timeout) clearTimeout(state.timeout);
     state.timeout = setTimeout(() => voiceDisconnect(state), 300000);
   } catch (err) {
-    log.e(`VoiceConnect > ${err}`);
+    createError("VoiceConnect", err, { interaction: interaction });
   }
 };
 
@@ -58,6 +58,6 @@ export const voiceDisconnect = (state: State, interaction?: Interaction) => {
     state.connection.voice.channel.leave();
     state.connection = null;
   } catch (err) {
-    log.e(`VoiceDisconnect > ${err}`);
+    createError("VoiceDisconnect", err, { interaction: interaction });
   }
 };

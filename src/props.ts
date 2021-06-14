@@ -15,4 +15,5 @@ export default {
     timer: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/timer.png?alt=media&token=db53fc67-5870-4d93-8f0d-dd4019b7a574",
     volume: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/volume.png?alt=media&token=887c1886-e440-48a4-b52e-15b064f5bc2f",
   },
+  developerID: "303202584007671812",
 };

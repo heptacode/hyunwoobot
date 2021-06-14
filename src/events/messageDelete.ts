@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, PartialMessage, TextChannel } from "discord.js";
-import { log } from "../modules/logger";
+import { createError } from "../modules/createError";
 import { client, states } from "../app";
 import props from "../props";
 
@@ -20,6 +20,6 @@ client.on("messageDelete", async (message: Message | PartialMessage) => {
       message.attachments.size && message.attachments.array()[0].width ? messageEmbed : messageEmbed.attachFiles(message.attachments.array())
     );
   } catch (err) {
-    log.e(`MessageDelete > ${err}`);
+    createError("MessageDelete", err, { message: message });
   }
 });

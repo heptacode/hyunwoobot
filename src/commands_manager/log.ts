@@ -1,6 +1,5 @@
-import { sendEmbed } from "../modules/embedSender";
+import { createError } from "../modules/createError";
 import { firestore } from "../modules/firebase";
-import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import props from "../props";
 import { Interaction, Locale, State } from "../";
@@ -32,7 +31,7 @@ export default {
         },
       ];
     } catch (err) {
-      log.e(`Log > ${err}`);
+      createError("Log", err, { interaction: interaction });
     }
   },
 };

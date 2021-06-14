@@ -1,7 +1,6 @@
 import { EmbedFieldData } from "discord.js";
+import { createError } from "../modules/createError";
 import { firestore } from "../modules/firebase";
-import { sendEmbed } from "../modules/embedSender";
-import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import props from "../props";
 import { Interaction, Locale, State } from "../";
@@ -70,7 +69,7 @@ export default {
         },
       ];
     } catch (err) {
-      log.e(`AutoRole > ${err}`);
+      createError("AutoRole", err, { interaction: interaction });
     }
   },
 };

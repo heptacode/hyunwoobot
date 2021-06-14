@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, PartialMessage, TextChannel } from "discord.js";
-import { log } from "../modules/logger";
+import { createError } from "../modules/createError";
 import { client, states } from "../app";
 import props from "../props";
 
@@ -22,6 +22,6 @@ client.on("messageUpdate", async (oldMessage: Message | PartialMessage, newMessa
       oldMessage.attachments.size && oldMessage.attachments.array()[0].width ? messageEmbed : messageEmbed.attachFiles(oldMessage.attachments.array())
     );
   } catch (err) {
-    log.e(`MessageUpdate > ${err}`);
+    createError("MessageUpdate", err, { message: oldMessage });
   }
 });

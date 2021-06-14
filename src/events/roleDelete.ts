@@ -1,6 +1,6 @@
 import { Role } from "discord.js";
+import { createError } from "../modules/createError";
 import { firestore } from "../modules/firebase";
-import { log } from "../modules/logger";
 import { client, states } from "../app";
 import { UserRole } from "../";
 
@@ -16,6 +16,6 @@ client.on("roleDelete", async (role: Role) => {
       .doc("config")
       .update({ userRoles: states.get(role.guild.id).userRoles });
   } catch (err) {
-    log.e(`RoleDelete > ${err}`);
+    createError("RoleDelete", err, { guild: role.guild });
   }
 });

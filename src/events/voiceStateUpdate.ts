@@ -1,7 +1,7 @@
 import { Collection, TextChannel, VoiceState } from "discord.js";
+import { createError } from "../modules/createError";
 import { sendEmbed } from "../modules/embedSender";
 import { firestore } from "../modules/firebase";
-import { log } from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";
 import { PrivateRoom, State, VoiceRole } from "../";
@@ -38,7 +38,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           try {
             await oldState.guild.channels.resolve(state.privateRoom.generator).permissionOverwrites.get(oldState.member.id).delete("[PrivateRoom] Switch/Leave");
           } catch (err) {
-            log.e(err);
+            createError("VoiceStateUpdate > ChannelResolve", err, { guild: oldState.guild });
           }
         } else if (
           privateRoom.room !== newState.channelID &&
@@ -94,7 +94,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         );
       }
     } catch (err) {
-      log.e(`VoiceStateUpdate > Switch/Leave > ${err}`);
+      createError("VoiceStateUpdate > Switch/Leave", err, { guild: oldState.guild });
     }
   }
 
@@ -240,7 +240,9 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
                 },
                 { guild: true, log: true }
               );
-            } catch (err) {}
+            } catch (err) {
+              createError("VoiceStateUpdate > AFK", err, { guild: newState.guild });
+            }
           }, state.afkTimeout * 60000)
         );
 
@@ -287,7 +289,7 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
         );
       }
     } catch (err) {
-      log.e(`VoiceStateUpdate > Join/Switch > ${err}`);
+      createError("VoiceStateUpdate > Join/Switch", err, { guild: oldState.guild });
     }
   }
 });

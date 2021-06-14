@@ -2,8 +2,8 @@ import { EmbedFieldData, Message } from "discord.js";
 import ytdl from "ytdl-core";
 import youtube from "scrape-youtube";
 import { getLength } from "./converter";
+import { createError } from "./createError";
 import { sendEmbed } from "./embedSender";
-import { log } from "./logger";
 import { voiceConnect, voiceDisconnect, voiceStateCheck } from "./voiceManager";
 import { client } from "../app";
 import props from "../props";
@@ -95,7 +95,7 @@ export const play = async (state: State, interaction: Interaction) => {
       }
     }
   } catch (err) {
-    log.e(`Play > ${err}`);
+    createError("Play", err, { interaction: interaction });
   }
 };
 
@@ -139,7 +139,7 @@ const stream = async (state: State, interaction: Interaction) => {
           { guild: true }
         );
       } catch (err) {
-        log.e(`Stream > DispatcherStart > ${err}`);
+        createError("Stream > DispatcherStart", err, { interaction: interaction });
       }
     });
     state.connection.dispatcher.on("finish", async () => {
@@ -164,14 +164,14 @@ const stream = async (state: State, interaction: Interaction) => {
           state.timeout = setTimeout(() => voiceDisconnect(state), 300000);
         }
       } catch (err) {
-        log.e(`Stream > DispatcherFinish > ${err}`);
+        createError("Stream > DispatcherFinish", err, { interaction: interaction });
       }
     });
     state.connection.dispatcher.on("error", (err) => {
-      log.e(`Stream > DispatcherError > ${err}`);
+      createError("Stream > DispatcherError", err, { interaction: interaction });
     });
   } catch (err) {
-    log.e(`Stream > ${err}`);
+    createError("Stream", err, { interaction: interaction });
   }
 };
 
@@ -202,7 +202,7 @@ export const skip = async (state: State, interaction: Interaction) => {
       { guild: true }
     );
   } catch (err) {
-    log.e(`Skip > ${err}`);
+    createError("Skip", err, { interaction: interaction });
   }
 };
 
@@ -213,7 +213,7 @@ export const pause = async (state: State, interaction: Interaction) => {
     state.connection.dispatcher.pause();
     state.isPlaying = false;
   } catch (err) {
-    log.e(`Pause > ${err}`);
+    createError("Pause", err, { interaction: interaction });
   }
 };
 
@@ -224,7 +224,7 @@ export const stop = async (state: State, interaction: Interaction) => {
     state.connection.dispatcher.pause();
     state.isPlaying = false;
   } catch (err) {
-    log.e(`Stop > ${err}`);
+    createError("Stop", err, { interaction: interaction });
   }
 };
 
@@ -243,7 +243,7 @@ export const toggleLoop = async (state: State, interaction: Interaction) => {
       { guild: true }
     );
   } catch (err) {
-    log.e(`ToggleLoop > ${err}`);
+    createError("ToggleLoop", err, { interaction: interaction });
   }
 };
 
@@ -262,6 +262,6 @@ export const toggleRepeat = async (state: State, interaction: Interaction) => {
       { guild: true }
     );
   } catch (err) {
-    log.e(`ToggleRepeat > ${err}`);
+    createError("ToggleRepeat", err, { interaction: interaction });
   }
 };

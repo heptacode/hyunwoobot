@@ -1,4 +1,5 @@
 import { Collection } from "discord.js";
+import { createError } from "./createError";
 import { firestore } from "./firebase";
 import { log } from "./logger";
 import { client, commands, commands_manager, locales, states } from "../app";
@@ -23,7 +24,7 @@ export const setConfig = async (guildID: string) => {
       voiceRoles: [],
     } as Config);
   } catch (err) {
-    log.e(`InitConfig > ${err}`);
+    createError("Initializer > Config", err, { guild: guildID });
   }
 };
 
@@ -82,7 +83,7 @@ export const registerCommands = async (guildID: string, force?: boolean) => {
         version: command.version,
       };
     } catch (err) {
-      log.e(`CommandRegister > ${err}`);
+      createError("Initializer > CommandRegister", err, { guild: guildID });
     }
   }
 
@@ -106,7 +107,7 @@ export const registerCommands = async (guildID: string, force?: boolean) => {
         version: command.version,
       };
     } catch (err) {
-      log.e(`CommandRegister > Manager > ${err}`);
+      createError("Initializer > CommandRegister > Manager", err, { guild: guildID });
     }
   }
 

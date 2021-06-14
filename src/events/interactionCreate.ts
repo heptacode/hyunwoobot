@@ -1,6 +1,6 @@
 import axios from "axios";
+import { createError } from "../modules/createError";
 import { client, states, commands, commands_manager } from "../app";
-import { log } from "../modules/logger";
 import { Interaction, InteractionResponse } from "../";
 
 (client.ws as any).on("INTERACTION_CREATE", async (interaction: Interaction) => {
@@ -20,6 +20,6 @@ import { Interaction, InteractionResponse } from "../";
         : { type: 5, data: { content: "❕" } }
     );
   } catch (err) {
-    log.e(`InteractionCreate > ${err}`);
+    createError("InteractionCreate", err, { interaction: interaction });
   }
 });

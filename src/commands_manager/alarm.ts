@@ -1,8 +1,8 @@
 import { VoiceBroadcast, VoiceChannel, VoiceState } from "discord.js";
 import { scheduleJob } from "node-schedule";
 import { resolve } from "path";
+import { createError } from "../modules/createError";
 import { firestore } from "../modules/firebase";
-import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import { voiceStateCheck } from "../modules/voiceManager";
 import { client, states } from "../app";
@@ -29,7 +29,7 @@ const sendAlarm = async () => {
       });
     }
   } catch (err) {
-    log.e(`SendAlarm > ${err}`);
+    createError("SendAlarm", err);
   }
 };
 
@@ -69,14 +69,14 @@ export default {
         state.alarmChannel = voiceState.channelID;
         await firestore.collection(interaction.guild_id).doc("config").update({ alarmChannel: voiceState.channelID });
       } catch (err) {
-        log.e(`Alarm > Subscribe > ${err}`);
+        createError("Alarm > Subscribe", err);
       }
     } else if (method === "unsubscribe") {
       try {
         state.alarmChannel = null;
         await firestore.collection(interaction.guild_id).doc("config").update({ alarmChannel: null });
       } catch (err) {
-        log.e(`Alarm > Unsubscribe > ${err}`);
+        createError("Alarm > Unsubscribe", err);
       }
     } else if (method === "test") sendAlarm();
   },

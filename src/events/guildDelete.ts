@@ -1,4 +1,5 @@
 import { Guild } from "discord.js";
+import { createError } from "../modules/createError";
 import { firestore } from "../modules/firebase";
 import { log } from "../modules/logger";
 import { client } from "../app";
@@ -9,6 +10,6 @@ client.on("guildDelete", async (guild: Guild) => {
 
     log.w(`Deleted Commands due to GuildDelete [ ${guild.name}(${guild.id}) ]`);
   } catch (err) {
-    log.e(`GuildDelete > ${err}`);
+    createError("GuildDelete", err, { guild: guild });
   }
 });

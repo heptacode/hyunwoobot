@@ -1,5 +1,6 @@
 import { MessageReaction, User } from "discord.js";
 import { getHexfromEmoji } from "../modules/converter";
+import { createError } from "../modules/createError";
 import { sendEmbed } from "../modules/embedSender";
 import { log } from "../modules/logger";
 import { client, states } from "../app";
@@ -38,6 +39,6 @@ client.on("messageReactionAdd", async (reaction: MessageReaction, user: User) =>
       { guild: true, log: true }
     );
   } catch (err) {
-    log.e(`MessageReactionAdd > ${err}`);
+    createError("MessageReactionAdd", err, { message: reaction.message });
   }
 });

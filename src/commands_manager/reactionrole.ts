@@ -1,7 +1,7 @@
 import { TextChannel } from "discord.js";
 import { getHexfromEmoji } from "../modules/converter";
+import { createError } from "../modules/createError";
 import { firestore } from "../modules/firebase";
-import { log } from "../modules/logger";
 import { checkPermission } from "../modules/permissionChecker";
 import { client } from "../app";
 import { Interaction, Locale, ReactionRole, State } from "../";
@@ -83,7 +83,7 @@ export default {
           state.reactionRoles.push({ textChannel: channel.id, message: _message.id, emoji: getHexfromEmoji(emoji), role: role });
           return await firestore.collection(guild.id).doc(channel.id).update({ reactionRoles: state.reactionRoles });
         } catch (err) {
-          log.e(`ReactionRole > Add > ${err}`);
+          createError("ReactionRole > Add", err, { interaction: interaction });
         }
       } else if (method === "remove") {
         try {
@@ -94,7 +94,7 @@ export default {
           await firestore.collection(guild.id).doc(channel.id).update({ reactionRoles: state.reactionRoles });
           return await _message.reactions.cache.get(emoji).remove();
         } catch (err) {
-          log.e(`ReactionRole > Remove > ${err}`);
+          createError("ReactionRole > Remove", err, { interaction: interaction });
         }
       } else if (method === "purge") {
         try {
@@ -102,11 +102,11 @@ export default {
           await firestore.collection(guild.id).doc(channel.id).update({ reactionRoles: [] });
           return await _message.reactions.removeAll();
         } catch (err) {
-          log.e(`ReactionRole > Purge > ${err}`);
+          createError("ReactionRole > Purge", err, { interaction: interaction });
         }
       }
     } catch (err) {
-      log.e(`ReactionRole > ${err}`);
+      createError("ReactionRole", err, { interaction: interaction });
     }
   },
 };

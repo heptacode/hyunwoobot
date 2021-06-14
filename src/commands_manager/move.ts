@@ -1,5 +1,5 @@
 import { Guild, GuildChannel, GuildMember } from "discord.js";
-import { log } from "../modules/logger";
+import { createError } from "../modules/createError";
 import { checkPermission } from "../modules/permissionChecker";
 import { client } from "../app";
 import props from "../props";
@@ -52,7 +52,7 @@ export default {
         },
       ];
     } catch (err) {
-      log.e(`Move > ${err}`);
+      createError("Move", err, { interaction: interaction });
     }
   },
 };

@@ -1,4 +1,5 @@
 import { Guild } from "discord.js";
+import { createError } from "../modules/createError";
 import { registerCommands, setConfig, setGuild, setState } from "../modules/initializer";
 import { log } from "../modules/logger";
 import { client } from "../app";
@@ -14,6 +15,6 @@ client.on("guildCreate", async (guild: Guild) => {
 
     log.i(`Initialize Complete [ ${guild.name}(${guild.id}) ]`);
   } catch (err) {
-    log.e(`GuildCreate > ${err}`);
+    createError("GuildCreate", err, { guild: guild });
   }
 });

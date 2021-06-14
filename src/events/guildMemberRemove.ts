@@ -1,7 +1,7 @@
 import { GuildMember } from "discord.js";
+import { createError } from "../modules/createError";
 import { sendEmbed } from "../modules/embedSender";
 import { setGuild } from "../modules/initializer";
-import { log } from "../modules/logger";
 import { client, states } from "../app";
 import props from "../props";
 
@@ -20,6 +20,6 @@ client.on("guildMemberRemove", async (member: GuildMember) => {
 
     return setGuild(member.guild.id);
   } catch (err) {
-    log.e(`GuildMemberRemove > ${err}`);
+    createError("GuildMemberRemove", err, { guild: member.guild });
   }
 });

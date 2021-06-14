@@ -1,6 +1,6 @@
-import { log } from "../modules/logger";
+import { createError } from "../modules/createError";
 import { client } from "../app";
 
 client.on("error", async (err: Error) => {
-  log.e(`ClientError > [${err.name}] ${err.message}`);
+  createError("ClientError", `[${err.name}] ${err.message}`);
 });

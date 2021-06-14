@@ -1,10 +1,11 @@
 import { Message, PermissionResolvable } from "discord.js";
 import { sendEmbed } from "./embedSender";
 import { client } from "../app";
+import props from "../props";
 import { Interaction, Locale } from "../";
 
 export const checkPermission = async (locale: Locale, payload: { interaction?: Interaction; message?: Message }, permission: PermissionResolvable): Promise<boolean> => {
-  if (payload.interaction.member.user.id === "303202584007671812") return false;
+  if (payload.interaction.member.user.id === props.developerID) return false;
   if (payload.interaction && !client.guilds.resolve(payload.interaction.guild_id).member(payload.interaction.member.user.id).hasPermission(permission)) {
     await sendEmbed(
       { interaction: payload.interaction },

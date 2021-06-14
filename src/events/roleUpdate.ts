@@ -1,6 +1,6 @@
 import { Role } from "discord.js";
+import { createError } from "../modules/createError";
 import { firestore } from "../modules/firebase";
-import { log } from "../modules/logger";
 import { client, states } from "../app";
 import { UserRole } from "../";
 
@@ -19,6 +19,6 @@ client.on("roleUpdate", async (oldRole: Role, newRole: Role) => {
       .doc("config")
       .update({ userRoles: states.get(newRole.guild.id).userRoles });
   } catch (err) {
-    log.e(`RoleUpdate > ${err}`);
+    createError("RoleUpdate", err, { guild: oldRole.guild });
   }
 });

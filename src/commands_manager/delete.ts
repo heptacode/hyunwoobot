@@ -1,6 +1,5 @@
 import { TextChannel } from "discord.js";
-import { sendEmbed } from "../modules/embedSender";
-import { log } from "../modules/logger";
+import { createError } from "../modules/createError";
 import { checkPermission } from "../modules/permissionChecker";
 import { client } from "../app";
 import props from "../props";
@@ -32,7 +31,7 @@ export default {
         },
       ];
     } catch (err) {
-      log.e(`Delete > ${err}`);
+      createError("Delete", err, { interaction: interaction });
     }
   },
 };

@@ -1,5 +1,4 @@
-import { sendEmbed } from "../modules/embedSender";
-import { log } from "../modules/logger";
+import { createError } from "../modules/createError";
 import { voiceStateCheck } from "../modules/voiceManager";
 import props from "../props";
 import { Interaction, Locale, State } from "../";
@@ -46,7 +45,7 @@ export default {
         },
       ];
     } catch (err) {
-      log.e(`ChangeVolume > 1 > ${err}`);
+      createError("ChangeVolume", err, { interaction: interaction });
     }
   },
 };

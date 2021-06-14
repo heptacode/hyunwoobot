@@ -1,6 +1,5 @@
 import { EmbedFieldData } from "discord.js";
-import { sendEmbed } from "../modules/embedSender";
-import { log } from "../modules/logger";
+import { createError } from "../modules/createError";
 import props from "../props";
 import { Interaction, State } from "../";
 
@@ -39,7 +38,7 @@ export default {
         ];
       }
     } catch (err) {
-      log.e(`Queue > ${err}`);
+      createError("Queue", err, { interaction: interaction });
     }
   },
 };

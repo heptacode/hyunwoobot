@@ -2,8 +2,7 @@ import { client } from "../app";
 import { Credentials, Polly } from "aws-sdk";
 import { resolve } from "path";
 import { PassThrough } from "stream";
-import { sendEmbed } from "../modules/embedSender";
-import { log } from "../modules/logger";
+import { createError } from "../modules/createError";
 import { voiceConnect, voiceDisconnect, voiceStateCheck } from "../modules/voiceManager";
 import props from "../props";
 import "dotenv/config";
@@ -52,7 +51,7 @@ export default {
       (err, data) => {
         if (err) {
           state.isPlaying = false;
-          return log.e(`TTS > ${err.code}`);
+          createError("TTS", err, { interaction: interaction });
         }
         if (data.AudioStream instanceof Buffer) {
           state.connection.play(resolve(__dirname, process.env.NODE_ENV === "production" ? "../../src/assets/message.mp3" : "../assets/message.mp3"));
