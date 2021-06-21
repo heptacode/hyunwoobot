@@ -23,7 +23,7 @@ export default {
         options: [
           {
             type: 7,
-            name: "voiceChannel",
+            name: "voice_channel",
             description: locale.voiceChannel,
             required: true,
           },
@@ -35,7 +35,7 @@ export default {
           },
           {
             type: 7,
-            name: "textChannel",
+            name: "text_channel",
             description: locale.voiceRole.options.channelToSendLogs,
             required: false,
           },
@@ -48,7 +48,7 @@ export default {
         options: [
           {
             type: 7,
-            name: "voiceChannel",
+            name: "voice_channel",
             description: locale.voiceChannel,
             required: true,
           },

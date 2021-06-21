@@ -11,7 +11,7 @@ client.once("ready", async () => {
     for (const collection of await firestore.listCollections()) {
       const guild: Guild = client.guilds.resolve(collection.id);
       if (!guild) {
-        log.w(`Initialize Skipped [ ${(await collection.doc("server").get()).data().name} | ${collection.id} ]`);
+        log.w(`Initialize Skipped [ ${(await collection.doc("guild").get()).data().name} (${collection.id}) ]`);
         continue;
       }
 
@@ -22,7 +22,7 @@ client.once("ready", async () => {
           async (docSnapshot) => {
             const config: Config = docSnapshot.data() as Config;
             if (!states.has(guild.id)) {
-              log.d(`Initialize Started [ ${guild.name}(${guild.id}) ]`);
+              log.d(`Initialize Started [ ${guild.name} (${guild.id}) ]`);
 
               setState(guild.id, config);
 
@@ -34,7 +34,7 @@ client.once("ready", async () => {
 
               await setGuild(guild.id);
 
-              log.i(`Initialize Complete [ ${guild.name}(${guild.id}) ]`);
+              log.i(`Initialize Complete [ ${guild.name} (${guild.id}) ]`);
             } else {
               for (const [key, _config] of Object.entries(config)) {
                 if (key === "locale") states.get(guild.id)[key] = locales.get(_config);
@@ -60,7 +60,7 @@ client.once("ready", async () => {
         : { status: "online", activity: { type: "WATCHING", name: "/help" } }
     );
   } catch (err) {
-    createError("Initialize", err);
+    createError("Ready", err);
   }
 
   log.i(`Login w/ ${client.user.tag}`);

@@ -71,7 +71,7 @@ export default {
             version: command.version,
           };
         } catch (err) {
-          createError("ChangeLocale > CommandRegister", err, { interaction: interaction });
+          createError(`ChangeLocale > CommandRegister > [${name}]`, err, { interaction: interaction });
         }
       }
 
@@ -95,7 +95,7 @@ export default {
             version: command.version,
           };
         } catch (err) {
-          createError("ChangeLocale > CommandRegister > Manager", err, { interaction: interaction });
+          createError(`ChangeLocale > CommandRegister > Manager > [${name}]`, err, { interaction: interaction });
         }
       }
 
@@ -104,14 +104,12 @@ export default {
 
       await _message.delete();
 
-      sendEmbed(
-        { interaction: interaction },
+      return [
         {
           color: props.color.green,
           description: `✅ **${state.locale.locale.changed}**`,
         },
-        { guild: true }
-      );
+      ];
     } catch (err) {
       createError("ChangeLocale", err, { interaction: interaction });
     }

@@ -13,8 +13,8 @@ export const createError = async (location: string, body: string | Error, ref?: 
       else if (ref.interaction) guild = client.guilds.resolve(ref.interaction.guild_id);
       else if (ref.member) guild = ref.member.guild;
 
-      if (ref.message) body += `Original Message: ${ref.message.content}`;
-      else if (ref.interaction) body += `Original Interaction: ${JSON.stringify(ref.interaction)}`;
+      if (ref.message) body += `\n\nOriginal Message: ${ref.message.content}`;
+      else if (ref.interaction) body += `\n\nOriginal Interaction: ${JSON.stringify(ref.interaction)}`;
     }
 
     log.e(`${guild ? `${guild.name} > ` : ""}${location} > ${body}`);

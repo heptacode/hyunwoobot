@@ -6,7 +6,7 @@ import { UserRole } from "../";
 
 client.on("roleUpdate", async (oldRole: Role, newRole: Role) => {
   try {
-    if (!states.get(newRole.guild.id).userRoles) return;
+    if (!states.get(newRole.guild.id).userRoles || !states.get(newRole.guild.id).userRoles.length) return;
 
     const idx = states.get(newRole.guild.id).userRoles.findIndex((userRole: UserRole) => userRole.id === newRole.id);
     if (!idx) return;

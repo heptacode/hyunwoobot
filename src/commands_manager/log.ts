@@ -11,7 +11,7 @@ export default {
     return [
       {
         type: 7,
-        name: "textChannel",
+        name: "text_channel",
         description: locale.textChannel,
         required: true,
       },

@@ -13,7 +13,7 @@ export default {
     return [
       {
         type: 7,
-        name: "fallbackVoiceChannel",
+        name: "fallback_voice_channel",
         description: locale.voiceChannel,
         required: false,
       },

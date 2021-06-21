@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Collection } from "discord.js";
 import { createError } from "./createError";
 import { firestore } from "./firebase";
@@ -83,9 +84,34 @@ export const registerCommands = async (guildID: string, force?: boolean) => {
         version: command.version,
       };
     } catch (err) {
-      createError("Initializer > CommandRegister", err, { guild: guildID });
+      createError(`Initializer > CommandRegister > [${name}]`, err, { guild: guildID });
     }
   }
+  // for (const [name, command] of commands) {
+  //   try {
+  //     if (registeredCommands[name] && registeredCommands[name].version >= command.version && !force) continue;
+  //     const data = (
+  //       await axios.post(
+  //         `https://discord.com/api/v8/applications/${process.env.APPLICATION}/guilds/${guildID}/commands`,
+  //         {
+  //           name: name,
+  //           description: states.get(guildID).locale.help[name],
+  //           options: command.options ? command.options(states.get(guildID).locale) : [],
+  //         },
+  //         { headers: { Authorization: `Bot ${process.env.TOKEN}` } }
+  //       )
+  //     ).data;
+  //     console.log(data);
+
+  //     updatedCommands[name] = {
+  //       id: data.id,
+  //       name: name,
+  //       version: command.version,
+  //     };
+  //   } catch (err) {
+  //     createError(`Initializer > CommandRegister > [${name}]`, err, { guild: guildID });
+  //   }
+  // }
 
   for (const [name, command] of commands_manager) {
     try {
@@ -107,9 +133,35 @@ export const registerCommands = async (guildID: string, force?: boolean) => {
         version: command.version,
       };
     } catch (err) {
-      createError("Initializer > CommandRegister > Manager", err, { guild: guildID });
+      createError(`Initializer > CommandRegister > Manager > [${name}]`, err, { guild: guildID });
     }
   }
+
+  // for (const [name, command] of commands_manager) {
+  //   try {
+  //     if (((registeredCommands[name] && registeredCommands[name].version >= command.version) || command.messageOnly) && !force) continue;
+  //     const data = (
+  //       await axios.post(
+  //         `https://discord.com/api/v8/applications/${process.env.APPLICATION}/guilds/${guildID}/commands`,
+  //         {
+  //           name: name,
+  //           description: `${states.get(guildID).locale.manager} ${states.get(guildID).locale.help[name]}`,
+  //           options: command.options ? command.options(states.get(guildID).locale) : [],
+  //         },
+  //         { headers: { Authorization: `Bot ${process.env.TOKEN}` } }
+  //       )
+  //     ).data;
+  //     console.log(data);
+
+  //     updatedCommands[name] = {
+  //       id: data.id,
+  //       name: name,
+  //       version: command.version,
+  //     };
+  //   } catch (err) {
+  //     createError(`Initializer > CommandRegister > Manager > [${name}]`, err, { guild: guildID });
+  //   }
+  // }
 
   if (Object.keys(updatedCommands).length) {
     log.s(`Registered ${Object.keys(updatedCommands).length} command(s) for guild [ ${client.guilds.resolve(guildID).name}(${guildID}) ]: ${Object.keys(updatedCommands).join(", ")}`);

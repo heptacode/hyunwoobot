@@ -23,7 +23,7 @@ export default {
         options: [
           {
             type: 3,
-            name: "messageID",
+            name: "message_id",
             description: locale.messageID,
             required: true,
           },
@@ -43,7 +43,7 @@ export default {
         options: [
           {
             type: 3,
-            name: "messageID",
+            name: "message_id",
             description: locale.messageID,
             required: true,
           },
