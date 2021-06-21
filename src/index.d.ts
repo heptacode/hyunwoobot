@@ -1,4 +1,4 @@
-import { Activity, Collection, PresenceStatus, TextChannel, VoiceChannel, VoiceConnection } from "discord.js";
+import { Activity, Collection, PresenceStatus, VoiceConnection } from "discord.js";
 
 interface Locale {
   done: string;
@@ -37,11 +37,13 @@ interface Locale {
     autorole: string;
     delete: string;
     disconnect: string;
+    disconnectall: string;
     edit: string;
     embed: string;
     locale: string;
     log: string;
     move: string;
+    moveall: string;
     privateroom: string;
     reactionrole: string;
     setafktimeout: string;
@@ -68,11 +70,13 @@ interface Locale {
     autorole: string;
     delete: string;
     disconnect: string;
+    disconnectall: string;
     edit: string;
     embed: string;
     locale: string;
     log: string;
     move: string;
+    moveall: string;
     privateroom: string;
     reactionrole: string;
     setafktimeout: string;
@@ -203,7 +207,7 @@ interface Locale {
   };
 }
 
-type InteractionType = /* Ping */ 1 | /* ApplicationCommand */ 2;
+type InteractionType = /* Ping */ 1 | /* ApplicationCommand */ 2 | /* MessageComponent */ 3;
 
 interface Interaction {
   version: number;
@@ -236,7 +240,10 @@ interface Interaction {
 interface ApplicationCommandInteractionData {
   id: string;
   name: string;
-  options: ApplicationCommandInteractionDataOption[];
+  resolved?: any;
+  options?: ApplicationCommandInteractionDataOption[];
+  custom_id: string;
+  component_type: number;
 }
 
 interface ApplicationCommandInteractionDataOption {
@@ -267,17 +274,18 @@ interface Command {
   messageOnly?: boolean;
   options?: Function;
   execute?: Function;
+  private?: boolean;
 }
 
 interface CommandOptions {
   type: CommandOptionType;
   name: string;
   description: string;
-  default?: boolean;
   required?: boolean;
   choices?: CommandOptionChoice[];
   options?: CommandOptions[];
 }
+
 type CommandOptionType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
 interface CommandOptionChoice {
