@@ -14,18 +14,18 @@ export default {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, "MOVE_MEMBERS")) throw new Error("Missing Permissions");
 
+      const voiceChannel = client.guilds.resolve(interaction.guild_id).member(interaction.data.options[0].value).voice.channel.name;
+
       await client.guilds
         .resolve(interaction.guild_id)
-        .member(interaction.member.user.id)
+        .member(interaction.data.options[0].value)
         .voice.kick(`[Disconnect] Executed by ${interaction.member.user.username}#${interaction.member.user.discriminator}}`);
 
       return [
         {
           color: props.color.purple,
           title: `**⚙️ ${state.locale.disconnect.disconnect}**`,
-          description: `✅ **${state.locale.disconnect.disconnected
-            .replace("{voiceChannel}", client.guilds.resolve(interaction.guild_id).channels.resolve(interaction.data.options[0].value).name)
-            .replace("{cnt}", "1")}**`,
+          description: `✅ **${state.locale.disconnect.disconnected.replace("{voiceChannel}", voiceChannel).replace("{cnt}", "1")}**`,
         },
       ];
     } catch (err) {
