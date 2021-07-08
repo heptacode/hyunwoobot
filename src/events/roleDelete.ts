@@ -9,6 +9,8 @@ client.on("roleDelete", async (role: Role) => {
     if (!states.get(role.guild.id).userRoles) return;
 
     const idx = states.get(role.guild.id).userRoles.findIndex((userRole: UserRole) => userRole.id === role.id);
+    if (idx === -1) return;
+
     states.get(role.guild.id).userRoles.splice(idx, 1);
 
     await firestore
