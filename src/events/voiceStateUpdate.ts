@@ -57,6 +57,8 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
           await oldState.guild.channels.resolve(privateRoom.text).delete("[PrivateRoom] Deletion");
 
           const idx = state.privateRooms.findIndex((privateRoom: PrivateRoom) => privateRoom.host === oldState.member.id);
+          if (idx === -1) throw createError("VoiceStateUpdate > PrivateRoom", "PrivateRoom Host Not Found", { guild: newState.guild });
+
           state.privateRooms.splice(idx, 1);
           await configDocRef.update({ privateRooms: state.privateRooms });
 

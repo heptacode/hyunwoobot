@@ -117,6 +117,8 @@ export default {
           ];
 
         const idx = state.voiceRoles.findIndex((voiceRole: VoiceRole) => voiceRole.voiceChannel === voiceChannel);
+        if (idx === -1) throw createError("VoiceRole > Remove", "VoiceRole Not Found", { interaction: interaction });
+
         state.voiceRoles.splice(idx, 1);
 
         await configDocRef.update({ voiceRole: state.voiceRoles });

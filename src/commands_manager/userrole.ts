@@ -75,6 +75,8 @@ export default {
         await configDocRef.update({ userRoles: state.userRoles });
       } else if (method === "remove") {
         const idx = state.userRoles.findIndex((userRole: UserRole) => userRole.id === interaction.data.options[0].options[0].value);
+        if (idx === -1) throw createError("UserRole > Remove", "UserRole Not Found", { interaction: interaction });
+
         state.userRoles.splice(idx, 1);
 
         await configDocRef.update({ userRoles: state.userRoles });

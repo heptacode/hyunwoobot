@@ -88,7 +88,7 @@ export default {
       } else if (method === "remove") {
         try {
           const idx = state.reactionRoles.findIndex((reactionRole: ReactionRole) => reactionRole.emoji === getHexfromEmoji(emoji));
-          if (!idx) return;
+          if (idx === -1) throw createError("ReactionRole > Remove", "ReactionRole Not Found", { interaction: interaction });
 
           state.reactionRoles.splice(idx, 1);
           await firestore.collection(guild.id).doc(channel.id).update({ reactionRoles: state.reactionRoles });
