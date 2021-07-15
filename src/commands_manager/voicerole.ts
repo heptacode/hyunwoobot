@@ -77,10 +77,9 @@ export default {
       const method = interaction.data.options[0].name;
       if (method === "view") {
       } else if (method === "add") {
-        const voiceChannel: string = interaction.data.options[0].value;
-        const textChannel: string = interaction.data.options[2].value;
+        const voiceChannel: string = interaction.data.options[0].options[0].value;
 
-        if (client.channels.resolve(voiceChannel).type !== "voice")
+        if (!voiceChannel || client.channels.resolve(voiceChannel).type !== "voice")
           return [
             {
               color: props.color.red,
@@ -88,7 +87,10 @@ export default {
               description: `❌ **${state.locale.notVoiceChannel}**`,
             },
           ];
-        if (client.channels.resolve(textChannel).type !== "text")
+
+        const textChannel: string | null = interaction.data.options[0].options.length >= 3 ? interaction.data.options[0].options[2].value : null;
+
+        if (textChannel && client.channels.resolve(textChannel).type !== "text")
           return [
             {
               color: props.color.red,
@@ -100,10 +102,10 @@ export default {
         state.voiceRoles.push({
           voiceChannel: voiceChannel,
           role: interaction.data.options[0].options[1].value,
-          textChannel: interaction.data.options[0].options.length >= 3 ? textChannel : null,
+          textChannel: textChannel,
         });
 
-        await configDocRef.update({ voiceRole: state.voiceRoles });
+        await configDocRef.update({ voiceRoles: state.voiceRoles });
       } else if (method === "remove") {
         const voiceChannel = interaction.data.options[0].options[0].value;
 
@@ -121,10 +123,10 @@ export default {
 
         state.voiceRoles.splice(idx, 1);
 
-        await configDocRef.update({ voiceRole: state.voiceRoles });
+        await configDocRef.update({ voiceRoles: state.voiceRoles });
       } else if (method === "purge") {
         state.voiceRoles = [];
-        await configDocRef.update({ voiceRole: [] });
+        await configDocRef.update({ voiceRoles: [] });
       } else if (method === "update") {
         const payload: { member: string; action: string; role: string }[] = [];
         for (const voiceRole of state.voiceRoles) {
@@ -156,7 +158,7 @@ export default {
       }
 
       const fields: EmbedFieldData[] = [];
-      if (state.voiceRoles.length >= 1)
+      if (state.voiceRoles && state.voiceRoles.length >= 1)
         state.voiceRoles.forEach((voiceRole: VoiceRole) =>
           fields.push({
             name: `${guild.channels.resolve(voiceRole.voiceChannel).name}`,
