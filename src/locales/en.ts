@@ -48,7 +48,7 @@ export default {
     reactionrole: "<view|add|remove|purge> <textChannel> <messageID> [emoji] [role]",
     setafktimeout: "<minute(s)>",
     userrole: "<view|add|remove|purge> [role]",
-    voicerole: "<view|add|remove|purge> <voiceChannel> <role> [textChannel]",
+    voicerole: "<view|add|remove|purge|update> <voiceChannel> <role> [textChannel]",
   },
   help: {
     help: "Help",

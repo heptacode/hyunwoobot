@@ -48,7 +48,7 @@ export default {
     reactionrole: "<view|add|remove|purge> <채팅채널> <메시지ID> [이모지] [역할]",
     setafktimeout: "<분>",
     userrole: "<view|add|remove|purge> <역할>",
-    voicerole: "<view|add|remove|purge> <음성채널> <역할> [채팅채널]",
+    voicerole: "<view|add|remove|purge|update> <음성채널> <역할> [채팅채널]",
   },
   help: {
     help: "도움말",
