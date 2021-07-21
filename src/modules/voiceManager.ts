@@ -52,7 +52,7 @@ export const voiceConnect = async (state: State, interaction: Interaction) => {
 
 export const voiceDisconnect = (state: State, interaction?: Interaction) => {
   try {
-    if (!state.connection.voice.channel) return;
+    if (!state.connection || !state.connection.voice) return;
 
     state.isPlaying = false;
     state.connection.voice.channel.leave();

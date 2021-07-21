@@ -11,7 +11,11 @@ client.on("voiceStateUpdate", async (oldState: VoiceState, newState: VoiceState)
 
   const state: State = states.get(newState.guild.id || oldState.guild.id);
 
-  if (oldState.member.user.id === client.user.id) return (state.connection = null);
+  if (oldState.member.user.id === client.user.id) {
+    if (state.timeout) clearTimeout(state.timeout);
+    state.connection = null;
+    return;
+  }
   if (newState.member.user.id === client.user.id) return (state.connection = newState.connection);
 
   if (oldState.member.user.bot || newState.member.user.bot) return;
