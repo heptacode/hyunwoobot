@@ -1,4 +1,5 @@
 import { Activity, Collection, PresenceStatus, VoiceConnection } from "discord.js";
+import internal from "stream";
 
 interface Locale {
   done: string;
@@ -301,11 +302,12 @@ interface State {
   locale: Locale;
   logChannel: string | null;
   logMessageEvents: boolean;
-  mentionDebounce: NodeJS.Timeout | null;
-  privateRoom: { generator: string | null; fallback: string | null };
+  mentionDebounce: NodeJS.Timeout;
+  privateRoom: { generator?: string; fallback?: string };
   privateRooms: PrivateRoom[];
   reactionRoles: ReactionRole[];
-  timeout: NodeJS.Timeout | null;
+  stream?: internal.Readable;
+  timeout?: NodeJS.Timeout;
   userRoles: UserRole[];
   voiceRoles: VoiceRole[];
 

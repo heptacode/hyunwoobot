@@ -67,7 +67,7 @@ export const play = async (state: State, interaction: Interaction) => {
 
     if (state.queue) {
       if (state.queue.length === 1) {
-        return stream(state, interaction);
+        return _play(state, interaction);
       } else {
         const fields: EmbedFieldData[] = [
           { name: state.locale.music.length, value: getLength(state.queue[state.queue.length - 1].length), inline: true },
@@ -99,11 +99,14 @@ export const play = async (state: State, interaction: Interaction) => {
   }
 };
 
-const stream = async (state: State, interaction: Interaction) => {
+const _play = async (state: State, interaction: Interaction) => {
   try {
-    if (!state.connection) await voiceConnect(state, interaction);
+    if (!state.connection || !state.connection.dispatcher) await voiceConnect(state, interaction);
 
-    state.connection.play(ytdl(state.queue[0].videoURL), {
+    if (state.stream) state.stream.destroy();
+    state.stream = ytdl(state.queue[0].videoURL);
+
+    state.connection.play(state.stream, {
       // quality: "highestaudio",
       highWaterMark: 1 << 25,
     });
@@ -154,14 +157,15 @@ const stream = async (state: State, interaction: Interaction) => {
             state.queue.shift();
           }
           if (state.queue && state.queue.length >= 1) {
-            return await stream(state, interaction);
+            await voiceStateCheck(state.locale, { interaction: interaction });
+            return _play(state, interaction);
           } else {
             if (state.timeout) clearTimeout(state.timeout);
-            state.timeout = setTimeout(() => voiceDisconnect(state), 300000);
+            state.timeout = setTimeout(() => voiceDisconnect(state), props.disconnectTimeout);
           }
         } else {
           if (state.timeout) clearTimeout(state.timeout);
-          state.timeout = setTimeout(() => voiceDisconnect(state), 300000);
+          state.timeout = setTimeout(() => voiceDisconnect(state), props.disconnectTimeout);
         }
       } catch (err) {
         createError("Stream > DispatcherFinish", err, { interaction: interaction });
@@ -177,9 +181,9 @@ const stream = async (state: State, interaction: Interaction) => {
 
 export const skip = async (state: State, interaction: Interaction) => {
   try {
-    if (await voiceStateCheck(state.locale, { interaction: interaction })) return;
+    if ((await voiceStateCheck(state.locale, { interaction: interaction })) || !state.connection || !state.connection.dispatcher) return;
 
-    if (state.queue.length === 0)
+    if (!state.queue || state.queue.length <= 0)
       return sendEmbed(
         { interaction: interaction },
         {
@@ -190,7 +194,6 @@ export const skip = async (state: State, interaction: Interaction) => {
       ).then((_message: Message) => _message.delete({ timeout: 10000 }));
 
     state.connection.dispatcher.end();
-
     state.queue.shift();
 
     return sendEmbed(
@@ -208,7 +211,7 @@ export const skip = async (state: State, interaction: Interaction) => {
 
 export const pause = async (state: State, interaction: Interaction) => {
   try {
-    if (await voiceStateCheck(state.locale, { interaction: interaction })) return;
+    if ((await voiceStateCheck(state.locale, { interaction: interaction })) || !state.connection || !state.connection.dispatcher) return;
 
     state.connection.dispatcher.pause();
     state.isPlaying = false;
@@ -219,10 +222,20 @@ export const pause = async (state: State, interaction: Interaction) => {
 
 export const stop = async (state: State, interaction: Interaction) => {
   try {
-    if (await voiceStateCheck(state.locale, { interaction: interaction })) return;
+    if ((await voiceStateCheck(state.locale, { interaction: interaction })) || !state.connection || !state.connection.dispatcher) return;
 
-    state.connection.dispatcher.pause();
     state.isPlaying = false;
+    state.queue = [];
+
+    if (state.stream) {
+      state.stream.pause();
+      state.stream.destroy();
+    }
+
+    state.connection.dispatcher.end();
+
+    if (state.timeout) clearTimeout(state.timeout);
+    state.timeout = setTimeout(() => voiceDisconnect(state), props.disconnectTimeout);
   } catch (err) {
     createError("Stop", err, { interaction: interaction });
   }
@@ -230,7 +243,7 @@ export const stop = async (state: State, interaction: Interaction) => {
 
 export const toggleLoop = async (state: State, interaction: Interaction) => {
   try {
-    if (await voiceStateCheck(state.locale, { interaction: interaction })) return;
+    if ((await voiceStateCheck(state.locale, { interaction: interaction })) || !state.connection || !state.connection.dispatcher) return;
 
     state.isLooped = !state.isLooped;
 
@@ -249,7 +262,7 @@ export const toggleLoop = async (state: State, interaction: Interaction) => {
 
 export const toggleRepeat = async (state: State, interaction: Interaction) => {
   try {
-    if (await voiceStateCheck(state.locale, { interaction: interaction })) return;
+    if ((await voiceStateCheck(state.locale, { interaction: interaction })) || !state.connection || !state.connection.dispatcher) return;
 
     state.isRepeated = !state.isRepeated;
 

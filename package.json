@@ -37,7 +37,7 @@
     "path": "^0.12.7",
     "pm2": "^4.5.0",
     "scrape-youtube": "^2.0.8",
-    "ytdl-core": "^4.4.5"
+    "ytdl-core": "^4.9.0"
   },
   "devDependencies": {
     "@types/compression": "^1.7.0",

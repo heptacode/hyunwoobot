@@ -16,4 +16,5 @@ export default {
     volume: "https://firebasestorage.googleapis.com/v0/b/hyunwoo-bot.appspot.com/o/volume.png?alt=media&token=887c1886-e440-48a4-b52e-15b064f5bc2f",
   },
   developerID: "303202584007671812",
+  disconnectTimeout: 300000,
 };

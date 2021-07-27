@@ -39,10 +39,9 @@ export const setState = (guildID: string, config?: Config) => {
     logChannel: config ? config.logChannel : null,
     logMessageEvents: config ? config.logMessageEvents : false,
     mentionDebounce: null,
-    privateRoom: config ? config.privateRoom : { generator: null, fallback: null },
-    privateRooms: config ? config.privateRooms : null,
+    privateRoom: config ? config.privateRoom : undefined,
+    privateRooms: config ? config.privateRooms : [],
     reactionRoles: config ? config.reactionRoles : [],
-    timeout: null,
     userRoles: config ? config.userRoles : [],
     voiceRoles: config ? config.voiceRoles : [],
 

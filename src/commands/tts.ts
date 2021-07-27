@@ -66,7 +66,7 @@ export default {
               state.isPlaying = false;
 
               if (state.timeout) clearTimeout(state.timeout);
-              state.timeout = setTimeout(() => voiceDisconnect(state), 300000);
+              state.timeout = setTimeout(() => voiceDisconnect(state), props.disconnectTimeout);
             });
           }, 400);
         }

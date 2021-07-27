@@ -42,9 +42,10 @@ export const voiceConnect = async (state: State, interaction: Interaction) => {
     }
 
     state.connection = await voiceChannel.join();
+    state.connection.voice.setSelfDeaf(false);
 
     if (state.timeout) clearTimeout(state.timeout);
-    state.timeout = setTimeout(() => voiceDisconnect(state), 300000);
+    state.timeout = setTimeout(() => voiceDisconnect(state), props.disconnectTimeout);
   } catch (err) {
     createError("VoiceConnect", err, { interaction: interaction });
   }
