@@ -44,7 +44,7 @@ export default {
       {
         OutputFormat: "mp3",
         SampleRate: "16000",
-        Text: `${client.guilds.resolve(interaction.guild_id).member(interaction.member.user.id).displayName}님의 메시지입니다. ${message}`,
+        Text: `${client.guilds.resolve(interaction.guild_id).member(interaction.member.user.id).displayName}님의 메시지, ${message}`,
         TextType: "text",
         VoiceId: "Seoyeon",
       },
