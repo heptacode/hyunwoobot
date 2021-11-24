@@ -24,7 +24,7 @@
 | /edit \<textChannel> \<messageID> \<messageEmbed>                                    | Edit a previous embed                          |
 | /delete \<amount>                                                                    | Bulk delete messages                           |
 | /disconnect \<voiceChannel>                                                          | Disconnect all users from a voice channel      |
-| /move \<fromVocieChannel> \<targetVoiceChannel>                                      | Move all users to another voice channel        |
+| /move \<fromVoiceChannel> \<targetVoiceChannel>                                      | Move all users to another voice channel        |
 | /locale \<code>                                                                      | Change the default locale for the server       |
 | /log \<textChannel>                                                                  | Set a text channel for logging                 |
 | /privateroom                                                                         | Initalize a private room generator channel     |
