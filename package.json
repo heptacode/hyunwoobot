@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/heptacode/discordbot.git"
+    "url": "git+https://github.com/heptacode/hyunwoobot.git"
   },
   "author": "heptacode <admin@hyunwoo.kim> (https://hyunwoo.kim)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/heptacode/discordbot/issues"
+    "url": "https://github.com/heptacode/hyunwoobot/issues"
   },
-  "homepage": "https://github.com/heptacode/discordbot#readme",
+  "homepage": "https://github.com/heptacode/hyunwoobot#readme",
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
     "aws-sdk": "^2.858.0",
