@@ -1,10 +1,9 @@
-import { Guild } from "discord.js";
-import { createError } from "../modules/createError";
-import { registerCommands, setConfig, setGuild, setState } from "../modules/initializer";
-import { log } from "../modules/logger";
-import { client } from "../app";
+import { Guild } from 'discord.js';
+import { createError } from '@/modules/createError';
+import { registerCommands, setConfig, setGuild, setState } from '@/modules/initializer';
+import { log } from '@/modules/logger';
 
-client.on("guildCreate", async (guild: Guild) => {
+export async function guildCreate(guild: Guild) {
   try {
     log.d(`Initialize Started [ ${guild.name}(${guild.id}) ]`);
 
@@ -15,6 +14,6 @@ client.on("guildCreate", async (guild: Guild) => {
 
     log.i(`Initialize Complete [ ${guild.name}(${guild.id}) ]`);
   } catch (err) {
-    createError("GuildCreate", err, { guild: guild });
+    createError('GuildCreate', err, { guild: guild });
   }
-});
+}

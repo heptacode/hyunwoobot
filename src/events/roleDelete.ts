@@ -1,23 +1,25 @@
-import { Role } from "discord.js";
-import { createError } from "../modules/createError";
-import { firestore } from "../modules/firebase";
-import { client, states } from "../app";
-import { UserRole } from "../";
+import { Role } from 'discord.js';
+import { createError } from '@/modules/createError';
+import { firestore } from '@/services/firebase';
+import { states } from '@/app';
+import { UserRole } from '@/types';
 
-client.on("roleDelete", async (role: Role) => {
+export async function roleDelete(role: Role) {
   try {
     if (!states.get(role.guild.id).userRoles) return;
 
-    const idx = states.get(role.guild.id).userRoles.findIndex((userRole: UserRole) => userRole.id === role.id);
+    const idx = states
+      .get(role.guild.id)
+      .userRoles.findIndex((userRole: UserRole) => userRole.id === role.id);
     if (idx === -1) return;
 
     states.get(role.guild.id).userRoles.splice(idx, 1);
 
     await firestore
       .collection(role.guild.id)
-      .doc("config")
+      .doc('config')
       .update({ userRoles: states.get(role.guild.id).userRoles });
   } catch (err) {
-    createError("RoleDelete", err, { guild: role.guild });
+    createError('RoleDelete', err, { guild: role.guild });
   }
-});
+}

@@ -1,6 +1,5 @@
-import { createError } from "../modules/createError";
-import { client } from "../app";
+import { createError } from '@/modules/createError';
 
-client.on("error", async (err: Error) => {
-  createError("ClientError", `[${err.name}] ${err.message}`);
-});
+export async function err(error: Error) {
+  createError('ClientError', `[${error.name}] ${error.message}`);
+}

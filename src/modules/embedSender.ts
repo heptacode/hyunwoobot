@@ -1,62 +1,83 @@
-import { Guild, GuildMember, Message, MessageEmbed, MessageEmbedOptions, TextChannel, User } from "discord.js";
-import { createError } from "./createError";
-import { client, states } from "../app";
-import { Interaction } from "../";
+import {
+  Guild,
+  GuildMember,
+  Interaction,
+  Message,
+  MessageEmbed,
+  MessageEmbedOptions,
+  TextChannel,
+  User,
+} from 'discord.js';
+import { createError } from './createError';
+import { client, states } from '@/app';
 
-export const sendEmbed = async (
+export async function sendEmbed(
   payload: { interaction?: Interaction; message?: Message; member?: GuildMember },
   embed: MessageEmbedOptions | MessageEmbed,
   options?: { dm?: boolean; guild?: boolean; system?: boolean; log?: boolean }
-): Promise<Message> => {
+): Promise<Message> {
   try {
     if (payload.interaction || payload.member) {
-      const user: User = payload.member ? payload.member.user : client.users.resolve(payload.interaction.member.user.id);
-      const guild: Guild = payload.member ? payload.member.guild : client.guilds.resolve(payload.interaction.guild_id);
+      const user: User = payload.member
+        ? payload.member.user
+        : client.users.resolve(payload.interaction.member.user.id);
+      const guild: Guild = payload.member
+        ? payload.member.guild
+        : client.guilds.resolve(payload.interaction.guildId);
 
       let channel: TextChannel;
       if (options && options.guild && options.system) channel = guild.systemChannel;
       else if (options && options.guild && options.log) {
-        const logChannel = states.get(payload.member ? payload.member.guild.id : payload.interaction.guild_id).logChannel;
+        const logChannel = states.get(
+          payload.member ? payload.member.guild.id : payload.interaction.guildId
+        ).logChannel;
         if (!logChannel) return;
         channel = guild.channels.resolve(logChannel) as TextChannel;
-      } else if (payload.interaction) channel = guild.channels.resolve(payload.interaction.channel_id) as TextChannel;
+      } else if (payload.interaction)
+        channel = guild.channels.resolve(payload.interaction.channelId) as TextChannel;
 
       try {
         if (!options || options.dm)
           return (await user.createDM()).send({
-            embed: {
-              author: {
-                name: guild.name,
-                iconURL: guild.iconURL(),
+            embeds: [
+              {
+                author: {
+                  name: guild.name,
+                  iconURL: guild.iconURL(),
+                },
+                ...embed,
               },
-              ...embed,
-            },
+            ],
           });
         else if (!options.dm)
           return channel.send({
-            embed: {
-              footer: {
-                text: user.tag,
-                iconURL: user.avatarURL(),
+            embeds: [
+              {
+                footer: {
+                  text: user.tag,
+                  iconURL: user.avatarURL(),
+                },
+                ...embed,
               },
-              ...embed,
-            },
+            ],
           });
       } catch (err) {
         if (!options.dm)
           return channel.send({
-            embed: {
-              footer: {
-                text: user.tag,
-                iconURL: user.avatarURL(),
+            embeds: [
+              {
+                footer: {
+                  text: user.tag,
+                  iconURL: user.avatarURL(),
+                },
+                ...embed,
               },
-              ...embed,
-            },
+            ],
           });
       }
     } else if (payload.message) {
     }
   } catch (err) {
-    createError("EmbedSender", err, payload);
+    createError('EmbedSender', err, payload);
   }
-};
+}

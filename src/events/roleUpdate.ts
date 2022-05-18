@@ -1,10 +1,10 @@
-import { Role } from "discord.js";
-import { createError } from "../modules/createError";
-import { firestore } from "../modules/firebase";
-import { client, states } from "../app";
-import { State, UserRole } from "../";
+import { Role } from 'discord.js';
+import { createError } from '@/modules/createError';
+import { firestore } from '@/services/firebase';
+import { states } from '@/app';
+import { State, UserRole } from '@/types';
 
-client.on("roleUpdate", async (oldRole: Role, newRole: Role) => {
+export async function roleUpdate(oldRole: Role, newRole: Role) {
   try {
     const state: State = states.get(newRole.guild.id);
     if (!state.userRoles || !state.userRoles.length) return;
@@ -15,8 +15,11 @@ client.on("roleUpdate", async (oldRole: Role, newRole: Role) => {
     state.userRoles[idx].name = newRole.name;
     state.userRoles[idx].color = newRole.hexColor;
 
-    await firestore.collection(newRole.guild.id).doc("config").update({ userRoles: state.userRoles });
+    await firestore
+      .collection(newRole.guild.id)
+      .doc('config')
+      .update({ userRoles: state.userRoles });
   } catch (err) {
-    createError("RoleUpdate", err, { guild: oldRole.guild });
+    createError('RoleUpdate', err, { guild: oldRole.guild });
   }
-});
+}

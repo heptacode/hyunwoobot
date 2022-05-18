@@ -1,12 +1,16 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "module": "commonjs",
-    "target": "es6",
+    "module": "esnext",
+    "target": "esnext",
     "moduleResolution": "node",
     "removeComments": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
-  "include": ["src/**/*"],
-  "exclude": [".vscode", "node_modules"]
+  "include": ["src"],
+  "exclude": [".yarn/cache", "node_modules"]
 }

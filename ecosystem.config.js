@@ -1,12 +1,12 @@
 module.exports = {
   apps: [
     {
-      name: "hyunwoobot",
-      script: "./dist/app.js",
+      name: 'hyunwoobot',
+      script: './dist/app.js',
       autorestart: true,
-      max_memory_restart: "2G",
-      env_production: {
-        NODE_ENV: "production",
+      max_memory_restart: '2G',
+      env: {
+        NODE_ENV: 'production',
       },
     },
   ],

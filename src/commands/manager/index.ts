@@ -1,0 +1,15 @@
+export { autorole } from './autorole';
+export { deleteMessage as delete } from './delete';
+export { disconnect } from './disconnect';
+export { disconnectall } from './disconnectall';
+export { edit } from './edit';
+export { embed } from './embed';
+export { locale } from './locale';
+export { log } from './log';
+export { move } from './move';
+export { moveall } from './moveall';
+export { privateroom } from './privateroom';
+export { reactionrole } from './reactionrole';
+export { setafktimeout } from './setafktimeout';
+export { userrole } from './userrole';
+export { voicerole } from './voicerole';
