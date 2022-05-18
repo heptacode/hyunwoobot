@@ -1,10 +1,11 @@
-import { joinVoiceChannel, DiscordGatewayAdapterCreator } from '@discordjs/voice';
-import { createError } from '@/modules/createError';
-import { sendEmbed } from '@/modules/embedSender';
 import { client } from '@/app';
-import { props } from '@/props';
-import { CommandInteraction, State, StageChannel, VoiceChannel } from '@/types';
+import { createError } from '@/modules/createError';
+import { sendEmbed } from '@/modules/sendEmbed';
 import { voiceDisconnect } from '@/modules/voice';
+import { props } from '@/props';
+import { State } from '@/types';
+import { joinVoiceChannel } from '@discordjs/voice';
+import { CommandInteraction, StageChannel, VoiceChannel } from 'discord.js';
 
 export async function voiceConnect(state: State, interaction: CommandInteraction) {
   try {
@@ -12,8 +13,9 @@ export async function voiceConnect(state: State, interaction: CommandInteraction
       .resolve(interaction.guildId)
       .members.resolve(interaction.member.user.id).voice.channel;
 
-    if (!voiceChannel) return;
-    else if (!voiceChannel.permissionsFor(client.user).has(['CONNECT', 'SPEAK'])) {
+    if (!voiceChannel) {
+      return;
+    } else if (!voiceChannel.permissionsFor(client.user).has(['CONNECT', 'SPEAK'])) {
       sendEmbed(
         { interaction: interaction },
         {
@@ -25,16 +27,15 @@ export async function voiceConnect(state: State, interaction: CommandInteraction
       throw new Error('Missing Permissions');
     }
 
-    // state.connection = await voiceChannel.join();
     state.connection = await joinVoiceChannel({
       guildId: interaction.guildId,
       channelId: voiceChannel.id,
-      adapterCreator: voiceChannel.guild
-        .voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator,
+      adapterCreator: voiceChannel.guild.voiceAdapterCreator,
     });
-    // state.connection.voice.setSelfDeaf(false);
 
-    if (state.timeout) clearTimeout(state.timeout);
+    if (state.timeout) {
+      clearTimeout(state.timeout);
+    }
     state.timeout = setTimeout(() => voiceDisconnect(state), props.disconnectTimeout);
   } catch (err) {
     createError('VoiceConnect', err, { interaction: interaction });

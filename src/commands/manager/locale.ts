@@ -1,7 +1,7 @@
 import { client, locales, managerCommands, userCommands } from '@/app';
 import { checkPermission } from '@/modules/checkPermission';
 import { createError } from '@/modules/createError';
-import { sendEmbed } from '@/modules/embedSender';
+import { sendEmbed } from '@/modules/sendEmbed';
 import { props } from '@/props';
 import { firestore } from '@/services/firebase.service';
 import { Command, Locale, State } from '@/types';

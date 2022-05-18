@@ -1,10 +1,11 @@
 import { locales, states } from '@/app';
 import { Config, State } from '@/types';
+import { createAudioPlayer } from '@discordjs/voice';
 import { Collection } from 'discord.js';
 
-export async function setState(guildID: string, config?: Config) {
-  states.set(guildID, {
-    guildId: guildID,
+export function setState(guildId: string, config?: Config) {
+  states.set(guildId, {
+    guildId: guildId,
 
     afkChannel: new Collection(),
     afkTimeout: config ? config.afkTimeout : -1,
@@ -21,10 +22,12 @@ export async function setState(guildID: string, config?: Config) {
     voiceRoles: config ? config.voiceRoles : [],
 
     connection: null,
+    player: createAudioPlayer(),
     queue: [],
     isLooped: false,
     isRepeated: false,
     isPlaying: false,
     volume: 3,
   } as State);
+  return states.get(guildId);
 }

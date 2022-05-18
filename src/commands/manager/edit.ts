@@ -1,5 +1,5 @@
 import { checkPermission } from '@/modules/checkPermission';
-import { getChannelID } from '@/modules/converter';
+import { getChannelId } from '@/modules/converter';
 import { createError } from '@/modules/createError';
 import { Command, State } from '@/types';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
@@ -16,7 +16,7 @@ export const edit: Command = {
       const embed: MessageEmbed = JSON.parse(args.slice(2).join(' '));
 
       const _message = await (
-        message.guild.channels.resolve(getChannelID(message.guild, args[0])) as TextChannel
+        message.guild.channels.resolve(getChannelId(message.guild, args[0])) as TextChannel
       ).messages.fetch(args[1]);
 
       await _message.edit({ embeds: [embed] });

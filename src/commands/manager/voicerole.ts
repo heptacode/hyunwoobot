@@ -142,22 +142,22 @@ export const voicerole: Command = {
         for (const voiceRole of state.voiceRoles) {
           if (!client.channels.cache.has(voiceRole.voiceChannel)) continue;
 
-          for (const [memberID, member] of client.guilds
+          for (const [memberId, member] of client.guilds
             .resolve(interaction.guildId)
             .roles.resolve(voiceRole.role).members) {
             if (member.voice.channelId === voiceRole.voiceChannel) continue;
             await member.roles.remove(voiceRole.role, '[VoiceRole] Force Update');
-            payload.push({ member: memberID, action: '-=', role: voiceRole.role });
+            payload.push({ member: memberId, action: '-=', role: voiceRole.role });
           }
 
           // TODO
-          for (const [memberID, member] of Object.entries(
+          for (const [memberId, member] of Object.entries(
             client.guilds.resolve(interaction.guildId).channels.resolve(voiceRole.voiceChannel)
               .members
           )) {
             if (member.user.bot || member.roles.cache.has(voiceRole.role)) continue;
             await member.roles.add(voiceRole.role, '[VoiceRole] Force Update');
-            payload.push({ member: memberID, action: '+=', role: voiceRole.role });
+            payload.push({ member: memberId, action: '+=', role: voiceRole.role });
           }
         }
 

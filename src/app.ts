@@ -4,23 +4,24 @@ import * as localeList from '@/locales';
 import { props } from '@/props';
 import '@/services/api.service';
 import { Command, Locale, State } from '@/types';
-import { Client, Collection } from 'discord.js';
+import { Client, Collection, Intents } from 'discord.js';
 import 'dotenv/config';
+require('@/events');
 
 export const prefix: string = process.env.PREFIX || props.bot.prefix;
 export const client: Client = new Client({
   intents: [
-    'DIRECT_MESSAGES',
-    'DIRECT_MESSAGE_REACTIONS',
-    'GUILDS',
-    'GUILD_EMOJIS_AND_STICKERS',
-    'GUILD_INTEGRATIONS',
-    'GUILD_INVITES',
-    'GUILD_MEMBERS',
-    'GUILD_MESSAGES',
-    'GUILD_MESSAGE_REACTIONS',
-    'GUILD_VOICE_STATES',
-    'GUILD_WEBHOOKS',
+    Intents.FLAGS.DIRECT_MESSAGES,
+    Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+    Intents.FLAGS.GUILD_INTEGRATIONS,
+    Intents.FLAGS.GUILD_INVITES,
+    Intents.FLAGS.GUILD_MEMBERS,
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    Intents.FLAGS.GUILD_VOICE_STATES,
+    Intents.FLAGS.GUILD_WEBHOOKS,
   ],
 });
 export const locales: Collection<string, Locale> = new Collection();
@@ -41,5 +42,3 @@ for (const [name, command] of Object.entries(managerCommandsList)) {
 }
 
 client.login(process.env.TOKEN);
-
-require('@/events');

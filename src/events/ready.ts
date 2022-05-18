@@ -28,7 +28,11 @@ export async function ready() {
             if (!states.has(guild.id)) {
               log.d(`Initialize Started [ ${guild.name} (${guild.id}) ]`);
 
-              setState(guild.id, config);
+              const state = setState(guild.id, config);
+
+              state.player.on('error', err => {
+                createError('Player', err);
+              });
 
               await registerCommands(guild.id);
 

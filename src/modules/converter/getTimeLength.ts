@@ -1,4 +1,4 @@
-export function getLength(length: number): string {
+export function getTimeLength(length: number): string {
   const hours = Math.floor(length / 3600);
   const minutes = Math.floor((length - hours * 3600) / 60);
   const seconds = length % 60;

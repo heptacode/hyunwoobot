@@ -2,12 +2,12 @@ import { client } from '@/app';
 import { log } from '@/modules/logger';
 import { firestore } from '@/services/firebase.service';
 
-export async function setGuild(guildID: string) {
+export async function setGuild(guildId: string) {
   try {
     await firestore
-      .collection(guildID)
+      .collection(guildId)
       .doc('guild')
-      .set(JSON.parse(JSON.stringify(client.guilds.resolve(guildID))));
+      .set(JSON.parse(JSON.stringify(client.guilds.resolve(guildId))));
   } catch (err) {
     log.e(`SetGuild > ${err}`);
   }

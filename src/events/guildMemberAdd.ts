@@ -1,7 +1,7 @@
 import { states } from '@/app';
 import { createError } from '@/modules/createError';
-import { sendEmbed } from '@/modules/embedSender';
 import { setGuild } from '@/modules/initializer';
+import { sendEmbed } from '@/modules/sendEmbed';
 import { props } from '@/props';
 import { GuildMember } from 'discord.js';
 

@@ -1,4 +1,15 @@
 import { client } from '@/app';
+import {
+  Guild,
+  GuildMember,
+  Interaction,
+  Message,
+  MessageReaction,
+  PartialMessage,
+  Role,
+  User,
+  VoiceState,
+} from 'discord.js';
 import { err } from './error';
 import { guildCreate } from './guildCreate';
 import { guildDelete } from './guildDelete';
@@ -14,17 +25,6 @@ import { ready } from './ready';
 import { roleDelete } from './roleDelete';
 import { roleUpdate } from './roleUpdate';
 import { voiceStateUpdate } from './voiceStateUpdate';
-import {
-  Guild,
-  GuildMember,
-  Interaction,
-  Message,
-  MessageReaction,
-  PartialMessage,
-  Role,
-  User,
-  VoiceState,
-} from 'discord.js';
 
 client.on('error', async (error: Error) => err(error));
 client.on('guildCreate', async (guild: Guild) => guildCreate(guild));

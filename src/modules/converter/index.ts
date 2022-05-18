@@ -1,4 +1,4 @@
-export { getChannelID } from './getChannelID';
+export { getChannelId } from './getChannelId';
 export { getEmojiFromHex } from './getEmojiFromHex';
 export { getHexFromEmoji } from './getHexFromEmoji';
-export { getLength } from './getLength';
+export { getTimeLength } from './getTimeLength';

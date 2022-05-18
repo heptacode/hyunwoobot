@@ -3,12 +3,12 @@ import { REST } from '@discordjs/rest';
 
 const rest: REST = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
-export async function registerCommands(guildID: string, force?: boolean) {
+export async function registerCommands(guildId: string, force?: boolean) {
   try {
     // for (const [name, command] of Object.assign(userCommands, managerCommands)) {
     // new SlashCommandBuilder()
     //   .setName(name)
-    //   .setDescription(states.get(guildID).locale.help[name])
+    //   .setDescription(states.get(guildId).locale.help[name])
     //   .addUserOption((option: SlashCommandUserOption) => option.setName(''));
     // }
     // await rest.put(Routes.applicationGuildCommands(client.user.id, '506097604950753290'), {
@@ -18,7 +18,7 @@ export async function registerCommands(guildID: string, force?: boolean) {
     log.e(error);
   }
 
-  // const commandsDocRef = firestore.collection(guildID).doc("commands");
+  // const commandsDocRef = firestore.collection(guildId).doc("commands");
   // const commandsDocSnapshot = await commandsDocRef.get();
 
   // if (!commandsDocSnapshot.exists) await commandsDocRef.create({});
@@ -33,12 +33,12 @@ export async function registerCommands(guildID: string, force?: boolean) {
   //       id: (
   //         await (client as any).api
   //           .applications(process.env.APPLICATION)
-  //           .guilds(guildID)
+  //           .guilds(guildId)
   //           .commands.post({
   //             data: {
   //               name: name,
-  //               description: states.get(guildID).locale.help[name],
-  //               options: command.options ? command.options(states.get(guildID).locale) : [],
+  //               description: states.get(guildId).locale.help[name],
+  //               options: command.options ? command.options(states.get(guildId).locale) : [],
   //             },
   //           })
   //       ).id,
@@ -46,7 +46,7 @@ export async function registerCommands(guildID: string, force?: boolean) {
   //       version: command.version,
   //     };
   //   } catch (err) {
-  //     createError(`Initializer > CommandRegister > [${name}]`, err, { guild: guildID });
+  //     createError(`Initializer > CommandRegister > [${name}]`, err, { guild: guildId });
   //   }
   // }
 
@@ -57,12 +57,12 @@ export async function registerCommands(guildID: string, force?: boolean) {
   //       id: (
   //         await (client as any).api
   //           .applications(process.env.APPLICATION)
-  //           .guilds(guildID)
+  //           .guilds(guildId)
   //           .commands.post({
   //             data: {
   //               name: name,
-  //               description: `${states.get(guildID).locale.manager} ${states.get(guildID).locale.help[name]}`,
-  //               options: command.options ? command.options(states.get(guildID).locale) : [],
+  //               description: `${states.get(guildId).locale.manager} ${states.get(guildId).locale.help[name]}`,
+  //               options: command.options ? command.options(states.get(guildId).locale) : [],
   //             },
   //           })
   //       ).id,
@@ -70,12 +70,12 @@ export async function registerCommands(guildID: string, force?: boolean) {
   //       version: command.version,
   //     };
   //   } catch (err) {
-  //     createError(`Initializer > CommandRegister > Manager > [${name}]`, err, { guild: guildID });
+  //     createError(`Initializer > CommandRegister > Manager > [${name}]`, err, { guild: guildId });
   //   }
   // }
 
   // if (Object.keys(updatedCommands).length) {
-  //   log.s(`Registered ${Object.keys(updatedCommands).length} command(s) for guild [ ${client.guilds.resolve(guildID).name}(${guildID}) ]: ${Object.keys(updatedCommands).join(", ")}`);
+  //   log.s(`Registered ${Object.keys(updatedCommands).length} command(s) for guild [ ${client.guilds.resolve(guildId).name}(${guildId}) ]: ${Object.keys(updatedCommands).join(", ")}`);
   //   await commandsDocRef.update(updatedCommands);
   // }
 }

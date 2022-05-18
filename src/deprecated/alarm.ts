@@ -18,7 +18,7 @@
 //     const dispatcher = broadcast.play(resolve(__dirname, process.env.NODE_ENV === "production" ? "../../src/assets/alarm.mp3" : "../assets/alarm.mp3"));
 //     dispatcher.setVolume(0.2);
 
-//     for (const [guildID, state] of states) {
+//     for (const [guildId, state] of states) {
 //       if (!state.alarmChannel || state.isPlaying) continue;
 
 //       state.connection = await (client.channels.resolve(state.alarmChannel) as VoiceChannel).join();

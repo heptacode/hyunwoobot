@@ -1,7 +1,7 @@
-import { VoiceConnection } from '@discordjs/voice';
+import { AudioPlayer, VoiceConnection } from '@discordjs/voice';
 import { Collection } from 'discord.js';
+// import internal from 'stream';
 import { AutoRole, Locale, PrivateRoom, ReactionRole, UserRole, VoiceRole } from '.';
-import internal from 'stream';
 
 export interface State {
   guildId: string;
@@ -17,12 +17,13 @@ export interface State {
   privateRoom: { generator?: string; fallback?: string };
   privateRooms: PrivateRoom[];
   reactionRoles: ReactionRole[];
-  stream?: internal.Readable;
+  // stream?: internal.Readable;
   timeout?: NodeJS.Timeout;
   userRoles: UserRole[];
   voiceRoles: VoiceRole[];
 
   connection: VoiceConnection;
+  player?: AudioPlayer;
   queue: {
     title: string;
     channelName: string;

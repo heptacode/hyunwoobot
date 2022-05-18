@@ -1,8 +1,9 @@
-import { createError } from './createError';
-import { sendEmbed } from './embedSender';
 import { client } from '@/app';
+import { createError } from '@/modules/createError';
+import { sendEmbed } from '@/modules/sendEmbed';
 import { props } from '@/props';
-import { CommandInteraction, Locale, Message, PermissionResolvable } from '@/types';
+import { Locale } from '@/types';
+import { CommandInteraction, Message, PermissionResolvable } from 'discord.js';
 
 export async function checkPermission(
   locale: Locale,

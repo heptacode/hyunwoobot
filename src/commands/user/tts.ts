@@ -1,13 +1,14 @@
 import { client } from '@/app';
 import { createError } from '@/modules/createError';
-import { voiceConnect, voiceStateCheck } from '@/modules/voice';
+import { playResource, voiceConnect, voiceDisconnect, voiceStateCheck } from '@/modules/voice';
 import { props } from '@/props';
 import { Command, Locale, State } from '@/types';
+import { AudioPlayerState, AudioPlayerStatus } from '@discordjs/voice';
 import { Credentials, Polly } from 'aws-sdk';
 import { APIApplicationCommandOption } from 'discord-api-types/v10';
 import { CommandInteraction } from 'discord.js';
 import 'dotenv/config';
-import { PassThrough } from 'stream';
+import { resolve } from 'path';
 
 new Credentials(process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY);
 
@@ -42,9 +43,12 @@ export const tts: Command = {
       clearTimeout(state.timeout);
       state.timeout = null;
     }
-    if (!state.connection) await voiceConnect(state, interaction);
-    polly.synthesizeSpeech(
-      {
+    if (!state.connection) {
+      await voiceConnect(state, interaction);
+    }
+
+    const pollyResult = await polly
+      .synthesizeSpeech({
         OutputFormat: 'mp3',
         SampleRate: '16000',
         Text: `${
@@ -53,28 +57,46 @@ export const tts: Command = {
         }님의 메시지, ${message}`,
         TextType: 'text',
         VoiceId: 'Seoyeon',
-      },
-      (err, data) => {
-        if (err) {
-          state.isPlaying = false;
-          createError('TTS', err, { interaction: interaction });
+      })
+      .promise();
+
+    if (pollyResult.$response.error) {
+      state.isPlaying = false;
+      return createError('TTS', pollyResult.$response.error, { interaction: interaction });
+    }
+
+    if (pollyResult.AudioStream instanceof Buffer) {
+      await playResource(
+        state,
+        resolve(
+          __dirname,
+          process.env.NODE_ENV === 'production'
+            ? '../../src/assets/message.mp3'
+            : '../assets/message.mp3'
+        ),
+        0.1
+      );
+
+      await new Promise<void>((resolve, reject) => setTimeout(() => resolve(), 400));
+
+      const resource = await playResource(state, pollyResult.AudioStream);
+      // state.connection.playOpusPacket(pollyResult.AudioStream);
+
+      // import { PassThrough } from 'stream';
+      // const stream = new PassThrough();
+      //       stream.end(pollyResult.AudioStream);
+
+      resource.audioPlayer.on(
+        'stateChange',
+        async (oldState: AudioPlayerState, newState: AudioPlayerState) => {
+          if (newState.status === AudioPlayerStatus.Idle) {
+            state.isPlaying = false;
+            if (state.timeout) clearTimeout(state.timeout);
+            state.timeout = setTimeout(() => voiceDisconnect(state), props.disconnectTimeout);
+          }
         }
-        if (data.AudioStream instanceof Buffer) {
-          // state.connection.play(resolve(__dirname, process.env.NODE_ENV === "production" ? "../../src/assets/message.mp3" : "../assets/message.mp3"));
-          // state.connection.dispatcher.setVolume(0.1);
-          const stream = new PassThrough();
-          stream.end(data.AudioStream);
-          setTimeout(() => {
-            // state.connection.play(stream);
-            // state.connection.dispatcher.on("finish", () => {
-            //   state.isPlaying = false;
-            //   if (state.timeout) clearTimeout(state.timeout);
-            //   state.timeout = setTimeout(() => voiceDisconnect(state), props.disconnectTimeout);
-            // });
-          }, 400);
-        }
-      }
-    );
+      );
+    }
     return [
       {
         color: props.color.purple,

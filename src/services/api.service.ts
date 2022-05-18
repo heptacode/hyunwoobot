@@ -21,11 +21,11 @@ app.set('trust proxy', true);
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.json({ limit: '50mb' }));
 
-const fetchGuildMember = (guildID: string, memberID: string): APIGuildMember => {
+const fetchGuildMember = (guildId: string, memberId: string): APIGuildMember => {
   const _roles: string[] = [];
 
-  const member = client.guilds.resolve(guildID).members.resolve(memberID);
-  for (const userRole of states.get(guildID).userRoles) {
+  const member = client.guilds.resolve(guildId).members.resolve(memberId);
+  for (const userRole of states.get(guildId).userRoles) {
     if (member.roles.cache.has(userRole.id)) _roles.push(userRole.id);
   }
 
@@ -57,14 +57,14 @@ app.post('/fetch', async (req, res) => {
         headers: { Authorization: `Bearer ${req.body.token}` },
       })
     ).data;
-    for (const [guildID, state] of states) {
-      const guild: APIGuild = guilds.find((guild: APIGuild) => guild.id === guildID);
+    for (const [guildId, state] of states) {
+      const guild: APIGuild = guilds.find((guild: APIGuild) => guild.id === guildId);
       if (!guild) continue;
 
       payload.guilds.push({
         ...guild,
-        member: fetchGuildMember(guildID, payload.user.id),
-        userRoles: states.get(guildID).userRoles,
+        member: fetchGuildMember(guildId, payload.user.id),
+        userRoles: states.get(guildId).userRoles,
       });
     }
     res.send(payload);

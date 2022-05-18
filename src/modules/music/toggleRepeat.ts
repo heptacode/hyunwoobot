@@ -1,9 +1,6 @@
-import { CommandInteraction } from 'discord.js';
 import { createError } from '@/modules/createError';
-import { sendEmbed } from '@/modules/embedSender';
-import { voiceStateCheck } from '@/modules/voice';
-import { props } from '@/props';
 import { State } from '@/types';
+import { CommandInteraction } from 'discord.js';
 
 export async function toggleRepeat(state: State, interaction: CommandInteraction) {
   try {

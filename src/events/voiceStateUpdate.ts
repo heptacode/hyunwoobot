@@ -1,6 +1,6 @@
 import { client, states } from '@/app';
 import { createError } from '@/modules/createError';
-import { sendEmbed } from '@/modules/embedSender';
+import { sendEmbed } from '@/modules/sendEmbed';
 import { props } from '@/props';
 import { firestore } from '@/services/firebase.service';
 import { PrivateRoom, State, VoiceRole } from '@/types';
@@ -69,7 +69,7 @@ export async function voiceStateUpdate(oldState: VoiceState, newState: VoiceStat
             privateRoom.host === oldState.member.id &&
             oldState.guild.channels.cache.has(privateRoom.room)
           ) {
-            for (const [memberID, member] of Object.assign([
+            for (const [memberId, member] of Object.assign([
               oldState.guild.channels.resolve(privateRoom.room).members,
               oldState.guild.channels.resolve(privateRoom.waiting).members,
             ])) {
@@ -79,7 +79,7 @@ export async function voiceStateUpdate(oldState: VoiceState, newState: VoiceStat
                 await (
                   oldState.guild.channels.resolve(state.privateRoom.generator) as GuildChannel
                 ).permissionOverwrites
-                  .resolve(memberID)
+                  .resolve(memberId)
                   .delete('[PrivateRoom] Deletion');
             }
 

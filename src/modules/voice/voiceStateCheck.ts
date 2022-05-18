@@ -1,8 +1,8 @@
-import { CommandInteraction, Guild, Message } from 'discord.js';
-import { sendEmbed } from '@/modules/embedSender';
 import { client } from '@/app';
+import { sendEmbed } from '@/modules/sendEmbed';
 import { props } from '@/props';
 import { Locale } from '@/types';
+import { CommandInteraction, Guild, Message } from 'discord.js';
 
 export async function voiceStateCheck(
   locale: Locale,
