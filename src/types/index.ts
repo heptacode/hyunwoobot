@@ -1,3 +1,16 @@
+export {
+  CommandInteraction,
+  EmbedFieldData,
+  Guild,
+  GuildChannel,
+  GuildMember,
+  Interaction,
+  Message,
+  TextChannel,
+  VoiceChannel,
+} from 'discord.js';
+export { APIApplicationCommandOption, Routes } from 'discord-api-types/v10';
+
 export * from './api';
 export * from './command';
 export * from './config';

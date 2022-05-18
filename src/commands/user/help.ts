@@ -1,13 +1,19 @@
-import { EmbedFieldData, Interaction } from 'discord.js';
 import { createError } from '@/modules/createError';
 import { userCommands, managerCommands, prefix } from '@/app';
 import { props } from '@/props';
-import { Command, Locale, State } from '@/types';
+import {
+  APIApplicationCommandOption,
+  Command,
+  CommandInteraction,
+  EmbedFieldData,
+  Locale,
+  State,
+} from '@/types';
 
 export const help: Command = {
   name: 'help',
   version: 1,
-  options(locale: Locale) {
+  options(locale: Locale): APIApplicationCommandOption[] {
     return [
       {
         type: 3,
@@ -18,10 +24,10 @@ export const help: Command = {
       },
     ];
   },
-  async execute(state: State, interaction: Interaction | any) {
+  async execute(state: State, interaction: CommandInteraction) {
     try {
       const isManager: boolean =
-        interaction.data.options && interaction.data.options[0].value === 'manager' ? true : false;
+        interaction.options && interaction.options[0].value === 'manager' ? true : false;
       const fields: EmbedFieldData[] = [];
 
       for (const [name, command] of !isManager ? userCommands : managerCommands) {

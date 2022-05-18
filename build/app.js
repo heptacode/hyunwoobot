@@ -838,16 +838,20 @@ var init_checkPermission = __esm({
 });
 
 // src/commands/manager/autorole.ts
-var autorole;
+var import_builders, autorole;
 var init_autorole = __esm({
   "src/commands/manager/autorole.ts"() {
     init_createError();
     init_firebase();
     init_checkPermission();
     init_props();
+    import_builders = require("@discordjs/builders");
     autorole = {
       name: "autorole",
       version: 1,
+      slashCommand(locale2) {
+        return new import_builders.SlashCommandBuilder().setName(autorole.name).setDescription(locale2.help[autorole.name]).addSubcommand((subcommand) => subcommand.setName("view").setDescription(`${locale2.manager} ${locale2.autoRole.options.view}`)).addSubcommand((subcommandGroup) => subcommandGroup.setName("add").setDescription(`${locale2.manager} ${locale2.autoRole.options.add}`).addUserOption((option) => option.setName("type").setDescription("User/Bot").setRequired(true)));
+      },
       options(locale2) {
         return [
           {
@@ -2544,17 +2548,18 @@ var init_error = __esm({
 function registerCommands(guildID, force) {
   return __async(this, null, function* () {
     try {
-      console.log(userCommands.toJSON());
+      const a = new import_builders2.SlashCommandBuilder().setName("autorole").setDescription("asdf").addSubcommand((subcommand) => subcommand.setName("view").setDescription(`asdf`)).addSubcommand((subcommandGroup) => subcommandGroup.setName("add").setDescription(`adsf`).addUserOption((option) => option.setName("type").setDescription("User/Bot").setRequired(true)));
+      console.log(JSON.stringify(a.toJSON()));
     } catch (error) {
       log.e(error);
     }
   });
 }
-var import_rest, rest;
+var import_rest, import_builders2, rest;
 var init_registerCommands = __esm({
   "src/modules/initializer/registerCommands.ts"() {
     import_rest = require("@discordjs/rest");
-    init_app();
+    import_builders2 = require("@discordjs/builders");
     init_logger();
     rest = new import_rest.REST({ version: "10" }).setToken(process.env.TOKEN);
   }

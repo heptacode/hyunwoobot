@@ -34,7 +34,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["@babel/core", "npm:7.17.12"],\
-            ["@discordjs/builders", "npm:0.13.0"],\
             ["@discordjs/opus", "npm:0.7.0"],\
             ["@discordjs/rest", "npm:0.4.1"],\
             ["@discordjs/voice", "npm:0.9.0"],\
@@ -54,11 +53,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["compression", "npm:1.7.4"],\
             ["cors", "npm:2.8.5"],\
             ["discord-api-types", "npm:0.32.1"],\
-            ["discord.js", "npm:13.6.0"],\
+            ["discord.js", "npm:13.7.0"],\
             ["dotenv", "npm:16.0.1"],\
             ["esbuild", "npm:0.14.39"],\
             ["esbuild-plugin-alias", "npm:0.2.1"],\
-            ["esbuild-plugin-babel", "virtual:756115ebb729d04a6cd6387c53ca8c8b8a10ba5c4f7b245fbc580dcf0aeb99cdd9328e842426d4c159232f3474d93ea2f5685cde5d676cf9c4a2f51c041b83dd#npm:0.2.3"],\
             ["esbuild-plugin-node-externals", "virtual:756115ebb729d04a6cd6387c53ca8c8b8a10ba5c4f7b245fbc580dcf0aeb99cdd9328e842426d4c159232f3474d93ea2f5685cde5d676cf9c4a2f51c041b83dd#npm:0.3.0"],\
             ["esbuild-plugin-run", "virtual:756115ebb729d04a6cd6387c53ca8c8b8a10ba5c4f7b245fbc580dcf0aeb99cdd9328e842426d4c159232f3474d93ea2f5685cde5d676cf9c4a2f51c041b83dd#npm:0.3.0"],\
             ["express", "npm:4.18.1"],\
@@ -376,18 +374,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@discordjs/builders", [\
-        ["npm:0.11.0", {\
-          "packageLocation": "./.yarn/cache/@discordjs-builders-npm-0.11.0-8bbb083f8b-7a25b59bb5.zip/node_modules/@discordjs/builders/",\
-          "packageDependencies": [\
-            ["@discordjs/builders", "npm:0.11.0"],\
-            ["@sindresorhus/is", "npm:4.6.0"],\
-            ["discord-api-types", "npm:0.26.1"],\
-            ["ts-mixer", "npm:6.0.1"],\
-            ["tslib", "npm:2.4.0"],\
-            ["zod", "npm:3.15.1"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
         ["npm:0.13.0", {\
           "packageLocation": "./.yarn/cache/@discordjs-builders-npm-0.13.0-6086d7ab89-1bce798b8f.zip/node_modules/@discordjs/builders/",\
           "packageDependencies": [\
@@ -403,10 +389,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@discordjs/collection", [\
-        ["npm:0.4.0", {\
-          "packageLocation": "./.yarn/cache/@discordjs-collection-npm-0.4.0-59f11c08b6-fa8fc42469.zip/node_modules/@discordjs/collection/",\
+        ["npm:0.6.0", {\
+          "packageLocation": "./.yarn/cache/@discordjs-collection-npm-0.6.0-982cfa6513-a08826f04e.zip/node_modules/@discordjs/collection/",\
           "packageDependencies": [\
-            ["@discordjs/collection", "npm:0.4.0"]\
+            ["@discordjs/collection", "npm:0.6.0"]\
           ],\
           "linkType": "HARD"\
         }],\
@@ -2532,17 +2518,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["discord-api-types", [\
-        ["npm:0.26.1", {\
-          "packageLocation": "./.yarn/cache/discord-api-types-npm-0.26.1-260d1d2a41-e53bfa7589.zip/node_modules/discord-api-types/",\
-          "packageDependencies": [\
-            ["discord-api-types", "npm:0.26.1"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
         ["npm:0.29.0", {\
           "packageLocation": "./.yarn/cache/discord-api-types-npm-0.29.0-f97abb6038-1ca74693b4.zip/node_modules/discord-api-types/",\
           "packageDependencies": [\
             ["discord-api-types", "npm:0.29.0"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:0.30.0", {\
+          "packageLocation": "./.yarn/cache/discord-api-types-npm-0.30.0-b1e106c4a4-c4b0afbc45.zip/node_modules/discord-api-types/",\
+          "packageDependencies": [\
+            ["discord-api-types", "npm:0.30.0"]\
           ],\
           "linkType": "HARD"\
         }],\
@@ -2562,16 +2548,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["discord.js", [\
-        ["npm:13.6.0", {\
-          "packageLocation": "./.yarn/cache/discord.js-npm-13.6.0-16615f7fc3-59c1297fbe.zip/node_modules/discord.js/",\
+        ["npm:13.7.0", {\
+          "packageLocation": "./.yarn/cache/discord.js-npm-13.7.0-60e8f8c9ab-2bab21c610.zip/node_modules/discord.js/",\
           "packageDependencies": [\
-            ["discord.js", "npm:13.6.0"],\
-            ["@discordjs/builders", "npm:0.11.0"],\
-            ["@discordjs/collection", "npm:0.4.0"],\
+            ["discord.js", "npm:13.7.0"],\
+            ["@discordjs/builders", "npm:0.13.0"],\
+            ["@discordjs/collection", "npm:0.6.0"],\
             ["@sapphire/async-queue", "npm:1.3.1"],\
             ["@types/node-fetch", "npm:2.6.1"],\
             ["@types/ws", "npm:8.5.3"],\
-            ["discord-api-types", "npm:0.26.1"],\
+            ["discord-api-types", "npm:0.30.0"],\
             ["form-data", "npm:4.0.0"],\
             ["node-fetch", "virtual:d8202ef0a7671a0948d641e25f277209e20333315b4b0efeecfbecf181cc8f290125477400cd84db859872df985a96987b7734512ea68007c0c0870f82d178e5#npm:2.6.7"],\
             ["ws", "virtual:a48137480cef0f6315b18b7e1152389a3ad768243391ba823a2f320fc8cf44252385a162fcc925c48be45b092dfd00d28ff9dc656cdf86eee166b571ac6267e8#npm:8.6.0"]\
@@ -2902,28 +2888,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/esbuild-plugin-alias-npm-0.2.1-8906d98875-afe2d2c8b5.zip/node_modules/esbuild-plugin-alias/",\
           "packageDependencies": [\
             ["esbuild-plugin-alias", "npm:0.2.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["esbuild-plugin-babel", [\
-        ["npm:0.2.3", {\
-          "packageLocation": "./.yarn/cache/esbuild-plugin-babel-npm-0.2.3-f554e8ea33-776a6589a2.zip/node_modules/esbuild-plugin-babel/",\
-          "packageDependencies": [\
-            ["esbuild-plugin-babel", "npm:0.2.3"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
-        ["virtual:756115ebb729d04a6cd6387c53ca8c8b8a10ba5c4f7b245fbc580dcf0aeb99cdd9328e842426d4c159232f3474d93ea2f5685cde5d676cf9c4a2f51c041b83dd#npm:0.2.3", {\
-          "packageLocation": "./.yarn/__virtual__/esbuild-plugin-babel-virtual-80cc6ada79/0/cache/esbuild-plugin-babel-npm-0.2.3-f554e8ea33-776a6589a2.zip/node_modules/esbuild-plugin-babel/",\
-          "packageDependencies": [\
-            ["esbuild-plugin-babel", "virtual:756115ebb729d04a6cd6387c53ca8c8b8a10ba5c4f7b245fbc580dcf0aeb99cdd9328e842426d4c159232f3474d93ea2f5685cde5d676cf9c4a2f51c041b83dd#npm:0.2.3"],\
-            ["@babel/core", "npm:7.17.12"],\
-            ["@types/babel__core", null]\
-          ],\
-          "packagePeers": [\
-            "@babel/core",\
-            "@types/babel__core"\
           ],\
           "linkType": "HARD"\
         }]\
@@ -3929,7 +3893,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["hyunwoobot", "workspace:."],\
             ["@babel/core", "npm:7.17.12"],\
-            ["@discordjs/builders", "npm:0.13.0"],\
             ["@discordjs/opus", "npm:0.7.0"],\
             ["@discordjs/rest", "npm:0.4.1"],\
             ["@discordjs/voice", "npm:0.9.0"],\
@@ -3949,11 +3912,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["compression", "npm:1.7.4"],\
             ["cors", "npm:2.8.5"],\
             ["discord-api-types", "npm:0.32.1"],\
-            ["discord.js", "npm:13.6.0"],\
+            ["discord.js", "npm:13.7.0"],\
             ["dotenv", "npm:16.0.1"],\
             ["esbuild", "npm:0.14.39"],\
             ["esbuild-plugin-alias", "npm:0.2.1"],\
-            ["esbuild-plugin-babel", "virtual:756115ebb729d04a6cd6387c53ca8c8b8a10ba5c4f7b245fbc580dcf0aeb99cdd9328e842426d4c159232f3474d93ea2f5685cde5d676cf9c4a2f51c041b83dd#npm:0.2.3"],\
             ["esbuild-plugin-node-externals", "virtual:756115ebb729d04a6cd6387c53ca8c8b8a10ba5c4f7b245fbc580dcf0aeb99cdd9328e842426d4c159232f3474d93ea2f5685cde5d676cf9c4a2f51c041b83dd#npm:0.3.0"],\
             ["esbuild-plugin-run", "virtual:756115ebb729d04a6cd6387c53ca8c8b8a10ba5c4f7b245fbc580dcf0aeb99cdd9328e842426d4c159232f3474d93ea2f5685cde5d676cf9c4a2f51c041b83dd#npm:0.3.0"],\
             ["express", "npm:4.18.1"],\
@@ -7016,15 +6978,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["m3u8stream", "npm:0.8.6"],\
             ["miniget", "npm:4.2.2"],\
             ["sax", "npm:1.2.4"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["zod", [\
-        ["npm:3.15.1", {\
-          "packageLocation": "./.yarn/cache/zod-npm-3.15.1-55efb1e57d-d1ceec91b1.zip/node_modules/zod/",\
-          "packageDependencies": [\
-            ["zod", "npm:3.15.1"]\
           ],\
           "linkType": "HARD"\
         }]\

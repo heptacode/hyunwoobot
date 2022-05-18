@@ -1,14 +1,22 @@
-import { Guild, GuildMember, Interaction, VoiceChannel } from 'discord.js';
 import { createError } from '@/modules/createError';
 import { checkPermission } from '@/modules/checkPermission';
 import { client } from '@/app';
 import { props } from '@/props';
-import { Command, Locale, State } from '@/types';
+import {
+  APIApplicationCommandOption,
+  Command,
+  CommandInteraction,
+  Guild,
+  GuildMember,
+  Locale,
+  State,
+  VoiceChannel,
+} from '@/types';
 
 export const move: Command = {
   name: 'move',
   version: 4,
-  options(locale: Locale) {
+  options(locale: Locale): APIApplicationCommandOption[] {
     return [
       {
         type: 6,
@@ -24,15 +32,15 @@ export const move: Command = {
       },
     ];
   },
-  async execute(state: State, interaction: Interaction | any) {
+  async execute(state: State, interaction: CommandInteraction) {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, 'MOVE_MEMBERS'))
         throw new Error('Missing Permissions');
 
       const guild: Guild = client.guilds.resolve(interaction.guildId);
-      const member: GuildMember = guild.members.resolve(interaction.data.options[0].value);
+      const member: GuildMember = guild.members.resolve(interaction.options[0].value);
       const targetChannel: VoiceChannel = guild.channels.resolve(
-        interaction.data.options[1].value
+        interaction.options[1].value
       ) as VoiceChannel;
       const prevChannel: string = member.voice.channel.name;
 

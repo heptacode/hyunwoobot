@@ -1,23 +1,29 @@
-import { GuildChannel, Interaction } from 'discord.js';
 import { createError } from '@/modules/createError';
 import { checkPermission } from '@/modules/checkPermission';
 import { client } from '@/app';
 import { props } from '@/props';
-import { Command, Locale, State } from '@/types';
+import {
+  APIApplicationCommandOption,
+  Command,
+  CommandInteraction,
+  GuildChannel,
+  Locale,
+  State,
+} from '@/types';
 
 export const disconnectall: Command = {
   name: 'disconnectall',
   version: 1,
-  options(locale: Locale) {
+  options(locale: Locale): APIApplicationCommandOption[] {
     return [{ type: 7, name: 'voice_channel', description: locale.voiceChannel, required: true }];
   },
-  async execute(state: State, interaction: Interaction | any) {
+  async execute(state: State, interaction: CommandInteraction) {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, 'MOVE_MEMBERS'))
         throw new Error('Missing Permissions');
 
       const channel: GuildChannel = client.channels.resolve(
-        interaction.data.options[0].value
+        interaction.options[0].value
       ) as GuildChannel;
 
       if (channel.type !== 'GUILD_VOICE' && channel.type !== 'GUILD_STAGE_VOICE')
@@ -48,8 +54,8 @@ export const disconnectall: Command = {
             .replace(
               '{voiceChannel}',
               client.guilds
-                .resolve(interaction.guild_id)
-                .channels.resolve(interaction.data.options[0].value).name
+                .resolve(interaction.guildId)
+                .channels.resolve(interaction.options[0].value).name
             )
             .replace('{cnt}', String(cnt))}**`,
         },

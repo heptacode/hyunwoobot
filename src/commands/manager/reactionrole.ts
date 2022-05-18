@@ -1,15 +1,22 @@
-import { Interaction, TextChannel } from 'discord.js';
 import { getHexFromEmoji } from '@/modules/converter';
 import { createError } from '@/modules/createError';
 import { firestore } from '@/services/firebase';
 import { checkPermission } from '@/modules/checkPermission';
 import { client } from '@/app';
-import { Command, Locale, ReactionRole, State } from '@/types';
+import {
+  APIApplicationCommandOption,
+  Command,
+  CommandInteraction,
+  Locale,
+  ReactionRole,
+  State,
+  TextChannel,
+} from '@/types';
 
 export const reactionrole: Command = {
   name: 'reactionrole',
   version: 1,
-  options(locale: Locale) {
+  options(locale: Locale): APIApplicationCommandOption[] {
     return [
       {
         type: 1,
@@ -62,7 +69,7 @@ export const reactionrole: Command = {
       },
     ];
   },
-  async execute(state: State, interaction: Interaction | any) {
+  async execute(state: State, interaction: CommandInteraction) {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, 'MANAGE_MESSAGES'))
         throw new Error('Missing Permissions');
@@ -70,10 +77,10 @@ export const reactionrole: Command = {
       const guild = client.guilds.resolve(interaction.guildId);
       const channel = guild.channels.resolve(interaction.channelId) as TextChannel;
 
-      const method = interaction.data.options[0].name;
-      const messageID = interaction.data.options[0].options[0].value;
-      const emoji = interaction.data.options[0].options[1].value;
-      const role = interaction.data.options[0].options[2].value;
+      const method = interaction.options[0].name;
+      const messageID = interaction.options[0].options[0].value;
+      const emoji = interaction.options[0].options[1].value;
+      const role = interaction.options[0].options[2].value;
 
       const _message = await channel.messages.fetch(messageID);
 

@@ -1,15 +1,22 @@
-import { EmbedFieldData, Interaction } from 'discord.js';
 import { createError } from '@/modules/createError';
 import { firestore } from '@/services/firebase';
 import { checkPermission } from '@/modules/checkPermission';
 import { client } from '@/app';
 import { props } from '@/props';
-import { Command, Locale, State, VoiceRole } from '@/types';
+import {
+  APIApplicationCommandOption,
+  Command,
+  CommandInteraction,
+  EmbedFieldData,
+  Locale,
+  State,
+  VoiceRole,
+} from '@/types';
 
 export const voicerole: Command = {
   name: 'voicerole',
   version: 2,
-  options(locale: Locale) {
+  options(locale: Locale): APIApplicationCommandOption[] {
     return [
       {
         type: 1,
@@ -66,7 +73,7 @@ export const voicerole: Command = {
       },
     ];
   },
-  async execute(state: State, interaction: Interaction | any) {
+  async execute(state: State, interaction: CommandInteraction) {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, 'MANAGE_ROLES'))
         throw new Error('Missing Permissions');
@@ -75,10 +82,10 @@ export const voicerole: Command = {
 
       const configDocRef = firestore.collection(guild.id).doc('config');
 
-      const method = interaction.data.options[0].name;
+      const method = interaction.options[0].name;
       if (method === 'view') {
       } else if (method === 'add') {
-        const voiceChannel: string = interaction.data.options[0].options[0].value;
+        const voiceChannel: string = interaction.options[0].options[0].value;
 
         if (!voiceChannel || client.channels.resolve(voiceChannel).type !== 'GUILD_VOICE')
           return [
@@ -90,8 +97,8 @@ export const voicerole: Command = {
           ];
 
         const textChannel: string | null =
-          interaction.data.options[0].options.length >= 3
-            ? interaction.data.options[0].options[2].value
+          interaction.options[0].options.length >= 3
+            ? interaction.options[0].options[2].value
             : null;
 
         if (textChannel && client.channels.resolve(textChannel).type !== 'GUILD_TEXT')
@@ -105,13 +112,13 @@ export const voicerole: Command = {
 
         state.voiceRoles.push({
           voiceChannel: voiceChannel,
-          role: interaction.data.options[0].options[1].value,
+          role: interaction.options[0].options[1].value,
           textChannel: textChannel,
         });
 
         await configDocRef.update({ voiceRoles: state.voiceRoles });
       } else if (method === 'remove') {
-        const voiceChannel = interaction.data.options[0].options[0].value;
+        const voiceChannel = interaction.options[0].options[0].value;
 
         if (client.channels.resolve(voiceChannel).type !== 'GUILD_VOICE')
           return [
@@ -142,7 +149,7 @@ export const voicerole: Command = {
           if (!client.channels.cache.has(voiceRole.voiceChannel)) continue;
 
           for (const [memberID, member] of client.guilds
-            .resolve(interaction.v)
+            .resolve(interaction.guildId)
             .roles.resolve(voiceRole.role).members) {
             if (member.voice.channelId === voiceRole.voiceChannel) continue;
             await member.roles.remove(voiceRole.role, '[VoiceRole] Force Update');

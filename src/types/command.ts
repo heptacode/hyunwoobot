@@ -3,6 +3,7 @@ export interface Command {
   name: string;
   version?: number;
   messageOnly?: boolean;
+  slashCommand?: any;
   options?: Function;
   execute?: Function;
   private?: boolean;

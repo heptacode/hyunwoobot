@@ -1,13 +1,18 @@
 import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v10';
-import { client, userCommands, managerCommands } from '@/app';
+import { Routes } from '@/types';
+import { client, userCommands, managerCommands, states } from '@/app';
 import { log } from '@/modules/logger';
 
 const rest: REST = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
 export async function registerCommands(guildID: string, force?: boolean) {
   try {
-    console.log(userCommands.toJSON());
+    // for (const [name, command] of Object.assign(userCommands, managerCommands)) {
+    // new SlashCommandBuilder()
+    //   .setName(name)
+    //   .setDescription(states.get(guildID).locale.help[name])
+    //   .addUserOption((option: SlashCommandUserOption) => option.setName(''));
+    // }
     // await rest.put(Routes.applicationGuildCommands(client.user.id, '506097604950753290'), {
     //   body: Object.assign(userCommands.toJSON(), managerCommands.toJSON()),
     // });

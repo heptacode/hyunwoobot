@@ -1,6 +1,5 @@
 import esbuild from 'esbuild';
 import alias from 'esbuild-plugin-alias';
-import babel from 'esbuild-plugin-babel';
 // const babel = require('esbuild-plugin-babel');
 import { run } from 'esbuild-plugin-run';
 import { esbuildPluginNodeExternals } from 'esbuild-plugin-node-externals';
@@ -16,11 +15,10 @@ try {
       alias({
         '@': 'src',
       }),
-      // babel(),
       esbuildPluginNodeExternals({
         packagePaths: 'package.json',
       }),
-      run(),
+      // run(),
     ],
     target: 'es6',
     outfile: 'build/app.js',

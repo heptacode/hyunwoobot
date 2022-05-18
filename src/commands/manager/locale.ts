@@ -1,11 +1,17 @@
-import { Interaction, Message } from 'discord.js';
 import { createError } from '@/modules/createError';
 import { sendEmbed } from '@/modules/embedSender';
 import { firestore } from '@/services/firebase';
 import { checkPermission } from '@/modules/checkPermission';
 import { client, userCommands, managerCommands, locales } from '@/app';
 import { props } from '@/props';
-import { Command, Locale, State } from '@/types';
+import {
+  APIApplicationCommandOption,
+  Command,
+  CommandInteraction,
+  Message,
+  Locale,
+  State,
+} from '@/types';
 
 const choices = [];
 for (const [code, locale] of Object.entries(locales ?? {})) {
@@ -15,7 +21,7 @@ for (const [code, locale] of Object.entries(locales ?? {})) {
 export const locale: Command = {
   name: 'locale',
   version: 1,
-  options(locale: Locale) {
+  options(locale: Locale): APIApplicationCommandOption[] {
     return [
       {
         type: 3,
@@ -26,12 +32,12 @@ export const locale: Command = {
       },
     ];
   },
-  async execute(state: State, interaction: Interaction | any) {
+  async execute(state: State, interaction: CommandInteraction) {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, 'MANAGE_GUILD'))
         throw new Error('Missing Permissions');
 
-      const newLocale = interaction.data.options[0].value;
+      const newLocale = interaction.options[0].value;
 
       if (state.locale.locale.code === newLocale)
         return [
@@ -59,7 +65,7 @@ export const locale: Command = {
             id: (
               await (client as any).api
                 .applications(process.env.APPLICATION)
-                .guilds(interaction.guild_id)
+                .guilds(interaction.guildId)
                 .commands.post({
                   data: {
                     name: name,
@@ -85,7 +91,7 @@ export const locale: Command = {
             id: (
               await (client as any).api
                 .applications(process.env.APPLICATION)
-                .guilds(interaction.guild_id)
+                .guilds(interaction.guildId)
                 .commands.post({
                   data: {
                     name: name,
@@ -104,8 +110,8 @@ export const locale: Command = {
         }
       }
 
-      await firestore.collection(interaction.guild_id).doc('config').update({ locale: newLocale });
-      await firestore.collection(interaction.guild_id).doc('commands').update(payload);
+      await firestore.collection(interaction.guildId).doc('config').update({ locale: newLocale });
+      await firestore.collection(interaction.guildId).doc('commands').update(payload);
 
       await _message.delete();
 

@@ -1,14 +1,20 @@
-import { EmbedFieldData, Interaction } from 'discord.js';
 import { createError } from '@/modules/createError';
 import { firestore } from '@/services/firebase';
 import { checkPermission } from '@/modules/checkPermission';
 import { props } from '@/props';
-import { Command, Locale, State } from '@/types';
+import {
+  APIApplicationCommandOption,
+  Command,
+  CommandInteraction,
+  EmbedFieldData,
+  Locale,
+  State,
+} from '@/types';
 
 export const autorole: Command = {
   name: 'autorole',
   version: 1,
-  options(locale: Locale) {
+  options(locale: Locale): APIApplicationCommandOption[] {
     return [
       {
         type: 1,
@@ -40,18 +46,18 @@ export const autorole: Command = {
       },
     ];
   },
-  async execute(state: State, interaction: Interaction | any) {
+  async execute(state: State, interaction: CommandInteraction) {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, 'MANAGE_ROLES'))
         throw new Error('Missing Permissions');
 
-      const method = interaction.data.options[0].name;
+      const method = interaction.options[0].name;
 
       if (method === 'view') {
       } else if (method === 'add') {
         state.autoRoles.push({
-          type: interaction.data.options[0].options[0].value,
-          role: interaction.data.options[0].options[1].value,
+          type: interaction.options[0].options[0].value,
+          role: interaction.options[0].options[1].value,
         });
         await firestore
           .collection(interaction.guildId)

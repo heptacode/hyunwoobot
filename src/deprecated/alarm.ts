@@ -36,7 +36,7 @@
 // export default {
 //   name: "alarm",
 //   version: 1,
-//   options(locale: Locale) {
+//   options(locale: Locale): APIApplicationCommandOption[] {
 //     return [
 //       {
 //         type: 1,

@@ -262,20 +262,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@discordjs/builders@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "@discordjs/builders@npm:0.11.0"
-  dependencies:
-    "@sindresorhus/is": ^4.2.0
-    discord-api-types: ^0.26.0
-    ts-mixer: ^6.0.0
-    tslib: ^2.3.1
-    zod: ^3.11.6
-  checksum: 7a25b59bb52d2e3695bca27946a99cf2de95b7edd5be424ea9f4707a465524be21263e25e532e12438e99f9f55fb98b033885c760aeb96424b8c12f663f50760
-  languageName: node
-  linkType: hard
-
-"@discordjs/builders@npm:latest":
+"@discordjs/builders@npm:^0.13.0":
   version: 0.13.0
   resolution: "@discordjs/builders@npm:0.13.0"
   dependencies:
@@ -289,10 +276,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@discordjs/collection@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@discordjs/collection@npm:0.4.0"
-  checksum: fa8fc4246921f3230eb6c5d6d4dc0caf9dd659fcc903175944edf4fb0a9ed9913fdf164733d3f1e644ef469bc79b0d38a526ee620b92169cb40e79b40b0c716b
+"@discordjs/collection@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@discordjs/collection@npm:0.6.0"
+  checksum: a08826f04e3ddaf079913e2e2069727d518b5a0ea79cbeb66d8b559297df6586a25490b4b2aeab631483f68c2160df769115b9b3e114d8437b707dec80b02bab
   languageName: node
   linkType: hard
 
@@ -882,7 +869,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/async-queue@npm:^1.1.9, @sapphire/async-queue@npm:^1.3.1":
+"@sapphire/async-queue@npm:^1.3.1":
   version: 1.3.1
   resolution: "@sapphire/async-queue@npm:1.3.1"
   checksum: 4016010a8b6f2896ce7694eb04c1839b613387cbfb104028a4a1bea471afb1dc4d569b66d3c9770319c47be55035dc786c072c32656d467fc2cded4347055d92
@@ -903,7 +890,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sindresorhus/is@npm:^4.2.0, @sindresorhus/is@npm:^4.6.0":
+"@sindresorhus/is@npm:^4.6.0":
   version: 4.6.0
   resolution: "@sindresorhus/is@npm:4.6.0"
   checksum: 83839f13da2c29d55c97abc3bc2c55b250d33a0447554997a85c539e058e57b8da092da396e252b11ec24a0279a0bed1f537fa26302209327060643e327f81d2
@@ -1047,7 +1034,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node-fetch@npm:^2.5.12, @types/node-fetch@npm:^2.6.1":
+"@types/node-fetch@npm:^2.6.1":
   version: 2.6.1
   resolution: "@types/node-fetch@npm:2.6.1"
   dependencies:
@@ -1111,7 +1098,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:^8.2.2, @types/ws@npm:^8.5.3":
+"@types/ws@npm:^8.5.3":
   version: 8.5.3
   resolution: "@types/ws@npm:8.5.3"
   dependencies:
@@ -2073,17 +2060,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:^0.26.0":
-  version: 0.26.1
-  resolution: "discord-api-types@npm:0.26.1"
-  checksum: e53bfa7589b24108e6b403dbe213da34c4592f72e2b8fde6800dcb6c703065887ecbd644e1cdf694e4c7796954bc51462ced868f26ec45dc1e0dc4fa8d3c723c
-  languageName: node
-  linkType: hard
-
 "discord-api-types@npm:^0.29.0":
   version: 0.29.0
   resolution: "discord-api-types@npm:0.29.0"
   checksum: 1ca74693b4e9c611c3de17f604714425d81d537ee81669d040a8c37fb23fb634a6918dd7d21056ccb90a3f4741bc2750509f6c8dd922bf2b3ed544d18bd0f32a
+  languageName: node
+  linkType: hard
+
+"discord-api-types@npm:^0.30.0":
+  version: 0.30.0
+  resolution: "discord-api-types@npm:0.30.0"
+  checksum: c4b0afbc453b7ce6b570501f83a654591432eb2ce690681d2e6a9424d5f9687b7ef02dde02702e53562449c5cdcde500e92299a8158eb9bf67ad85c073788e72
   languageName: node
   linkType: hard
 
@@ -2101,20 +2088,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord.js@npm:latest":
-  version: 13.6.0
-  resolution: "discord.js@npm:13.6.0"
+"discord.js@npm:^13.7.0":
+  version: 13.7.0
+  resolution: "discord.js@npm:13.7.0"
   dependencies:
-    "@discordjs/builders": ^0.11.0
-    "@discordjs/collection": ^0.4.0
-    "@sapphire/async-queue": ^1.1.9
-    "@types/node-fetch": ^2.5.12
-    "@types/ws": ^8.2.2
-    discord-api-types: ^0.26.0
+    "@discordjs/builders": ^0.13.0
+    "@discordjs/collection": ^0.6.0
+    "@sapphire/async-queue": ^1.3.1
+    "@types/node-fetch": ^2.6.1
+    "@types/ws": ^8.5.3
+    discord-api-types: ^0.30.0
     form-data: ^4.0.0
     node-fetch: ^2.6.1
-    ws: ^8.4.0
-  checksum: 59c1297fbebf9b25c90ea125808bc9177c134fd7c481f82ace636ab88cfdc90bc6ec777c844d375d26231fc1664a67e80a1aad2aed484b808e4cd7d55cc1d9e3
+    ws: ^8.6.0
+  checksum: 2bab21c610401af57fae4ab5cf276a5201cfb321b306d9dc74c338b939ad051d3b5f47b465595f46ae41ed06cb1d4e0581fd7980852f91d3f18b4da5f70ef391
   languageName: node
   linkType: hard
 
@@ -2356,15 +2343,6 @@ __metadata:
   version: 0.2.1
   resolution: "esbuild-plugin-alias@npm:0.2.1"
   checksum: afe2d2c8b5f09d5321cb8d9c0825e8a9f6e03c2d50df92f953a291d4620cc29eddb3da9e33b238f6d8f77738e0277bdcb831f127399449fecf78fb84c04e5da9
-  languageName: node
-  linkType: hard
-
-"esbuild-plugin-babel@npm:latest":
-  version: 0.2.3
-  resolution: "esbuild-plugin-babel@npm:0.2.3"
-  peerDependencies:
-    "@babel/core": ^7.0.0
-  checksum: 776a6589a27a9abff33234bce7722a5b9fd0d9f937ebd05dbae09222052aad09276e571e952c085a8aa2d335a1f68cd5e4ab84bcd64c41cbba2ab71ce791b463
   languageName: node
   linkType: hard
 
@@ -3307,7 +3285,6 @@ __metadata:
   resolution: "hyunwoobot@workspace:."
   dependencies:
     "@babel/core": latest
-    "@discordjs/builders": latest
     "@discordjs/opus": latest
     "@discordjs/rest": latest
     "@discordjs/voice": latest
@@ -3327,11 +3304,10 @@ __metadata:
     compression: latest
     cors: latest
     discord-api-types: latest
-    discord.js: latest
+    discord.js: ^13.7.0
     dotenv: latest
     esbuild: latest
     esbuild-plugin-alias: latest
-    esbuild-plugin-babel: latest
     esbuild-plugin-node-externals: latest
     esbuild-plugin-run: latest
     express: latest
@@ -5517,7 +5493,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-mixer@npm:^6.0.0, ts-mixer@npm:^6.0.1":
+"ts-mixer@npm:^6.0.1":
   version: 6.0.1
   resolution: "ts-mixer@npm:6.0.1"
   checksum: 7050f6e85a24155d18cecdcc0a098d1038991cc498317fcffa9d7a8654c776d417fb97e65de1ce8e7ed54ef4814abd8057d0efb9c3b24e9cc78ac3c0f48bbf53
@@ -5900,7 +5876,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^8.4.0, ws@npm:^8.5.0":
+"ws@npm:^8.5.0, ws@npm:^8.6.0":
   version: 8.6.0
   resolution: "ws@npm:8.6.0"
   peerDependencies:
@@ -6046,12 +6022,5 @@ __metadata:
     miniget: ^4.2.2
     sax: ^1.1.3
   checksum: 1ebe546da39e2a55fea6544d290f92f722416b77bb9c84322d5ca08394fb00642c6cf832ccac2feec12e9189a009af90e8185a96772e84c94599841ded21bd65
-  languageName: node
-  linkType: hard
-
-"zod@npm:^3.11.6":
-  version: 3.15.1
-  resolution: "zod@npm:3.15.1"
-  checksum: d1ceec91b1b19fe26233c2e6be7625c6d5937c6c667ce23ff7d59948eb1239a24819227c615096a5e6a6377a17fc2df3720e8d613d2176dc482c0a1e8d02e1e2
   languageName: node
   linkType: hard

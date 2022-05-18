@@ -31,9 +31,7 @@ client.on('guildCreate', async (guild: Guild) => guildCreate(guild));
 client.on('guildDelete', async (guild: Guild) => guildDelete(guild));
 client.on('guildMemberAdd', async (member: GuildMember) => guildMemberAdd(member));
 client.on('guildMemberRemove', async (member: GuildMember) => guildMemberRemove(member));
-client.on('interactionCreate', async (interaction: Interaction | any) =>
-  interactionCreate(interaction)
-);
+client.on('interactionCreate', async (interaction: Interaction) => interactionCreate(interaction));
 client.on('messageCreate', async (message: Message) => messageCreate(message));
 client.on('messageDelete', async (message: Message | PartialMessage) => messageDelete(message));
 client.on('messageReactionAdd', async (reaction: MessageReaction, user: User) =>

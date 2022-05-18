@@ -1,11 +1,10 @@
 import { musicPlay } from '@/modules/music';
-import { Command, Locale, State } from '@/types';
-import { Interaction } from 'discord.js';
+import { APIApplicationCommandOption, Command, Interaction, Locale, State } from '@/types';
 
 export const play: Command = {
   name: 'play',
   version: 2,
-  options(locale: Locale) {
+  options(locale: Locale): APIApplicationCommandOption[] {
     return [
       {
         type: 3,

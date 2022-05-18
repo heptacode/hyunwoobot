@@ -3,13 +3,20 @@ import { firestore } from '@/services/firebase';
 import { checkPermission } from '@/modules/checkPermission';
 import { client } from '@/app';
 import { props } from '@/props';
-import { Command, Locale, State, UserRole } from '@/types';
-import { Interaction } from 'discord.js';
+import {
+  APIApplicationCommandOption,
+  Command,
+  CommandInteraction,
+  Locale,
+  State,
+  UserRole,
+} from '@/types';
+import {} from 'discord.js';
 
 export const userrole: Command = {
   name: 'userrole',
   version: 2,
-  options(locale: Locale) {
+  options(locale: Locale): APIApplicationCommandOption[] {
     return [
       {
         type: 1,
@@ -49,7 +56,7 @@ export const userrole: Command = {
       },
     ];
   },
-  async execute(state: State, interaction: Interaction | any) {
+  async execute(state: State, interaction: CommandInteraction) {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, 'MANAGE_ROLES'))
         throw new Error('Missing Permissions');
@@ -58,16 +65,16 @@ export const userrole: Command = {
 
       const configDocRef = firestore.collection(guild.id).doc('config');
 
-      const method = interaction.data.options[0].name;
+      const method = interaction.options[0].name;
       if (method === 'view') {
       } else if (method === 'add') {
         state.userRoles.push({
-          id: guild.roles.resolveId(interaction.data.options[0].options[0].value),
-          name: guild.roles.resolve(interaction.data.options[0].options[0].value).name,
+          id: guild.roles.resolveId(interaction.options[0].options[0].value),
+          name: guild.roles.resolve(interaction.options[0].options[0].value).name,
           color:
-            guild.roles.resolve(interaction.data.options[0].options[0].value).color === 0
+            guild.roles.resolve(interaction.options[0].options[0].value).color === 0
               ? null
-              : guild.roles.resolve(interaction.data.options[0].options[0].value).hexColor,
+              : guild.roles.resolve(interaction.options[0].options[0].value).hexColor,
         });
 
         // Sort
@@ -80,7 +87,7 @@ export const userrole: Command = {
         await configDocRef.update({ userRoles: state.userRoles });
       } else if (method === 'remove') {
         const idx = state.userRoles.findIndex(
-          (userRole: UserRole) => userRole.id === interaction.data.options[0].options[0].value
+          (userRole: UserRole) => userRole.id === interaction.options[0].options[0].value
         );
         if (idx === -1)
           throw createError('UserRole > Remove', 'UserRole Not Found', {

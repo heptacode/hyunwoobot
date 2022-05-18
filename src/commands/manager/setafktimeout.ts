@@ -1,14 +1,13 @@
-import { Interaction } from 'discord.js';
 import { createError } from '@/modules/createError';
 import { firestore } from '@/services/firebase';
 import { checkPermission } from '@/modules/checkPermission';
 import { props } from '@/props';
-import { Command, Locale, State } from '@/types';
+import { APIApplicationCommandOption, Command, CommandInteraction, Locale, State } from '@/types';
 
 export const setafktimeout: Command = {
   name: 'setafktimeout',
   version: 1,
-  options(locale: Locale) {
+  options(locale: Locale): APIApplicationCommandOption[] {
     return [
       {
         type: 4,
@@ -18,7 +17,7 @@ export const setafktimeout: Command = {
       },
     ];
   },
-  async execute(state: State, interaction: Interaction | any) {
+  async execute(state: State, interaction: CommandInteraction) {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, 'MANAGE_GUILD'))
         throw new Error('Missing Permissions');
@@ -26,7 +25,7 @@ export const setafktimeout: Command = {
       await firestore
         .collection(interaction.guildId)
         .doc('config')
-        .update({ afkTimeout: interaction.data.options[0].value });
+        .update({ afkTimeout: interaction.options[0].value });
 
       return [
         {
@@ -34,7 +33,7 @@ export const setafktimeout: Command = {
           title: `**${state.locale.afkTimeout.afkTimeout}**`,
           description: `✅ **${state.locale.afkTimeout.set.replace(
             '{min}',
-            interaction.data.options[0].value
+            interaction.options[0].value
           )}**`,
         },
       ];

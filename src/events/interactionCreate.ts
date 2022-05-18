@@ -1,15 +1,14 @@
 import axios from 'axios';
-import { Interaction } from 'discord.js';
-import {} from 'discord-api-types/v9';
 import { createError } from '@/modules/createError';
 import { states, userCommands, managerCommands } from '@/app';
+import { Interaction } from '@/types';
 
-export async function interactionCreate(interaction: Interaction | any) {
+export async function interactionCreate(interaction: Interaction) {
   try {
-    if (interaction.isApplicationCommand) {
+    if (interaction.isApplicationCommand()) {
       const command =
-        userCommands.get(interaction.data.name) ||
-        managerCommands.find(cmd => cmd.name === interaction.data.name && !cmd.messageOnly);
+        userCommands.get(interaction.commandName) ||
+        managerCommands.find(cmd => cmd.name === interaction.commandName && !cmd.messageOnly);
       if (!command) return;
 
       if (command.name === 'locale') {
@@ -37,7 +36,7 @@ export async function interactionCreate(interaction: Interaction | any) {
               ? Array.isArray(response)
                 ? { embeds: response }
                 : { content: response }
-              : { content: `**✅ ${states.get(interaction.guild_id).locale.done}**` },
+              : { content: `**✅ ${states.get(interaction.guildId).locale.done}**` },
           }
         );
       }

@@ -1,14 +1,20 @@
-import { TextChannel, Interaction } from 'discord.js';
 import { createError } from '@/modules/createError';
 import { checkPermission } from '@/modules/checkPermission';
 import { client } from '@/app';
 import { props } from '@/props';
-import { Command, Locale, State } from '@/types';
+import {
+  APIApplicationCommandOption,
+  Command,
+  CommandInteraction,
+  Locale,
+  State,
+  TextChannel,
+} from '@/types';
 
 export const deleteMessage: Command = {
   name: 'delete',
   version: 2,
-  options(locale: Locale) {
+  options(locale: Locale): APIApplicationCommandOption[] {
     return [
       {
         type: 4,
@@ -18,19 +24,19 @@ export const deleteMessage: Command = {
       },
     ];
   },
-  async execute(state: State, interaction: Interaction | any) {
+  async execute(state: State, interaction: CommandInteraction) {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, 'MANAGE_MESSAGES'))
         throw new Error('Missing Permissions');
 
       await (client.channels.resolve(interaction.channelId) as TextChannel).bulkDelete(
-        Number(interaction.data.options[0].value)
+        Number(interaction.options[0].value)
       );
 
       return [
         {
           color: props.color.purple,
-          description: `🗑 **${interaction.data.options[0].value}${state.locale.delete.deleted}**`,
+          description: `🗑 **${interaction.options[0].value}${state.locale.delete.deleted}**`,
         },
       ];
     } catch (err) {

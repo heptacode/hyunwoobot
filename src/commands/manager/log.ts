@@ -1,14 +1,13 @@
-import { Interaction } from 'discord.js';
 import { createError } from '@/modules/createError';
 import { firestore } from '@/services/firebase';
 import { checkPermission } from '@/modules/checkPermission';
 import { props } from '@/props';
-import { Command, Locale, State } from '@/types';
+import { APIApplicationCommandOption, Command, CommandInteraction, Locale, State } from '@/types';
 
 export const log: Command = {
   name: 'log',
   version: 2,
-  options(locale: Locale) {
+  options(locale: Locale): APIApplicationCommandOption[] {
     return [
       {
         type: 7,
@@ -18,7 +17,7 @@ export const log: Command = {
       },
     ];
   },
-  async execute(state: State, interaction: Interaction | any) {
+  async execute(state: State, interaction: CommandInteraction) {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, 'MANAGE_MESSAGES'))
         throw new Error('Missing Permissions');
@@ -26,13 +25,13 @@ export const log: Command = {
       await firestore
         .collection(interaction.guildId)
         .doc('config')
-        .update({ logChannel: interaction.data.options[0].value });
+        .update({ logChannel: interaction.options[0].value });
 
       return [
         {
           color: props.color.green,
           title: `**📦 ${state.locale.log.log}**`,
-          description: `✅ **${state.locale.log.set}<#${interaction.data.options[0].value}>**`,
+          description: `✅ **${state.locale.log.set}<#${interaction.options[0].value}>**`,
         },
       ];
     } catch (err) {

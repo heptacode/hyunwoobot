@@ -1,15 +1,21 @@
-import { Guild, Interaction } from 'discord.js';
 import { createError } from '@/modules/createError';
 import { firestore } from '@/services/firebase';
 import { checkPermission } from '@/modules/checkPermission';
 import { client } from '@/app';
 import { props } from '@/props';
-import { Command, Locale, State } from '@/types';
+import {
+  APIApplicationCommandOption,
+  Command,
+  CommandInteraction,
+  Guild,
+  Locale,
+  State,
+} from '@/types';
 
 export const privateroom: Command = {
   name: 'privateroom',
   version: 2,
-  options(locale: Locale) {
+  options(locale: Locale): APIApplicationCommandOption[] {
     return [
       {
         type: 7,
@@ -19,14 +25,14 @@ export const privateroom: Command = {
       },
     ];
   },
-  async execute(state: State, interaction: Interaction | any) {
+  async execute(state: State, interaction: CommandInteraction) {
     try {
       if (await checkPermission(state.locale, { interaction: interaction }, 'MANAGE_CHANNELS'))
         throw new Error('Missing Permissions');
 
       if (
-        interaction.data.options &&
-        client.channels.resolve(interaction.data.options[0].value).type !== 'GUILD_VOICE'
+        interaction.options &&
+        client.channels.resolve(interaction.options[0].value).type !== 'GUILD_VOICE'
       )
         return [
           {
@@ -63,7 +69,7 @@ export const privateroom: Command = {
         .update({
           privateRoom: {
             generator: privateRoomID,
-            fallback: interaction.data.options ? interaction.data.options[0].value : null,
+            fallback: interaction.options ? interaction.options[0].value : null,
           },
         });
 
