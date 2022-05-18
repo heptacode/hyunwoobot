@@ -1,10 +1,10 @@
-import { Interaction } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
 import { createError } from '@/modules/createError';
 import { voiceDisconnect, voiceStateCheck } from '@/modules/voice';
 import { props } from '@/props';
 import { State } from '@/types';
 
-export async function musicStop(state: State, interaction: Interaction) {
+export async function musicStop(state: State, interaction: CommandInteraction) {
   try {
     // if (
     //   (await voiceStateCheck(state.locale, { interaction: interaction })) ||

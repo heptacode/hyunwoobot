@@ -1,7 +1,8 @@
-import * as userCommandsList from '@/commands/user';
 import * as managerCommandsList from '@/commands/manager';
+import * as userCommandsList from '@/commands/user';
 import * as localeList from '@/locales';
 import { props } from '@/props';
+import '@/services/api.service';
 import { Command, Locale, State } from '@/types';
 import { Client, Collection } from 'discord.js';
 import 'dotenv/config';
@@ -42,4 +43,3 @@ for (const [name, command] of Object.entries(managerCommandsList)) {
 client.login(process.env.TOKEN);
 
 require('@/events');
-import '@/services/api';

@@ -1,8 +1,8 @@
-import { Role } from 'discord.js';
-import { createError } from '@/modules/createError';
-import { firestore } from '@/services/firebase';
 import { states } from '@/app';
+import { createError } from '@/modules/createError';
+import { firestore } from '@/services/firebase.service';
 import { UserRole } from '@/types';
+import { Role } from 'discord.js';
 
 export async function roleDelete(role: Role) {
   try {

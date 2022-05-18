@@ -1,8 +1,7 @@
 import esbuild from 'esbuild';
 import alias from 'esbuild-plugin-alias';
-// const babel = require('esbuild-plugin-babel');
-import { run } from 'esbuild-plugin-run';
 import { esbuildPluginNodeExternals } from 'esbuild-plugin-node-externals';
+import { run } from 'esbuild-plugin-run';
 
 try {
   esbuild.build({
@@ -18,10 +17,10 @@ try {
       esbuildPluginNodeExternals({
         packagePaths: 'package.json',
       }),
-      // run(),
+      run(),
     ],
     target: 'es6',
-    outfile: 'build/app.js',
+    outfile: 'dist/app.js',
   });
 } catch (error) {
   console.error(error);

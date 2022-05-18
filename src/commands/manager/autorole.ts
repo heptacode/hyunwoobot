@@ -1,15 +1,10 @@
-import { createError } from '@/modules/createError';
-import { firestore } from '@/services/firebase';
 import { checkPermission } from '@/modules/checkPermission';
+import { createError } from '@/modules/createError';
 import { props } from '@/props';
-import {
-  APIApplicationCommandOption,
-  Command,
-  CommandInteraction,
-  EmbedFieldData,
-  Locale,
-  State,
-} from '@/types';
+import { firestore } from '@/services/firebase.service';
+import { Command, Locale, State } from '@/types';
+import { APIApplicationCommandOption } from 'discord-api-types/v10';
+import { CommandInteraction, EmbedFieldData } from 'discord.js';
 
 export const autorole: Command = {
   name: 'autorole',

@@ -1,11 +1,11 @@
-import { Interaction, Message } from 'discord.js';
+import { CommandInteraction, Message } from 'discord.js';
 import { createError } from '../createError';
 import { sendEmbed } from '../embedSender';
 import { voiceStateCheck } from '@/modules/voice';
 import { props } from '@/props';
 import { State } from '@/types';
 
-export async function musicSkip(state: State, interaction: Interaction) {
+export async function musicSkip(state: State, interaction: CommandInteraction) {
   try {
     // if (
     //   (await voiceStateCheck(state.locale, { interaction: interaction })) ||

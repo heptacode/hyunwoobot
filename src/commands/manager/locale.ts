@@ -1,17 +1,12 @@
+import { client, locales, managerCommands, userCommands } from '@/app';
+import { checkPermission } from '@/modules/checkPermission';
 import { createError } from '@/modules/createError';
 import { sendEmbed } from '@/modules/embedSender';
-import { firestore } from '@/services/firebase';
-import { checkPermission } from '@/modules/checkPermission';
-import { client, userCommands, managerCommands, locales } from '@/app';
 import { props } from '@/props';
-import {
-  APIApplicationCommandOption,
-  Command,
-  CommandInteraction,
-  Message,
-  Locale,
-  State,
-} from '@/types';
+import { firestore } from '@/services/firebase.service';
+import { Command, Locale, State } from '@/types';
+import { APIApplicationCommandOption } from 'discord-api-types/v10';
+import { CommandInteraction, Message } from 'discord.js';
 
 const choices = [];
 for (const [code, locale] of Object.entries(locales ?? {})) {

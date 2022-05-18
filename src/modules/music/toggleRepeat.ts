@@ -1,11 +1,11 @@
-import { Interaction } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
 import { createError } from '@/modules/createError';
 import { sendEmbed } from '@/modules/embedSender';
 import { voiceStateCheck } from '@/modules/voice';
 import { props } from '@/props';
 import { State } from '@/types';
 
-export async function toggleRepeat(state: State, interaction: Interaction) {
+export async function toggleRepeat(state: State, interaction: CommandInteraction) {
   try {
     // if (
     //   (await voiceStateCheck(state.locale, { interaction: interaction })) ||

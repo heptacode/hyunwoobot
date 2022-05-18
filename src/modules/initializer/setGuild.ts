@@ -1,6 +1,6 @@
 import { client } from '@/app';
 import { log } from '@/modules/logger';
-import { firestore } from '@/services/firebase';
+import { firestore } from '@/services/firebase.service';
 
 export async function setGuild(guildID: string) {
   try {

@@ -1,9 +1,9 @@
-import { Interaction } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
 import { getVoiceConnection } from '@discordjs/voice';
 import { createError } from '@/modules/createError';
 import { State } from '@/types';
 
-export async function voiceDisconnect(state: State, interaction?: Interaction) {
+export async function voiceDisconnect(state: State, interaction?: CommandInteraction) {
   try {
     if (!state.connection || /*!state.connection.voice*/ !getVoiceConnection(state.guildId)) return;
 

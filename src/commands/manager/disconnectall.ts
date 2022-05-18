@@ -1,15 +1,10 @@
-import { createError } from '@/modules/createError';
-import { checkPermission } from '@/modules/checkPermission';
 import { client } from '@/app';
+import { checkPermission } from '@/modules/checkPermission';
+import { createError } from '@/modules/createError';
 import { props } from '@/props';
-import {
-  APIApplicationCommandOption,
-  Command,
-  CommandInteraction,
-  GuildChannel,
-  Locale,
-  State,
-} from '@/types';
+import { Command, Locale, State } from '@/types';
+import { APIApplicationCommandOption } from 'discord-api-types/v10';
+import { CommandInteraction, GuildChannel } from 'discord.js';
 
 export const disconnectall: Command = {
   name: 'disconnectall',

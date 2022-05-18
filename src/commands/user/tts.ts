@@ -1,12 +1,13 @@
 import { client } from '@/app';
-import { Credentials, Polly } from 'aws-sdk';
-import { resolve } from 'path';
-import { PassThrough } from 'stream';
 import { createError } from '@/modules/createError';
-import { voiceConnect, voiceDisconnect, voiceStateCheck } from '@/modules/voice';
+import { voiceConnect, voiceStateCheck } from '@/modules/voice';
 import { props } from '@/props';
+import { Command, Locale, State } from '@/types';
+import { Credentials, Polly } from 'aws-sdk';
+import { APIApplicationCommandOption } from 'discord-api-types/v10';
+import { CommandInteraction } from 'discord.js';
 import 'dotenv/config';
-import { APIApplicationCommandOption, Command, CommandInteraction, Locale, State } from '@/types';
+import { PassThrough } from 'stream';
 
 new Credentials(process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY);
 

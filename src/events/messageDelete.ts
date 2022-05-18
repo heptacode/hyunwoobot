@@ -1,7 +1,4 @@
-import { Message, MessageEmbed, PartialMessage, TextChannel } from 'discord.js';
-import { createError } from '@/modules/createError';
-import { client, states } from '@/app';
-import { props } from '@/props';
+import { Message, PartialMessage } from 'discord.js';
 
 export async function messageDelete(message: Message | PartialMessage) {
   // try {

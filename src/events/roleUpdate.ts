@@ -1,8 +1,8 @@
-import { Role } from 'discord.js';
-import { createError } from '@/modules/createError';
-import { firestore } from '@/services/firebase';
 import { states } from '@/app';
+import { createError } from '@/modules/createError';
+import { firestore } from '@/services/firebase.service';
 import { State, UserRole } from '@/types';
+import { Role } from 'discord.js';
 
 export async function roleUpdate(oldRole: Role, newRole: Role) {
   try {

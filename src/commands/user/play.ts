@@ -1,5 +1,7 @@
 import { musicPlay } from '@/modules/music';
-import { APIApplicationCommandOption, Command, Interaction, Locale, State } from '@/types';
+import { Command, Locale, State } from '@/types';
+import { APIApplicationCommandOption } from 'discord-api-types/v10';
+import { CommandInteraction } from 'discord.js';
 
 export const play: Command = {
   name: 'play',
@@ -14,7 +16,7 @@ export const play: Command = {
       },
     ];
   },
-  async execute(state: State, interaction: Interaction) {
+  async execute(state: State, interaction: CommandInteraction) {
     musicPlay(state, interaction);
   },
 };

@@ -1,4 +1,5 @@
 import {
+  CommandInteraction,
   Guild,
   GuildMember,
   Interaction,
@@ -12,7 +13,11 @@ import { createError } from './createError';
 import { client, states } from '@/app';
 
 export async function sendEmbed(
-  payload: { interaction?: Interaction; message?: Message; member?: GuildMember },
+  payload: {
+    interaction?: Interaction | CommandInteraction;
+    message?: Message;
+    member?: GuildMember;
+  },
   embed: MessageEmbedOptions | MessageEmbed,
   options?: { dm?: boolean; guild?: boolean; system?: boolean; log?: boolean }
 ): Promise<Message> {

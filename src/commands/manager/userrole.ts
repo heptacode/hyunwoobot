@@ -1,5 +1,5 @@
 import { createError } from '@/modules/createError';
-import { firestore } from '@/services/firebase';
+import { firestore } from '@/services/firebase.service';
 import { checkPermission } from '@/modules/checkPermission';
 import { client } from '@/app';
 import { props } from '@/props';

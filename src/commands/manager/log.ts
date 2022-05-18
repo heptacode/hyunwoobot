@@ -1,8 +1,10 @@
-import { createError } from '@/modules/createError';
-import { firestore } from '@/services/firebase';
 import { checkPermission } from '@/modules/checkPermission';
+import { createError } from '@/modules/createError';
 import { props } from '@/props';
-import { APIApplicationCommandOption, Command, CommandInteraction, Locale, State } from '@/types';
+import { firestore } from '@/services/firebase.service';
+import { Command, Locale, State } from '@/types';
+import { APIApplicationCommandOption } from 'discord-api-types/v10';
+import { CommandInteraction } from 'discord.js';
 
 export const log: Command = {
   name: 'log',

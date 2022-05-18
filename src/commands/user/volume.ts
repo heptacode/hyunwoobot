@@ -1,7 +1,6 @@
-import { createError } from '@/modules/createError';
-import { voiceStateCheck } from '@/modules/voice';
-import { props } from '@/props';
-import { APIApplicationCommandOption, Command, Interaction, Locale, State } from '@/types';
+import { Command, Locale, State } from '@/types';
+import { APIApplicationCommandOption } from 'discord-api-types/v10';
+import { CommandInteraction } from 'discord.js';
 
 export const volume: Command = {
   name: 'volume',
@@ -28,7 +27,7 @@ export const volume: Command = {
       },
     ];
   },
-  async execute(state: State, interaction: Interaction) {
+  async execute(state: State, interaction: CommandInteraction) {
     // try {
     //   if ((await voiceStateCheck(state.locale, { interaction: interaction })) || !state.connection || !state.connection.dispatcher) return;
     //   const newVolume = Number(interaction.data.options[0].value);

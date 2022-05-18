@@ -1,5 +1,5 @@
-import { createError } from '../createError';
-import { firestore } from '@/services/firebase';
+import { createError } from '@/modules/createError';
+import { firestore } from '@/services/firebase.service';
 import { Config } from '@/types';
 
 export async function setConfig(guildID: string) {

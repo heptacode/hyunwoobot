@@ -1,13 +1,14 @@
-import { getVoiceConnection, createAudioPlayer } from '@discordjs/voice';
-import ytdl from 'ytdl-core';
-import youtube from 'scrape-youtube';
-import { getLength } from '../converter';
+// import { getVoiceConnection, createAudioPlayer } from '@discordjs/voice';
+// import ytdl from 'ytdl-core';
+// import youtube from 'scrape-youtube';
+// import { getLength } from '../converter';
+// import { sendEmbed } from '../embedSender';
+// import { voiceConnect, voiceDisconnect, voiceStateCheck } from '@/modules/voice';
+// import { client } from '@/app';
+// import { props } from '@/props';
+import { State } from '@/types';
+import { CommandInteraction } from 'discord.js';
 import { createError } from '../createError';
-import { sendEmbed } from '../embedSender';
-import { voiceConnect, voiceDisconnect, voiceStateCheck } from '@/modules/voice';
-import { client } from '@/app';
-import { props } from '@/props';
-import { CommandInteraction, EmbedFieldData, Message, State } from '@/types';
 
 export async function musicPlay(state: State, interaction: CommandInteraction) {
   try {

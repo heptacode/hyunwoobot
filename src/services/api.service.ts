@@ -1,15 +1,14 @@
+import { client, states } from '@/app';
+import { log } from '@/modules/logger';
+import { APIGuild, APIGuildMember, APIUser, UserRole } from '@/types';
 import axios from 'axios';
 import compression from 'compression';
 import cors from 'cors';
+import { GuildMember } from 'discord.js';
+import 'dotenv/config';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { log } from '@/modules/logger';
-
-import { GuildMember } from 'discord.js';
-import 'dotenv/config';
-import { APIGuild, APIGuildMember, APIUser, UserRole } from '@/types';
-import { client, states } from '@/app';
 
 const app: express.Application = express();
 

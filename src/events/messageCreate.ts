@@ -1,10 +1,10 @@
-import axios from 'axios';
-import { Message } from 'discord.js';
+import { client, managerCommands, prefix, states } from '@/app';
 import { createError } from '@/modules/createError';
-import { client, states, prefix, managerCommands } from '@/app';
 // import { client, states, commands_hidden, prefix, managerCommands } from "@/app";
 import { props } from '@/props';
 import { Command } from '@/types';
+import axios from 'axios';
+import { Message } from 'discord.js';
 import 'dotenv/config';
 
 export async function messageCreate(message: Message) {

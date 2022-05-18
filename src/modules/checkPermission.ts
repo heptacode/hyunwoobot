@@ -1,13 +1,12 @@
-import { Interaction, Message, PermissionResolvable } from 'discord.js';
 import { createError } from './createError';
 import { sendEmbed } from './embedSender';
 import { client } from '@/app';
 import { props } from '@/props';
-import { Locale } from '@/types';
+import { CommandInteraction, Locale, Message, PermissionResolvable } from '@/types';
 
 export async function checkPermission(
   locale: Locale,
-  payload: { interaction?: Interaction; message?: Message },
+  payload: { interaction?: CommandInteraction; message?: Message },
   permission: PermissionResolvable
 ): Promise<boolean> {
   try {

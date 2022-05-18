@@ -1,20 +1,6 @@
-export {
-  CommandInteraction,
-  EmbedFieldData,
-  Guild,
-  GuildChannel,
-  GuildMember,
-  Interaction,
-  Message,
-  TextChannel,
-  VoiceChannel,
-} from 'discord.js';
-export { APIApplicationCommandOption, Routes } from 'discord-api-types/v10';
-
 export * from './api';
 export * from './command';
 export * from './config';
-// export * from './interaction';
 export * from './locale';
 export * from './state';
 
@@ -30,8 +16,6 @@ export interface PrivateRoom {
   room: string;
   waiting: string;
 }
-
-export type Args = Array<string>;
 
 export interface AutoRole {
   type: string;

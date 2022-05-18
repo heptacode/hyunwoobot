@@ -1,7 +1,7 @@
-import { Guild } from 'discord.js';
 import { createError } from '@/modules/createError';
-import { firestore } from '@/services/firebase';
 import { log } from '@/modules/logger';
+import { firestore } from '@/services/firebase.service';
+import { Guild } from 'discord.js';
 
 export async function guildDelete(guild: Guild) {
   try {

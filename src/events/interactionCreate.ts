@@ -1,7 +1,7 @@
-import axios from 'axios';
+import { managerCommands, states, userCommands } from '@/app';
 import { createError } from '@/modules/createError';
-import { states, userCommands, managerCommands } from '@/app';
-import { Interaction } from '@/types';
+import axios from 'axios';
+import { Interaction } from 'discord.js';
 
 export async function interactionCreate(interaction: Interaction) {
   try {

@@ -1,9 +1,9 @@
-import { GuildMember } from 'discord.js';
+import { states } from '@/app';
 import { createError } from '@/modules/createError';
 import { sendEmbed } from '@/modules/embedSender';
 import { setGuild } from '@/modules/initializer';
-import { states } from '@/app';
 import { props } from '@/props';
+import { GuildMember } from 'discord.js';
 
 export async function guildMemberAdd(member: GuildMember) {
   try {

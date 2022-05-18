@@ -1,12 +1,12 @@
-import { EmbedFieldData, Interaction } from 'discord.js';
 import { createError } from '@/modules/createError';
 import { props } from '@/props';
 import { Command, State } from '@/types';
+import { CommandInteraction, EmbedFieldData } from 'discord.js';
 
 export const queue: Command = {
   name: 'queue',
   version: 1,
-  execute(state: State, interaction: Interaction) {
+  execute(state: State, interaction: CommandInteraction) {
     try {
       if (state.queue.length) {
         const fields: EmbedFieldData[] = [];

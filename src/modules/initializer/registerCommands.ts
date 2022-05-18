@@ -1,7 +1,5 @@
-import { REST } from '@discordjs/rest';
-import { Routes } from '@/types';
-import { client, userCommands, managerCommands, states } from '@/app';
 import { log } from '@/modules/logger';
+import { REST } from '@discordjs/rest';
 
 const rest: REST = new REST({ version: '10' }).setToken(process.env.TOKEN);
 

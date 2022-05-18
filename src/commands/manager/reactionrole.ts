@@ -1,17 +1,11 @@
+import { client } from '@/app';
+import { checkPermission } from '@/modules/checkPermission';
 import { getHexFromEmoji } from '@/modules/converter';
 import { createError } from '@/modules/createError';
-import { firestore } from '@/services/firebase';
-import { checkPermission } from '@/modules/checkPermission';
-import { client } from '@/app';
-import {
-  APIApplicationCommandOption,
-  Command,
-  CommandInteraction,
-  Locale,
-  ReactionRole,
-  State,
-  TextChannel,
-} from '@/types';
+import { firestore } from '@/services/firebase.service';
+import { Command, Locale, ReactionRole, State } from '@/types';
+import { APIApplicationCommandOption } from 'discord-api-types/v10';
+import { CommandInteraction, TextChannel } from 'discord.js';
 
 export const reactionrole: Command = {
   name: 'reactionrole',

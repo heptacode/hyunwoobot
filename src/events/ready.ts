@@ -1,10 +1,10 @@
-import { Guild, TextChannel } from 'discord.js';
+import { client, locales, states } from '@/app';
 import { createError } from '@/modules/createError';
-import { firestore } from '@/services/firebase';
 import { registerCommands, setGuild, setState } from '@/modules/initializer';
 import { log } from '@/modules/logger';
-import { client, locales, states } from '@/app';
+import { firestore } from '@/services/firebase.service';
 import { Config } from '@/types';
+import { Guild, TextChannel } from 'discord.js';
 
 export async function ready() {
   try {

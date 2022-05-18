@@ -1,6 +1,6 @@
-import { Collection } from 'discord.js';
 import { locales, states } from '@/app';
 import { Config, State } from '@/types';
+import { Collection } from 'discord.js';
 
 export async function setState(guildID: string, config?: Config) {
   states.set(guildID, {

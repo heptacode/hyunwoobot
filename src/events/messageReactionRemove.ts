@@ -1,11 +1,4 @@
 import { MessageReaction, User } from 'discord.js';
-import { getHexFromEmoji } from '@/modules/converter';
-import { createError } from '@/modules/createError';
-import { sendEmbed } from '@/modules/embedSender';
-import { log } from '@/modules/logger';
-import { client, states } from '@/app';
-import { props } from '@/props';
-import { ReactionRole } from '@/types';
 
 export async function messageReactionRemove(reaction: MessageReaction, user: User) {
   // if (reaction.me || reaction.message.channel.type === "dm") return;

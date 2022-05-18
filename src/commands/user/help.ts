@@ -1,14 +1,9 @@
+import { managerCommands, prefix, userCommands } from '@/app';
 import { createError } from '@/modules/createError';
-import { userCommands, managerCommands, prefix } from '@/app';
 import { props } from '@/props';
-import {
-  APIApplicationCommandOption,
-  Command,
-  CommandInteraction,
-  EmbedFieldData,
-  Locale,
-  State,
-} from '@/types';
+import { Command, Locale, State } from '@/types';
+import { APIApplicationCommandOption } from 'discord-api-types/v10';
+import { CommandInteraction, EmbedFieldData } from 'discord.js';
 
 export const help: Command = {
   name: 'help',

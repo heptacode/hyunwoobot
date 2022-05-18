@@ -1,13 +1,12 @@
-import { Interaction, StageChannel, VoiceChannel } from 'discord.js';
 import { joinVoiceChannel, DiscordGatewayAdapterCreator } from '@discordjs/voice';
 import { createError } from '@/modules/createError';
 import { sendEmbed } from '@/modules/embedSender';
 import { client } from '@/app';
 import { props } from '@/props';
-import { State } from '@/types';
+import { CommandInteraction, State, StageChannel, VoiceChannel } from '@/types';
 import { voiceDisconnect } from '@/modules/voice';
 
-export async function voiceConnect(state: State, interaction: Interaction) {
+export async function voiceConnect(state: State, interaction: CommandInteraction) {
   try {
     const voiceChannel: VoiceChannel | StageChannel = client.guilds
       .resolve(interaction.guildId)

@@ -1,4 +1,4 @@
-import { Guild, Interaction, Message } from 'discord.js';
+import { CommandInteraction, Guild, Message } from 'discord.js';
 import { sendEmbed } from '@/modules/embedSender';
 import { client } from '@/app';
 import { props } from '@/props';
@@ -6,7 +6,7 @@ import { Locale } from '@/types';
 
 export async function voiceStateCheck(
   locale: Locale,
-  payload: { interaction?: Interaction; message?: Message }
+  payload: { interaction?: CommandInteraction; message?: Message }
 ): Promise<boolean> {
   if (
     !client.guilds

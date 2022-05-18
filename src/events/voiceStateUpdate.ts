@@ -1,10 +1,10 @@
-import { CategoryChannel, GuildChannel, TextChannel, VoiceState } from 'discord.js';
+import { client, states } from '@/app';
 import { createError } from '@/modules/createError';
 import { sendEmbed } from '@/modules/embedSender';
-import { firestore } from '@/services/firebase';
-import { client, states } from '@/app';
 import { props } from '@/props';
+import { firestore } from '@/services/firebase.service';
 import { PrivateRoom, State, VoiceRole } from '@/types';
+import { CategoryChannel, GuildChannel, TextChannel, VoiceState } from 'discord.js';
 
 export async function voiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
   if (oldState && newState && oldState.channelId === newState.channelId) return;

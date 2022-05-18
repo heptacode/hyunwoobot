@@ -5,8 +5,9 @@ import {
   Interaction,
   Message,
   PartialMessage,
+  CommandInteraction,
 } from 'discord.js';
-import { log } from './logger';
+import { log } from '@/modules/logger';
 import { client } from '@/app';
 import { props } from '@/props';
 
@@ -16,7 +17,7 @@ export const createError = async (
   ref?: {
     guild?: GuildResolvable;
     message?: Message | PartialMessage;
-    interaction?: Interaction;
+    interaction?: Interaction | CommandInteraction;
     member?: GuildMember;
   }
 ) => {

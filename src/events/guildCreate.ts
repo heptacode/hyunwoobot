@@ -1,7 +1,7 @@
-import { Guild } from 'discord.js';
 import { createError } from '@/modules/createError';
 import { registerCommands, setConfig, setGuild, setState } from '@/modules/initializer';
 import { log } from '@/modules/logger';
+import { Guild } from 'discord.js';
 
 export async function guildCreate(guild: Guild) {
   try {

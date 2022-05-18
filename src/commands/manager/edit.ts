@@ -1,13 +1,13 @@
-import { Message, MessageEmbed, TextChannel } from 'discord.js';
+import { checkPermission } from '@/modules/checkPermission';
 import { getChannelID } from '@/modules/converter';
 import { createError } from '@/modules/createError';
-import { checkPermission } from '@/modules/checkPermission';
-import { Args, Command, State } from '@/types';
+import { Command, State } from '@/types';
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
 
 export const edit: Command = {
   name: 'edit',
   messageOnly: true,
-  async execute(state: State, message: Message, args: Args) {
+  async execute(state: State, message: Message, args: string[]) {
     try {
       if (await checkPermission(state.locale, { message: message }, 'MANAGE_MESSAGES'))
         throw new Error('Missing Permissions');
