@@ -7,10 +7,9 @@ export async function guildCreate(guild: Guild) {
   try {
     log.d(`Initialize Started [ ${guild.name}(${guild.id}) ]`);
 
-    await setConfig(guild.id);
+    await Promise.all([setConfig(guild.id), setGuild(guild.id)]);
     setState(guild.id);
     await registerCommands(guild.id, true);
-    await setGuild(guild.id);
 
     log.i(`Initialize Complete [ ${guild.name}(${guild.id}) ]`);
   } catch (err) {
