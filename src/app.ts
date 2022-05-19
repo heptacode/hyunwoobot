@@ -6,7 +6,6 @@ import '@/services/api.service';
 import { Command, Locale, State } from '@/types';
 import { Client, Collection, Intents } from 'discord.js';
 import 'dotenv/config';
-require('@/events');
 
 export const prefix: string = process.env.PREFIX || props.bot.prefix;
 export const client: Client = new Client({
@@ -42,3 +41,5 @@ for (const [name, command] of Object.entries(managerCommandsList)) {
 }
 
 client.login(process.env.TOKEN);
+
+require('@/events');

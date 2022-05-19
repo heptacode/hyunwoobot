@@ -1,17 +1,17 @@
+import { client } from '@/app';
+import { log } from '@/modules/logger';
+import { props } from '@/props';
 import {
+  CommandInteraction,
   Guild,
   GuildMember,
   GuildResolvable,
   Interaction,
   Message,
   PartialMessage,
-  CommandInteraction,
 } from 'discord.js';
-import { log } from '@/modules/logger';
-import { client } from '@/app';
-import { props } from '@/props';
 
-export const createError = async (
+export async function createError(
   location: string,
   body: string | Error,
   ref?: {
@@ -20,18 +20,25 @@ export const createError = async (
     interaction?: Interaction | CommandInteraction;
     member?: GuildMember;
   }
-) => {
+) {
   try {
     let guild: Guild;
     if (ref) {
-      if (ref.guild) guild = client.guilds.resolve(ref.guild);
-      else if (ref.message) guild = ref.message.guild;
-      else if (ref.interaction) guild = client.guilds.resolve(ref.interaction.guildId);
-      else if (ref.member) guild = ref.member.guild;
+      if (ref.guild) {
+        guild = client.guilds.resolve(ref.guild);
+      } else if (ref.message) {
+        guild = ref.message.guild;
+      } else if (ref.interaction) {
+        guild = client.guilds.resolve(ref.interaction.guildId);
+      } else if (ref.member) {
+        guild = ref.member.guild;
+      }
 
-      if (ref.message) body += `\n\nOriginal Message: ${ref.message.content}`;
-      else if (ref.interaction)
+      if (ref.message) {
+        body += `\n\nOriginal Message: ${ref.message.content}`;
+      } else if (ref.interaction) {
         body += `\n\nOriginal Interaction: ${JSON.stringify(ref.interaction)}`;
+      }
     }
 
     log.e(`${guild ? `${guild.name} > ` : ''}${location} > ${body}`);
@@ -53,4 +60,4 @@ export const createError = async (
   } catch (err) {
     log.e(`CreateError > ${err}`);
   }
-};
+}

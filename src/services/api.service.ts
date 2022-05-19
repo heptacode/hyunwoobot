@@ -21,7 +21,7 @@ app.set('trust proxy', true);
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.json({ limit: '50mb' }));
 
-const fetchGuildMember = (guildId: string, memberId: string): APIGuildMember => {
+function fetchGuildMember(guildId: string, memberId: string): APIGuildMember {
   const _roles: string[] = [];
 
   const member = client.guilds.resolve(guildId).members.resolve(memberId);
@@ -38,7 +38,7 @@ const fetchGuildMember = (guildId: string, memberId: string): APIGuildMember => 
     },
     roles: _roles,
   };
-};
+}
 
 app.post('/fetch', async (req, res) => {
   try {
