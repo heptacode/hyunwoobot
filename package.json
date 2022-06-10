@@ -2,11 +2,11 @@
   "name": "hyunwoobot",
   "version": "1.0.0",
   "description": "",
-  "main": "src/app.ts",
+  "main": "dist/app.js",
   "scripts": {
-    "dev": "rollup -cw",
-    "build": "rollup -c",
-    "deploy": "git pull && rollup -c && pm2 start"
+    "dev": "node ./scripts/esbuild.dev.js",
+    "build": "node ./scripts/esbuild.build.js",
+    "deploy": "git pull && node ./scripts/esbuild.build.js && pm2 start"
   },
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
     "compression": "latest",
     "cors": "latest",
     "discord-api-types": "latest",
-    "discord.js": "^13.7.0",
+    "discord.js": "13.6",
     "dotenv": "latest",
     "express": "latest",
     "ffmpeg-static": "latest",
@@ -43,10 +43,6 @@
   },
   "devDependencies": {
     "@babel/core": "latest",
-    "@rollup/plugin-alias": "latest",
-    "@rollup/plugin-commonjs": "latest",
-    "@rollup/plugin-run": "latest",
-    "@rollup/plugin-typescript": "latest",
     "@types/compression": "latest",
     "@types/cors": "latest",
     "@types/express": "latest",
@@ -55,12 +51,9 @@
     "@types/node-schedule": "latest",
     "esbuild": "latest",
     "esbuild-plugin-alias": "latest",
-    "esbuild-plugin-node-externals": "latest",
     "esbuild-plugin-run": "latest",
-    "rollup": "latest",
     "ts-node": "latest",
-    "tslib": "latest",
     "typescript": "latest"
   },
-  "packageManager": "yarn@3.2.0"
+  "packageManager": "yarn@3.2.1"
 }
