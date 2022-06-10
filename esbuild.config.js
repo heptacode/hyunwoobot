@@ -1,4 +1,6 @@
 const alias = require('esbuild-plugin-alias');
+const resolve = require('path').resolve;
+const pkg = require(resolve(__dirname, 'package.json'));
 
 exports.default = {
   entryPoints: ['src/app.ts'],
@@ -13,4 +15,5 @@ exports.default = {
       '@': 'src',
     }),
   ],
+  external: Object.keys(pkg.dependencies),
 };
